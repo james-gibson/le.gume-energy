@@ -37,6 +37,12 @@ export function SiteHeader() {
             </NavLink>
           ))}
           <NavLink
+            to="/charts"
+            className={({ isActive }) => `${linkBase} shrink-0 ${isActive ? linkActive : ''}`}
+          >
+            Charts
+          </NavLink>
+          <NavLink
             to="/design"
             className={({ isActive }) => `${linkBase} shrink-0 ${isActive ? linkActive : ''}`}
           >

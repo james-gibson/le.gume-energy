@@ -22,6 +22,7 @@ const OUT = 'dist/.prerender'
 
 const routes = [
   { file: 'home', path: '/' },
+  { file: 'charts', path: '/charts' },
   { file: 'design', path: '/design' },
   { file: 'palette', path: '/palette' },
   ...SECTIONS.map((section) => ({ file: section.id, path: `/${section.id}` })),

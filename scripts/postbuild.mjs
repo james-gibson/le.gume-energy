@@ -46,13 +46,14 @@ async function walk(dir) {
   return out
 }
 
-// Routes are the content tree plus the two static ones. Keeping this derived
+// Routes are the content tree plus the three static ones. Keeping this derived
 // means a new page gets its own 200 without editing this file.
 const sectionDirs = (await readdir(CONTENT, { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
 
 const routes = [
+  'charts',
   'design',
   'palette',
   ...sectionDirs,
@@ -97,6 +98,7 @@ for (const file of await walk(CONTENT)) {
 const titleFor = (route) => {
   if (!route) return null
   if (pageTitles.has(route)) return `${pageTitles.get(route)} · le.gume energy`
+  if (route === 'charts') return 'Charts · le.gume energy'
   if (route === 'design') return 'Design · le.gume energy'
   if (route === 'palette') return 'Colour · le.gume energy'
   if (route === '404') return 'Not found · le.gume energy'
@@ -323,6 +325,7 @@ lines.push(
   `- [Quickstart](${SITE}/docs/quickstart/): clone, install, run.`,
   `- [Twelve factors](${SITE}/factors/start-here/): the rules as lessons, with their costs.`,
   `- [Isotopes](${SITE}/isotopes/what-is-an-isotope/): minimal systems you can lift.`,
+  `- [Charts](${SITE}/charts/): four static views of the published record.`,
   `- [Design](${SITE}/design/): every component in use, live.`,
   `- Static artifacts with no application: [no script](${SITE}/nojs/), [no stylesheet](${SITE}/bare/), [the offline deck](${SITE}/deck.html).`,
   '',

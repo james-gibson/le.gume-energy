@@ -185,6 +185,7 @@ for (const file of contentFiles) {
 // time, so the check here is against routes, not against the built HTML.
 const knownRoutes = new Set([
   '/',
+  '/charts',
   '/design',
   '/palette',
   ...sections.map((s) => `/${s}`),

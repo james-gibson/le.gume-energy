@@ -17,6 +17,7 @@ import { PAGES } from '../src/lib/content'
 
 const routes = [
   '/',
+  '/charts',
   '/design',
   '/palette',
   ...PAGES.map((page) => `/${page.section}/${page.slug}`),

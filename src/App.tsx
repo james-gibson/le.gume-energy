@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { SECTIONS, getPage, type SectionId } from './lib/content'
+import { Charts } from './pages/Charts'
 import { Colour } from './pages/Colour'
 import { Design } from './pages/Design'
 import { DocPage } from './pages/DocPage'
@@ -30,6 +31,7 @@ export function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="charts" element={<Charts />} />
         <Route path="design" element={<Design />} />
         <Route path="palette" element={<Colour />} />
         <Route path="docs/index" element={<Navigate to="/docs" replace />} />

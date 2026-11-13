@@ -15,6 +15,7 @@ npm run dev      # vite
 npm run build    # tsc, vite, prerender, postbuild, guard   <- what CI runs
 npm run smoke    # render every route (and the 404) to a string
 npm run guard    # guard alone, against an existing dist/
+npm run charts   # rebuild src/data/charts.json from public/data
 ```
 
 `npm run build` is the gate. The guard fails on placeholders, leaked absolute paths or

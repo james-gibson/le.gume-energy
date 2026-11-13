@@ -41,6 +41,7 @@ check to make a build pass; fix the output.
   `interval_start_utc`; `date_local` is the join key.
 - Interval files are sparse: SolarEdge returns only intervals with production. Do not integrate
   the 15-minute series and call it a daily total.
+- `/charts` is a live route rendered from `src/data/charts.json`; `npm run charts` regenerates it from `public/data/`.
 - Change a field only with the privacy record in the same commit.
 
 ## Privacy

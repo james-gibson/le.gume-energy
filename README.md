@@ -21,6 +21,7 @@ dataset. The data is the content; the site is the receipt.
 - **61,015 fifteen-minute intervals**, plus hourly, monthly and yearly aggregates.
 - **Utility usage** joined on the local calendar day where the rolling window overlaps.
 - **A manifest** with coverage, row counts, SHA-256 per file and the privacy record.
+- **Four charts** — monthly production, clear-day residuals, one clear day and self-consumption — rendered as static SVG from a build-time summary.
 
 ## Why local time
 

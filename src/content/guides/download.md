@@ -15,14 +15,14 @@ SHA-256 of each file for the current export.
 | File | Rows | What it is |
 | --- | ---: | --- |
 | [`manifest.json`](https://james-gibson.github.io/le.gume-energy/data/manifest.json) | — | Coverage, counts, hashes, privacy record |
-| [`solar-production-15min.csv`](https://james-gibson.github.io/le.gume-energy/data/solar-production-15min.csv) | 61,015 | Interval production in kW |
-| [`solar-production-hourly.csv`](https://james-gibson.github.io/le.gume-energy/data/solar-production-hourly.csv) | 17,367 | Hourly production in kW |
+| [`solar-production-15min.csv`](https://james-gibson.github.io/le.gume-energy/data/solar-production-15min.csv) | 61,019 | Interval production in kW |
+| [`solar-production-hourly.csv`](https://james-gibson.github.io/le.gume-energy/data/solar-production-hourly.csv) | 17,368 | Hourly production in kW |
 | [`solar-production-daily.csv`](https://james-gibson.github.io/le.gume-energy/data/solar-production-daily.csv) | 1,188 | Daily kWh, weather, index, residual |
 | [`solar-production-monthly.csv`](https://james-gibson.github.io/le.gume-energy/data/solar-production-monthly.csv) | 40 | Monthly kWh |
 | [`solar-production-yearly.csv`](https://james-gibson.github.io/le.gume-energy/data/solar-production-yearly.csv) | 4 | Yearly kWh |
-| [`grid-usage-15min.csv`](https://james-gibson.github.io/le.gume-energy/data/grid-usage-15min.csv) | 64 | Utility 15-minute series |
-| [`grid-usage-hourly.csv`](https://james-gibson.github.io/le.gume-energy/data/grid-usage-hourly.csv) | 94 | Utility hourly series |
-| [`grid-usage-daily.csv`](https://james-gibson.github.io/le.gume-energy/data/grid-usage-daily.csv) | 90 | Utility daily series, long format |
+| [`grid-usage-15min.csv`](https://james-gibson.github.io/le.gume-energy/data/grid-usage-15min.csv) | 431 | Utility 15-minute series |
+| [`grid-usage-hourly.csv`](https://james-gibson.github.io/le.gume-energy/data/grid-usage-hourly.csv) | 3,023 | Utility hourly series |
+| [`grid-usage-daily.csv`](https://james-gibson.github.io/le.gume-energy/data/grid-usage-daily.csv) | 336 | Utility daily series, long format |
 | [`grid-usage-monthly.csv`](https://james-gibson.github.io/le.gume-energy/data/grid-usage-monthly.csv) | 13 | Gas therms on the billing cycle |
 | [`energy-daily-joined.csv`](https://james-gibson.github.io/le.gume-energy/data/energy-daily-joined.csv) | 1,188 | Production, consumption, export, net, self-consumption |
 | [`analysis-events.csv`](https://james-gibson.github.io/le.gume-energy/data/analysis-events.csv) | 33 | Event screening |

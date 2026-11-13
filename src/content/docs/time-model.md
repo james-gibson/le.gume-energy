@@ -34,7 +34,7 @@ formats. The exporter ignores the rendering, recomputes local time with `zoneinf
 the two describe different instants. It then re-reads its own output and checks that every local
 timestamp denotes the same instant as its UTC pair.
 
-A wrong offset is a failed run, not a warning. In the 2026-11-13 export, 82,251 source timestamps
+A wrong offset is a failed run, not a warning. In the 2026-11-13 export, 85,798 source timestamps
 were checked with zero disagreements.
 
 ## Sparse intervals

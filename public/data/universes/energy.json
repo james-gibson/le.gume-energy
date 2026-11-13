@@ -119,7 +119,7 @@
         "end_ns": "1794614400000000000",
         "type": "phase",
         "status": "active",
-        "description": "317 days, 7922.9 kWh"
+        "description": "317 days, 7924.2 kWh"
       }
     ],
     "keyframes": [
@@ -446,6 +446,20 @@
         "description": "1 clear day(s); min residual -0.337; snow/precip/cold"
       },
       {
+        "id": "utility-window-start",
+        "timestamp": "2025-05-01T12:00:00Z",
+        "timestamp_ns": "1746100800000000000",
+        "significance": 0.6,
+        "tags": [
+          "utility",
+          "window"
+        ],
+        "type": "milestone",
+        "precision": 86400000000000,
+        "certainty": 1,
+        "description": "Utility window opens: 2025-05-01"
+      },
+      {
         "id": "event-2025-10-15-possible-soiling",
         "timestamp": "2025-10-15T12:00:00Z",
         "timestamp_ns": "1760529600000000000",
@@ -600,20 +614,6 @@
         "description": "3 day(s); 10.4 kWh actual vs 76.0 kWh expected"
       },
       {
-        "id": "utility-window-start",
-        "timestamp": "2026-10-15T12:00:00Z",
-        "timestamp_ns": "1792065600000000000",
-        "significance": 0.6,
-        "tags": [
-          "utility",
-          "window"
-        ],
-        "type": "milestone",
-        "precision": 86400000000000,
-        "certainty": 1,
-        "description": "Utility window opens: 2026-10-15"
-      },
-      {
         "id": "event-2026-10-20-rain-or-recovery",
         "timestamp": "2026-10-20T12:00:00Z",
         "timestamp_ns": "1792497600000000000",
@@ -672,16 +672,16 @@
     "coverage": {
       "solar_production": {
         "daily_rows": 1188,
-        "daily_with_analysis": 1187,
+        "daily_with_analysis": 1188,
         "analysis_production_mismatches": 0,
-        "analysis_latest_day_excluded": true,
+        "analysis_latest_day_excluded": false,
         "interval_files_are_sparse": "SolarEdge returns only intervals with production, so a day may hold far fewer than 96 fifteen-minute or 24 hourly rows.",
         "first_local": "2023-08-14",
         "last_local": "2026-11-13"
       },
       "grid_usage": {
-        "daily_rows": 90,
-        "first_local": "2026-10-15",
+        "daily_rows": 336,
+        "first_local": "2025-05-01",
         "last_local": "2026-11-13"
       },
       "joined_days": 1188

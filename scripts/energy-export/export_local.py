@@ -528,6 +528,8 @@ def export_grid(
                         "export": 0.0,
                         "on_peak": 0.0,
                         "off_peak": 0.0,
+                        "on_peak_seen": False,
+                        "off_peak_seen": False,
                         "series": 0,
                     },
                 )
@@ -538,8 +540,10 @@ def export_grid(
                     bucket["consumption"] += float(value)
                     if "On Peak" in series:
                         bucket["on_peak"] += float(value)
+                        bucket["on_peak_seen"] = True
                     elif "Off Peak" in series:
                         bucket["off_peak"] += float(value)
+                        bucket["off_peak_seen"] = True
         table.close()
         tables.append(table)
 
@@ -607,8 +611,8 @@ def export_joined(
         else:
             consumption = bucket["consumption"]
             export = bucket["export"]
-            on_peak = bucket["on_peak"]
-            off_peak = bucket["off_peak"]
+            on_peak = bucket["on_peak"] if bucket["on_peak_seen"] else None
+            off_peak = bucket["off_peak"] if bucket["off_peak_seen"] else None
             series_count = bucket["series"]
         if produced is not None and export is not None:
             self_consumed = produced - export

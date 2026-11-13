@@ -19,7 +19,7 @@ dataset. The data is the content; the site is the receipt.
 
 - **1,188 days** of daily production, 2023-08-14 → 2026-11-13, in `America/Denver`.
 - **61,015 fifteen-minute intervals**, plus hourly, monthly and yearly aggregates.
-- **Utility usage** joined on the local calendar day where the rolling window overlaps.
+- **Utility usage** joined on the local calendar day, including a backfilled May–August 2025 history and the collector’s rolling window.
 - **A manifest** with coverage, row counts, SHA-256 per file and the privacy record.
 - **Four charts** — monthly production, clear-day residuals, one clear day and self-consumption — rendered as static SVG from a build-time summary.
 - **A local-time universe** — `src/universes/energy.ts`, generated from the same CSVs: yearly segments, event keyframes, and a downloadable JSON form.

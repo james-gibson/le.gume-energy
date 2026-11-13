@@ -59,15 +59,17 @@ FALLBACK_TZ = "America/Denver"
 
 DEFAULT_SOLAREDGE_DB = Path(
     os.environ.get(
-        "SOLAREDGE_DB", "/Users/james/gpt/launchAgent/solaredge/solaredge.sqlite3"
+        "SOLAREDGE_DB", Path.home() / "gpt/launchAgent/solaredge/solaredge.sqlite3"
     )
 )
 DEFAULT_XCEL_DB = Path(
-    os.environ.get("XCEL_DB", "/Users/james/gpt/launchAgent/xcel/xcel-usage.sqlite3")
+    os.environ.get(
+        "XCEL_DB", Path.home() / "gpt/launchAgent/xcel/xcel-usage.sqlite3"
+    )
 )
 DEFAULT_ANALYSIS_DB = Path(
     os.environ.get(
-        "ANALYSIS_DB", "/Users/james/gpt/launchAgent/analysis/analysis.sqlite3"
+        "ANALYSIS_DB", Path.home() / "gpt/launchAgent/analysis/analysis.sqlite3"
     )
 )
 

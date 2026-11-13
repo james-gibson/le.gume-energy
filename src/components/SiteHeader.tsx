@@ -43,6 +43,12 @@ export function SiteHeader() {
             Charts
           </NavLink>
           <NavLink
+            to="/universes"
+            className={({ isActive }) => `${linkBase} shrink-0 ${isActive ? linkActive : ''}`}
+          >
+            Universe
+          </NavLink>
+          <NavLink
             to="/design"
             className={({ isActive }) => `${linkBase} shrink-0 ${isActive ? linkActive : ''}`}
           >

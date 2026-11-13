@@ -186,6 +186,7 @@ for (const file of contentFiles) {
 const knownRoutes = new Set([
   '/',
   '/charts',
+  '/universes',
   '/design',
   '/palette',
   ...sections.map((s) => `/${s}`),

@@ -22,6 +22,7 @@ dataset. The data is the content; the site is the receipt.
 - **Utility usage** joined on the local calendar day where the rolling window overlaps.
 - **A manifest** with coverage, row counts, SHA-256 per file and the privacy record.
 - **Four charts** — monthly production, clear-day residuals, one clear day and self-consumption — rendered as static SVG from a build-time summary.
+- **A local-time universe** — `src/universes/energy.ts`, generated from the same CSVs: yearly segments, event keyframes, and a downloadable JSON form.
 
 ## Why local time
 

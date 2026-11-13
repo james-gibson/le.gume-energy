@@ -8,6 +8,7 @@ import { DocPage } from './pages/DocPage'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
 import { SectionIndex } from './pages/SectionIndex'
+import { Universes } from './pages/Universes'
 
 function isSection(value: string | undefined): value is SectionId {
   return !!value && SECTIONS.some((s) => s.id === value)
@@ -32,6 +33,7 @@ export function App() {
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="charts" element={<Charts />} />
+        <Route path="universes" element={<Universes />} />
         <Route path="design" element={<Design />} />
         <Route path="palette" element={<Colour />} />
         <Route path="docs/index" element={<Navigate to="/docs" replace />} />

@@ -1,0 +1,9 @@
+[
+  {
+    "universeId": "home_energy_monitoring:public_record_2023_2026:2026",
+    "file": "energy.json",
+    "type": "technical_log",
+    "segments": 4,
+    "keyframes": 38
+  }
+]

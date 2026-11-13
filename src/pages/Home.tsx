@@ -206,6 +206,9 @@ export function Home() {
           starts at <span className="font-mono">/llms.txt</span>. Four views of the data are on{' '}
           <Link to="/charts" className="text-pulse underline decoration-pulse/30 underline-offset-4">
             the charts page
+          </Link>. The record also ships as a{' '}
+          <Link to="/universes" className="text-pulse underline decoration-pulse/30 underline-offset-4">
+            local-time universe
           </Link>.
         </p>
       </section>

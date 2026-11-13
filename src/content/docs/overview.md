@@ -49,5 +49,6 @@ The system is 7.0 kWp across 21 panels on one string, installed on 2023-02-04 in
 - [Time model](/docs/time-model) — local time, UTC, and the DST repeat.
 - [Normalization](/docs/normalization) — how a raw kWh becomes a residual.
 - [Charts](/charts) — monthly production, clear-day residuals, one clear day, self-consumption.
+- [The universe](/universes) — the record as local-time segments and keyframes.
 - [How the charts are built](/docs/charts) — the build-time summary and the SVG.
 - [Download](/guides/download) — every file, with links and counts.

@@ -42,6 +42,7 @@ check to make a build pass; fix the output.
 - Interval files are sparse: SolarEdge returns only intervals with production. Do not integrate
   the 15-minute series and call it a daily total.
 - `/charts` is a live route rendered from `src/data/charts.json`; `npm run charts` regenerates it from `public/data/`.
+- `/universes` renders `src/universes/energy.ts`; `npm run universes` regenerates it and `public/data/universes/*.json` from the CSVs. The module mirrors local-time's `Universe`; do not add a dependency on the private repo.
 - Change a field only with the privacy record in the same commit.
 
 ## Privacy

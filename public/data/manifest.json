@@ -1,0 +1,267 @@
+{
+  "schema": "kb-energy-export/1",
+  "generated_at_utc": "2026-11-13T20:48:18Z",
+  "generated_at_local": "2026-11-13T13:48:18-07:00",
+  "timezone": "America/Denver",
+  "time_policy": {
+    "storage": "Source databases store UTC instants plus a collector-rendered local string.",
+    "export": "Every instant is emitted twice: local ISO 8601 with offset, and UTC with Z.",
+    "local_date": "Calendar date in the site time zone; DST-aware.",
+    "verification": "Local time is recomputed from UTC and compared with the collector rendering before publication.",
+    "dst_note": "On the autumn transition the local hour repeats; use *_utc to disambiguate duplicate local timestamps."
+  },
+  "privacy": {
+    "applies_to": "data",
+    "basis": "ANONYMIZATION_REQUIRED",
+    "method": [
+      "fixed field whitelist; source rows are never copied wholesale",
+      "site, account, street address, postal code, coordinates, meter key, account id and panel serials are not selected",
+      "joins use local calendar date and time only",
+      "the staged output is re-scanned for the excluded values before it is swapped into place"
+    ],
+    "excluded_categories": [
+      "site name",
+      "account holder and account name",
+      "street address and postal code",
+      "precise latitude/longitude",
+      "site id, account id and meter key",
+      "panel and optimizer serials"
+    ],
+    "residual_risk": [
+      "The interval trace is a behavioural fingerprint even without an address: treat it as pseudonymous, not anonymous.",
+      "Installation date, system size, panel model and time zone narrow the population and are retained because the analysis needs them.",
+      "Weather columns are gridded reanalysis for the site's coordinates, not on-site sensor readings."
+    ]
+  },
+  "system": {
+    "peak_power_kwp": 7.0,
+    "installation_date_local": "2023-02-04",
+    "panel_count": 21,
+    "string_count": 1,
+    "panel_models": [
+      "S440-1GM4MRM-NA03"
+    ],
+    "inverter_count": 1,
+    "battery_count": 0,
+    "meter_count": 0
+  },
+  "coverage": {
+    "solar_production": {
+      "daily_rows": 1188,
+      "daily_with_analysis": 1187,
+      "analysis_production_mismatches": 0,
+      "analysis_latest_day_excluded": true,
+      "interval_files_are_sparse": "SolarEdge returns only intervals with production, so a day may hold far fewer than 96 fifteen-minute or 24 hourly rows.",
+      "first_local": "2023-08-14",
+      "last_local": "2026-11-13"
+    },
+    "grid_usage": {
+      "daily_rows": 90,
+      "first_local": "2026-10-15",
+      "last_local": "2026-11-13"
+    },
+    "joined_days": 1188
+  },
+  "consistency": {
+    "local_time_rows_checked": 82251,
+    "local_time_mismatches": 0,
+    "analysis_production_mismatches": 0,
+    "analysis_latest_day_excluded": true
+  },
+  "files": [
+    {
+      "name": "solar-production-15min.csv",
+      "rows": 61015,
+      "bytes": 3966040,
+      "sha256": "62fe672a9729e6d8736163867798b304074e1655eca560e9bb8d6c9f90fddc8e",
+      "first_local": "2023-08-14",
+      "last_local": "2026-11-13",
+      "columns": [
+        "interval_start_local",
+        "interval_start_utc",
+        "date_local",
+        "production_kw"
+      ]
+    },
+    {
+      "name": "solar-production-daily.csv",
+      "rows": 1188,
+      "bytes": 179468,
+      "sha256": "6af0ab633097f3aca2c588fa9261d23c11a54d13b0853bc598155f2774ccc156",
+      "first_local": "2023-08-14",
+      "last_local": "2026-11-13",
+      "columns": [
+        "date_local",
+        "interval_start_local",
+        "interval_start_utc",
+        "production_kwh",
+        "yield_kwh_per_kwp",
+        "radiation_kwh_m2",
+        "performance_index",
+        "temp_factor",
+        "performance_index_corrected",
+        "clear_day",
+        "seasonal_baseline",
+        "residual",
+        "temp_mean_c",
+        "precipitation_mm",
+        "snowfall_cm",
+        "cloud_cover_pct",
+        "expected_kwh",
+        "production_ratio"
+      ]
+    },
+    {
+      "name": "solar-production-hourly.csv",
+      "rows": 17367,
+      "bytes": 1128920,
+      "sha256": "1dd365ccd2c0e2b3c9d0852486f723fe9e0237a5d25b2ee4c365244ef1655bea",
+      "first_local": "2023-08-14",
+      "last_local": "2026-11-13",
+      "columns": [
+        "interval_start_local",
+        "interval_start_utc",
+        "date_local",
+        "production_kw"
+      ]
+    },
+    {
+      "name": "solar-production-monthly.csv",
+      "rows": 40,
+      "bytes": 3046,
+      "sha256": "57ba5029c4aeed5eb59b4585c583bb33878fb0d9a0e16882b36e041c6133b3ea",
+      "first_local": "2023-08-01",
+      "last_local": "2026-11-01",
+      "columns": [
+        "interval_start_local",
+        "interval_start_utc",
+        "date_local",
+        "month_local",
+        "production_kwh"
+      ]
+    },
+    {
+      "name": "solar-production-yearly.csv",
+      "rows": 4,
+      "bytes": 334,
+      "sha256": "1d916585e33dcc0f3e69c3a568e91a4ab25a10a7b269918baab9afa8d1bcc235",
+      "first_local": "2023-01-01",
+      "last_local": "2026-01-01",
+      "columns": [
+        "interval_start_local",
+        "interval_start_utc",
+        "date_local",
+        "production_kwh"
+      ]
+    },
+    {
+      "name": "grid-usage-15min.csv",
+      "rows": 64,
+      "bytes": 5603,
+      "sha256": "f1dcd5718d682985330e95e764835d67bc157200d862b51b90c60f28096f0f6c",
+      "first_local": "2026-11-13",
+      "last_local": "2026-11-13",
+      "columns": [
+        "interval_start_local",
+        "interval_start_utc",
+        "date_local",
+        "fuel",
+        "series",
+        "generated",
+        "unit",
+        "value"
+      ]
+    },
+    {
+      "name": "grid-usage-hourly.csv",
+      "rows": 94,
+      "bytes": 8033,
+      "sha256": "c480c99369dcb9b09984679a6236c49def7a839849391486d8f57aa69e140c8a",
+      "first_local": "2026-11-12",
+      "last_local": "2026-11-13",
+      "columns": [
+        "interval_start_local",
+        "interval_start_utc",
+        "date_local",
+        "fuel",
+        "series",
+        "generated",
+        "unit",
+        "value"
+      ]
+    },
+    {
+      "name": "grid-usage-daily.csv",
+      "rows": 90,
+      "bytes": 7698,
+      "sha256": "a69fe20581a8b4c376038f4b2393ad50523211087d66f2193ed4d4583d193bd6",
+      "first_local": "2026-10-15",
+      "last_local": "2026-11-13",
+      "columns": [
+        "interval_start_local",
+        "interval_start_utc",
+        "date_local",
+        "fuel",
+        "series",
+        "generated",
+        "unit",
+        "value"
+      ]
+    },
+    {
+      "name": "grid-usage-monthly.csv",
+      "rows": 13,
+      "bytes": 1164,
+      "sha256": "8beb2f0343654579e9ea4d1d62fe35139646947d266871070debd3841a597dc8",
+      "first_local": "2025-11-06",
+      "last_local": "2026-11-09",
+      "columns": [
+        "interval_start_local",
+        "interval_start_utc",
+        "date_local",
+        "fuel",
+        "series",
+        "generated",
+        "unit",
+        "value"
+      ]
+    },
+    {
+      "name": "energy-daily-joined.csv",
+      "rows": 1188,
+      "bytes": 33233,
+      "sha256": "f6d54bab8683ca5f73878a8ba393ea37c83ff1811315fa34adb4616f9c2950dd",
+      "first_local": "2023-08-14",
+      "last_local": "2026-11-13",
+      "columns": [
+        "date_local",
+        "solar_production_kwh",
+        "grid_consumption_kwh",
+        "grid_export_kwh",
+        "grid_on_peak_kwh",
+        "grid_off_peak_kwh",
+        "net_grid_kwh",
+        "self_consumed_kwh",
+        "self_consumption_ratio",
+        "grid_series_count"
+      ]
+    },
+    {
+      "name": "analysis-events.csv",
+      "rows": 33,
+      "bytes": 4030,
+      "sha256": "622c438e711f91a36b941fa25f14ff0f64f76535379961968fefc7f3bda8179b",
+      "first_local": "2023-10-30",
+      "last_local": "2026-10-20",
+      "columns": [
+        "start_date_local",
+        "end_date_local",
+        "kind",
+        "magnitude",
+        "residual_before",
+        "residual_after",
+        "detail"
+      ]
+    }
+  ]
+}

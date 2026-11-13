@@ -1,0 +1,34 @@
+start_date_local,end_date_local,kind,magnitude,residual_before,residual_after,detail
+2023-10-30,2023-11-07,snow_melt,0.5834,-0.5767,0.0067,recovered on 2023-11-07 from -0.577 to 0.007 after 2 negative clear day(s)
+2023-10-30,2023-10-31,snow_or_coverage,-0.5883,0.5883,,2 clear day(s); min residual -0.588; snow/precip/cold
+2023-11-26,2023-11-28,snow_melt,0.3409,-0.3570,-0.0161,recovered on 2023-11-28 from -0.357 to -0.016 after 2 negative clear day(s)
+2023-11-26,2023-11-27,snow_or_coverage,-0.5087,0.5698,,2 clear day(s); min residual -0.509; snow/precip/cold
+2023-12-28,2023-12-30,snow_melt,0.2447,-0.3242,-0.0795,recovered on 2023-12-30 from -0.324 to -0.079 after 2 negative clear day(s)
+2023-12-28,2023-12-29,snow_or_coverage,-0.4048,0.5532,,2 clear day(s); min residual -0.405; snow/precip/cold
+2024-02-04,2024-02-13,snow_melt,0.5735,-0.6273,-0.0538,recovered on 2024-02-13 from -0.627 to -0.054 after 2 negative clear day(s)
+2024-02-04,2024-02-04,snow_or_coverage,-0.6315,0.6396,,1 clear day(s); min residual -0.631; snow/precip/cold
+2024-02-11,2024-02-11,snow_or_coverage,-0.6231,0.6746,,1 clear day(s); min residual -0.623; snow/precip/cold
+2024-02-28,2024-02-29,snow_melt,0.1801,-0.1998,-0.0197,recovered on 2024-02-29 from -0.200 to -0.020 after 1 negative clear day(s)
+2024-03-18,2024-03-19,snow_melt,0.1288,-0.1546,-0.0257,recovered on 2024-03-19 from -0.155 to -0.026 after 1 negative clear day(s)
+2024-11-10,2024-11-15,snow_melt,0.5128,-0.5591,-0.0463,recovered on 2024-11-15 from -0.559 to -0.046 after 3 negative clear day(s)
+2024-11-10,2024-11-11,snow_or_coverage,-0.5804,0.5804,,2 clear day(s); min residual -0.580; snow/precip/cold
+2024-11-28,2024-12-01,snow_melt,0.4516,-0.4361,0.0155,recovered on 2024-12-01 from -0.436 to 0.015 after 2 negative clear day(s)
+2024-11-28,2024-11-29,snow_or_coverage,-0.5375,0.5691,,2 clear day(s); min residual -0.538; snow/precip/cold
+2025-01-08,2025-01-10,snow_melt,0.4335,-0.5204,-0.0869,recovered on 2025-01-10 from -0.520 to -0.087 after 1 negative clear day(s)
+2025-01-08,2025-01-08,snow_or_coverage,-0.5204,0.5814,,1 clear day(s); min residual -0.520; snow/precip/cold
+2025-01-23,2025-01-28,snow_melt,0.2035,-0.2044,-0.0008,recovered on 2025-01-28 from -0.204 to -0.001 after 2 negative clear day(s)
+2025-01-27,2025-01-27,snow_or_coverage,-0.2260,0.6201,,1 clear day(s); min residual -0.226; snow/precip/cold
+2025-02-22,2025-02-23,snow_melt,0.3102,-0.3366,-0.0264,recovered on 2025-02-23 from -0.337 to -0.026 after 1 negative clear day(s)
+2025-02-22,2025-02-22,snow_or_coverage,-0.3366,0.6893,,1 clear day(s); min residual -0.337; snow/precip/cold
+2025-10-15,2025-11-08,possible_soiling,-0.0012,0.0752,0.0375,"16 dry clear day(s); slope -0.0012/day, drop -0.038"
+2025-12-01,2025-12-15,snow_melt,0.3378,-0.3399,-0.0020,recovered on 2025-12-15 from -0.340 to -0.002 after 2 negative clear day(s)
+2025-12-04,2025-12-04,snow_or_coverage,-0.5538,0.5555,,1 clear day(s); min residual -0.554; snow/precip/cold
+2026-01-10,2026-01-12,snow_melt,0.5601,-0.4831,0.0770,recovered on 2026-01-12 from -0.483 to 0.077 after 1 negative clear day(s)
+2026-01-10,2026-01-10,snow_or_coverage,-0.4831,0.5938,,1 clear day(s); min residual -0.483; snow/precip/cold
+2026-01-26,2026-01-30,snow_melt,0.2538,-0.1785,0.0754,recovered on 2026-01-30 from -0.178 to 0.075 after 1 negative clear day(s)
+2026-03-07,2026-03-09,snow_melt,0.4748,-0.4481,0.0266,recovered on 2026-03-09 from -0.448 to 0.027 after 2 negative clear day(s)
+2026-03-07,2026-03-07,snow_or_coverage,-0.6456,0.7104,,1 clear day(s); min residual -0.646; snow/precip/cold
+2026-08-08,2026-08-17,outage_recovery,0.6507,-0.6555,-0.0048,recovered on 2026-08-17 from -0.656 to -0.005 after 1 negative clear day(s)
+2026-08-08,2026-08-08,system_offline,0.0458,,,1 day(s); 1.5 kWh actual vs 31.8 kWh expected
+2026-09-12,2026-09-14,system_offline,0.0000,,,3 day(s); 10.4 kWh actual vs 76.0 kWh expected
+2026-10-20,2026-10-27,rain_or_recovery,0.2535,-0.1614,0.0920,recovered on 2026-10-27 from -0.161 to 0.092 after 1 negative clear day(s)

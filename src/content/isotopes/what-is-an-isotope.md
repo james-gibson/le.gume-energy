@@ -49,7 +49,7 @@ them attached to each other.
 
 A cost with no function is an expense; a function with no cost is a fantasy. Naming both is what
 makes a system liftable, and what makes it re-decidable when the cost crosses a threshold
-([the business version of that argument](/pitch/cost-centres)).
+([the deck makes the same argument](/pitch/offline)).
 
 ## Similar, self-standing, self-declaring
 

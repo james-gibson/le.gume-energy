@@ -75,4 +75,4 @@ the bottom, because an isotope that hides its costs is an advertisement.
 - Live: [/](/)
 - Repository: [james-gibson/le.gume-energy](https://github.com/james-gibson/le.gume-energy)
 - The operating contract: [/docs/for-agents](/docs/for-agents)
-- The rules it follows, taught: [/factors/start-here](/factors/start-here)
+- The record and its limits: [/docs/overview](/docs/overview)

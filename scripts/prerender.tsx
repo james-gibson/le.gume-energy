@@ -17,7 +17,7 @@ import { StaticRouter } from 'react-router-dom'
 import { App } from '../src/App'
 import { PAGES, SECTIONS } from '../src/lib/content'
 
-const BASE = '/le.gume'
+const BASE = '/le.gume-energy'
 const OUT = 'dist/.prerender'
 
 const routes = [

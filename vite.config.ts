@@ -10,13 +10,13 @@ export default defineConfig(({ command }) => ({
   build: {
     outDir: 'dist',
     sourcemap: false,
-    // fancy-ui is the bulk of the bundle; keeping it in its own chunk lets the
-    // app code and the router cache separately from the vendor UI.
+    // Motion and its tween engine are the bulk of the bundle; keeping them in
+    // their own chunk lets the app code and the router cache separately.
     chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         manualChunks(id: string) {
-          if (id.includes('node_modules/fancy-ui-react')) return 'vendor-ui'
+          if (id.includes('node_modules/motion') || id.includes('node_modules/lucide-react')) return 'vendor-ui'
           if (id.includes('node_modules/react-markdown') || id.includes('node_modules/remark') || id.includes('node_modules/micromark') || id.includes('node_modules/unified'))
             return 'vendor-markdown'
           if (id.includes('node_modules/react')) return 'vendor-react'

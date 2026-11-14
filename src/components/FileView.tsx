@@ -23,13 +23,13 @@ export function FileView({ page }: { page: Page }) {
         <button
           type="button"
           onClick={() => setView('page')}
-          className="rounded-lg border border-line px-2.5 py-1.5 text-xs text-muted transition-colors hover:border-pulse/50 hover:text-cream"
+          className="rounded-lg border border-line px-2.5 py-1.5 text-xs text-muted transition-colors hover:border-accent/50 hover:text-body"
         >
           render it
         </button>
       </div>
 
-      <pre className="mt-4 overflow-x-auto rounded-xl border border-line bg-[#0c0a0c] p-4 font-mono text-[12px] leading-6 whitespace-pre-wrap text-cream/85">
+      <pre className="mt-4 overflow-x-auto rounded-xl border border-line bg-surface-2 p-4 font-mono text-[12px] leading-6 whitespace-pre-wrap text-body/85">
         {page.raw}
       </pre>
 
@@ -47,10 +47,10 @@ export function FileView({ page }: { page: Page }) {
           <div className="mt-4 space-y-3">
             {NON_HOSTED_FILES.map((file) => (
               <details key={file.path} className="rounded-xl border border-line bg-surface/60">
-                <summary className="cursor-pointer px-4 py-2.5 font-mono text-xs text-cream/80">
+                <summary className="cursor-pointer px-4 py-2.5 font-mono text-xs text-body/80">
                   {file.path} · {file.text.length} bytes
                 </summary>
-                <pre className="max-h-[26rem] overflow-auto border-t border-line-soft p-4 font-mono text-[12px] leading-6 text-wrap text-cream/80">
+                <pre className="max-h-[26rem] overflow-auto border-t border-line-soft p-4 font-mono text-[12px] leading-6 text-wrap text-body/80">
                   {file.text}
                 </pre>
               </details>
@@ -59,11 +59,11 @@ export function FileView({ page }: { page: Page }) {
 
           <p className="mt-6 text-sm text-muted">
             Back to{' '}
-            <Link to={`/${page.section}/${page.slug}`} className="text-pulse underline decoration-pulse/30 underline-offset-4">
+            <Link to={`/${page.section}/${page.slug}`} className="text-accent underline decoration-accent/30 underline-offset-4">
               the rendered version
             </Link>{' '}
             or{' '}
-            <Link to="/seeds" className="text-pulse underline decoration-pulse/30 underline-offset-4">
+            <Link to="/seeds" className="text-accent underline decoration-accent/30 underline-offset-4">
               the seed scale
             </Link>
             . Section: {sectionMeta(page.section).label}.

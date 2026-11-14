@@ -5,11 +5,11 @@ import {
   useEffect,
   useMemo,
   useState,
-  type ComponentProps,
   type ReactNode,
 } from 'react'
+import { motion } from 'motion/react'
 import { useLocation } from 'react-router-dom'
-import { BorderBeam, NumberTicker, Reveal } from 'fancy-ui-react'
+import { motionTokens } from '../components/silicon-ui/motion-tokens'
 import { PAGES } from './content'
 import { getSeed } from './seeds'
 
@@ -21,13 +21,18 @@ import { getSeed } from './seeds'
  * page they are reading is friction rather than delight. So the default motion
  * budget follows the rung —
  *
- *     rungs 0–1  still    no beams, no marquee, no counting numbers
- *     rungs 2–3  calm     reveals and tickers, no ambient loops
+ *     rungs 0–1  still    no reveals, no counting numbers
+ *     rungs 2–3  calm     reveals and counters, no ambient loops
  *     rung 4+    full     everything the design calls for
  *
  * — and the reader can override it in the header. The override is stored, because
  * a preference that resets on navigation is not a preference. Reduced-motion is
  * not an override: it wins, always.
+ *
+ * Silicon UI already honours `prefers-reduced-motion` inside its own components.
+ * This ladder is a second, product-level setting for readers who want less motion
+ * without telling their operating system about it; pages ask for the mode before
+ * they mount an animated component at all.
  */
 export type MotionMode = 'still' | 'calm' | 'full'
 
@@ -81,9 +86,7 @@ export function MotionProvider({ children }: { children: ReactNode }) {
     if (route === '/design') return 'full'
 
     // A page's budget comes from the seeds it belongs to, taking the lowest rung
-    // so a page shared by two audiences is safe for both. The old version only
-    // looked at /seeds/<id>, which gave the front door and the whole pitch the
-    // loudest budget — the reason the hero rainbow never muted.
+    // so a page shared by two audiences is safe for both.
     const seedId = route.startsWith('/seeds/') ? route.split('/')[2] : undefined
     const page = PAGES.find((candidate) => `/${candidate.path}` === route)
     const seedIds = seedId ? [seedId] : (page?.seeds ?? [])
@@ -125,14 +128,19 @@ export function useMotion(): MotionState {
   return state
 }
 
-/** A reveal that becomes a plain block when motion is off. */
+/**
+ * A block that fades up once, when it enters the viewport.
+ *
+ * Site-native rather than a library component: Silicon UI reveals type
+ * (`TextReveal`, `InViewTitle`), not arbitrary layout, and this site needs the
+ * wrapper. The timing comes from Silicon's motion tokens so it matches the
+ * components around it.
+ */
 export function MotionReveal({
-  preset = 'fade-up',
   delay = 0,
   className,
   children,
 }: {
-  preset?: ComponentProps<typeof Reveal>['preset']
   delay?: number
   className?: string
   children: ReactNode
@@ -140,22 +148,18 @@ export function MotionReveal({
   const { mode } = useMotion()
   if (mode === 'still') return <div className={className}>{children}</div>
   return (
-    <Reveal preset={preset} delay={delay} className={className}>
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '0px 0px -12% 0px' }}
+      transition={{
+        duration: motionTokens.duration.expressive,
+        ease: [0.16, 1, 0.3, 1],
+        delay: delay / 1000,
+      }}
+    >
       {children}
-    </Reveal>
+    </motion.div>
   )
-}
-
-/** A border beam that simply is not there when motion is off. */
-export function MotionBeam(props: ComponentProps<typeof BorderBeam>) {
-  const { mode } = useMotion()
-  if (mode === 'still') return null
-  return <BorderBeam {...props} />
-}
-
-/** A number that counts only when counting is welcome. */
-export function MotionTicker({ value, duration = 1100 }: { value: number; duration?: number }) {
-  const { mode } = useMotion()
-  if (mode === 'still') return <>{value}</>
-  return <NumberTicker value={value} duration={duration} />
 }

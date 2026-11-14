@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Reveal } from 'fancy-ui-react'
+import { Badge } from '../components/silicon-ui/badge/badge'
+import { MotionReveal } from '../lib/motion'
 import { SECTIONS, pagesIn, sectionMeta, type SectionId } from '../lib/content'
 import { lateralSeeds, scale } from '../lib/seeds'
 import { usePageMeta } from '../lib/usePageMeta'
@@ -19,15 +20,15 @@ export function SectionIndex({ section }: { section: SectionId }) {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
-      <p className="text-xs tracking-[0.18em] text-pulse uppercase">{meta.label}</p>
-      <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-cream sm:text-5xl">
+      <p className="text-xs tracking-[0.18em] text-accent uppercase">{meta.label}</p>
+      <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-body sm:text-5xl">
         {meta.blurb}
       </h1>
 
       {section === 'seeds' && (
         <div className="mt-10 overflow-x-auto rounded-2xl border border-line">
           <table className="w-full border-collapse text-left text-sm">
-            <thead className="bg-surface-2 text-cream">
+            <thead className="bg-surface-2 text-body">
               <tr>
                 <th className="border-b border-line px-4 py-3 font-semibold">Rung</th>
                 <th className="border-b border-line px-4 py-3 font-semibold">Readiness</th>
@@ -43,7 +44,7 @@ export function SectionIndex({ section }: { section: SectionId }) {
                     {step.level}
                   </td>
                   <td className="border-b border-line-soft px-4 py-3">
-                    <span className="text-cream">{step.label}</span>
+                    <span className="text-body">{step.label}</span>
                     <span className="mt-0.5 block text-xs text-muted">{step.touches}</span>
                   </td>
                   <td className="border-b border-line-soft px-4 py-3">
@@ -51,7 +52,7 @@ export function SectionIndex({ section }: { section: SectionId }) {
                       <Link
                         key={seed.id}
                         to={`/seeds/${seed.id}`}
-                        className="text-pulse underline decoration-pulse/30 underline-offset-4 hover:decoration-pulse"
+                        className="text-accent underline decoration-accent/30 underline-offset-4 hover:decoration-accent"
                       >
                         {seed.title}
                       </Link>
@@ -62,7 +63,7 @@ export function SectionIndex({ section }: { section: SectionId }) {
               <tr>
                 <td className="px-4 py-3 font-mono text-xs text-muted">—</td>
                 <td className="px-4 py-3">
-                  <span className="text-cream">Register</span>
+                  <span className="text-body">Register</span>
                   <span className="mt-0.5 block text-xs text-muted">
                     writes for any rung; the voice, not the ladder
                   </span>
@@ -72,7 +73,7 @@ export function SectionIndex({ section }: { section: SectionId }) {
                     <Link
                       key={seed.id}
                       to={`/seeds/${seed.id}`}
-                      className="text-pulse underline decoration-pulse/30 underline-offset-4 hover:decoration-pulse"
+                      className="text-accent underline decoration-accent/30 underline-offset-4 hover:decoration-accent"
                     >
                       {seed.title}
                     </Link>
@@ -92,9 +93,9 @@ export function SectionIndex({ section }: { section: SectionId }) {
       )}
 
       <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted">
-        <span className="rounded-full border border-line px-2.5 py-1">{pages.length} pages</span>
-        <span className="rounded-full border border-line px-2.5 py-1">Markdown in, site out</span>
-        <span className="rounded-full border border-line px-2.5 py-1">Order set in frontmatter</span>
+        <Badge size="sm">{pages.length} pages</Badge>
+        <Badge size="sm">Markdown in, site out</Badge>
+        <Badge size="sm">Order set in frontmatter</Badge>
       </div>
 
       <ul className="mt-12 divide-y divide-line-soft border-y border-line-soft">
@@ -108,7 +109,7 @@ export function SectionIndex({ section }: { section: SectionId }) {
                 {String(i + 1).padStart(2, '0')}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-lg font-medium text-cream group-hover:text-pulse">
+                <span className="block text-lg font-medium text-body group-hover:text-accent">
                   {page.title}
                 </span>
                 <span className="mt-1 block text-sm text-muted">{page.description}</span>
@@ -121,19 +122,19 @@ export function SectionIndex({ section }: { section: SectionId }) {
         ))}
       </ul>
 
-      <Reveal preset="fade" className="mt-12">
+      <MotionReveal className="mt-12">
         <p className="text-sm text-muted">
           Other sections:{' '}
           {SECTIONS.filter((s) => s.id !== section).map((s, i) => (
             <span key={s.id}>
               {i > 0 && ' · '}
-              <Link to={`/${s.id}`} className="text-cream hover:text-pulse">
+              <Link to={`/${s.id}`} className="text-body hover:text-accent">
                 {s.label}
               </Link>
             </span>
           ))}
         </p>
-      </Reveal>
+      </MotionReveal>
     </div>
   )
 }

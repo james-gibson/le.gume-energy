@@ -7,8 +7,8 @@ export function NotFound() {
 
   return (
     <div className="mx-auto w-full max-w-3xl px-5 py-24 sm:px-8">
-      <p className="font-mono text-xs tracking-[0.18em] text-pulse uppercase">404</p>
-      <h1 className="mt-3 text-3xl font-semibold tracking-tight text-cream sm:text-4xl">
+      <p className="font-mono text-xs tracking-[0.18em] text-accent uppercase">404</p>
+      <h1 className="mt-3 text-3xl font-semibold tracking-tight text-body sm:text-4xl">
         That one is not in the plot.
       </h1>
       <p className="mt-4 text-muted">
@@ -21,9 +21,9 @@ export function NotFound() {
           <li key={section.id}>
             <Link
               to={`/${section.id}`}
-              className="block rounded-xl border border-line p-4 transition-colors hover:border-pulse/40 hover:bg-surface"
+              className="block rounded-xl border border-line p-4 transition-colors hover:border-accent/40 hover:bg-surface"
             >
-              <span className="text-sm font-medium text-cream">{section.label}</span>
+              <span className="text-sm font-medium text-body">{section.label}</span>
               <span className="mt-1 block text-xs text-muted">{section.blurb}</span>
             </Link>
           </li>
@@ -31,7 +31,7 @@ export function NotFound() {
       </ul>
 
       <p className="mt-8 text-sm">
-        <Link to="/" className="text-pulse underline decoration-pulse/30 underline-offset-4">
+        <Link to="/" className="text-accent underline decoration-accent/30 underline-offset-4">
           Back to the start
         </Link>
       </p>

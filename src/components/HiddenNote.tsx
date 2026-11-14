@@ -18,13 +18,13 @@ export function HiddenNote({ title, children }: { title: string; children: React
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-label={open ? 'Hide a note' : 'Reveal a note'}
-        className="font-mono text-[11px] tracking-[0.2em] text-muted/50 uppercase hover:text-pulse"
+        className="font-mono text-[11px] tracking-[0.2em] text-muted/50 uppercase hover:text-accent"
       >
         {open ? '—' : '+'}
       </button>
       {open && (
-        <div className="mt-3 max-w-2xl border-l-2 border-pulse/50 pl-4 text-sm leading-6 text-muted">
-          <p className="font-mono text-[11px] tracking-[0.16em] text-pulse uppercase">{title}</p>
+        <div className="mt-3 max-w-2xl border-l-2 border-accent/50 pl-4 text-sm leading-6 text-muted">
+          <p className="font-mono text-[11px] tracking-[0.16em] text-accent uppercase">{title}</p>
           <div className="mt-1 space-y-2">{children}</div>
         </div>
       )}

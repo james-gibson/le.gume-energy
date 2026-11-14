@@ -1,6 +1,6 @@
 ---
 name: legume-content
-description: "Use when adding, editing, restructuring or shipping content on the le.gume site (james-gibson/le.gume-energy) — the self-documenting documentation project. Covers the one-file content model (src/content/<section>/<slug>.md), frontmatter fields, derived navigation and TOC, section rules, base-path-safe links, the publish guard's checks, the SSR route smoke test, GitHub Pages deploy, the house voice (dry, technical, legume idioms in copy without ever explaining the name), and the fancy-ui props rule (read the component page before writing props). Trigger on: le.gume, le-gume, add a page to the site, update the docs site, write a guide page, pitch page, writing page, content model, publish guard, site smoke test, deploy le.gume, restructure sections, self-documenting site."
+description: "Use when adding, editing, restructuring or shipping content on the le.gume site (james-gibson/le.gume-energy) — the self-documenting documentation project. Covers the one-file content model (src/content/<section>/<slug>.md), frontmatter fields, derived navigation and TOC, section rules, base-path-safe links, the publish guard's checks, the SSR route smoke test, GitHub Pages deploy, the house voice (dry, technical, legume idioms in copy without ever explaining the name), and the Silicon UI rule (components are vendored source under src/components/silicon-ui; read the component page before writing props). Trigger on: le.gume, le-gume, add a page to the site, update the docs site, write a guide page, pitch page, writing page, content model, publish guard, site smoke test, deploy le.gume, restructure sections, self-documenting site."
 ---
 
 # le.gume content
@@ -9,7 +9,7 @@ description: "Use when adding, editing, restructuring or shipping content on the
 Vite + Tailwind v4, content as Markdown, navigation derived from the file tree, one publish
 guard, GitHub Pages on push. The live site *is* the reference for its own design.
 
-Repo: `~/projects/personal/le.gume`. Live: https://james-gibson.github.io/le.gume-energy/
+Repo: `~/projects/personal/le.gume-energy`. Live: https://james-gibson.github.io/le.gume-energy/
 
 ## Contract
 
@@ -43,10 +43,13 @@ Repo: `~/projects/personal/le.gume`. Live: https://james-gibson.github.io/le.gum
 - **Do not add infrastructure the site argues against.** No search index, no CMS, no analytics —
   `pitch/spill-the-beans.md` documents those absences as choices. Adding one makes the pitch a
   lie.
-- **fancy-ui props are read, not remembered.** Before writing a component, fetch
-  `https://fancy-ui.rama.app/docs/components/react/<slug>.md` and use that table. `className`
-  only on components whose props list it; overlays need a `relative overflow-hidden` sized
-  parent; page-wide cursors mount once.
+- **Silicon UI components are vendored, and their props are read, not remembered.** The
+  source lives in `src/components/silicon-ui/<slug>/`, installed with
+  `npx shadcn@latest add @silicon-ui/<slug>` (or `@silicon-ui/silicon-foundation` for the
+  tokens). Before using one, fetch `https://ui.teamofsilicons.com/<slug>.md` and use that
+  props table. Colours and radii come from the foundation tokens; a Tailwind utility in
+  `src/index.css` is an alias for a token, never a second palette. Re-running the registry add
+  overwrites local edits — commit or diff first.
 
 ## Add a page
 

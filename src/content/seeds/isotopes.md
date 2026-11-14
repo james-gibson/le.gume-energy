@@ -8,10 +8,10 @@ tags: seed, isotopes
 
 # Isotopes
 
-The seed keeps two inherited systems on the shelf: a documentation site that ships itself, and a
-scheduled spell-check job. They are here because a child seed that invents a page type, a check or
-a component should package it the same way.
+The seed keeps two systems on the shelf: a documentation site that ships itself, and the recurring
+derivation that turns the published CSVs into the charts. They are here because a site that invents
+a page type, a check or a chart should package it the same way.
 
 - [What an isotope is](/isotopes/what-is-an-isotope)
 - [Silverskin](/isotopes/silverskin) — the site you are reading
-- [Cornichon](/isotopes/cornichon) — a recurring quality check with slots
+- [Cornichon](/isotopes/cornichon) — a chart drawn from a CSV at build time, with slots

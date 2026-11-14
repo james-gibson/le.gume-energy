@@ -5,10 +5,10 @@ import { PAGES, SECTIONS } from '../lib/content'
 export function SiteFooter() {
   return (
     <footer className="mt-20 border-t border-line/80 bg-surface/40">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-12 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-12 sm:px-8 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]">
         <div>
-          <p className="text-sm font-semibold text-cream">
-            le<span className="text-pulse">.</span>gume
+          <p className="text-sm font-semibold text-body">
+            le<span className="text-accent">.</span>gume
           </p>
           <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
             A public, non-identifying record of a home solar system: production,
@@ -27,7 +27,7 @@ export function SiteFooter() {
                   <li key={page.path}>
                     <Link
                       to={`/${page.section}/${page.slug}`}
-                      className="text-sm text-muted transition-colors hover:text-cream"
+                      className="text-sm text-muted transition-colors hover:text-body"
                     >
                       {page.title}
                     </Link>
@@ -47,12 +47,12 @@ export function SiteFooter() {
         <p>
           Built with React, Vite and Tailwind. Motion by{' '}
           <a
-            href="https://fancy-ui.rama.app"
+            href="https://ui.teamofsilicons.com"
             target="_blank"
             rel="noreferrer noopener"
-            className="text-muted underline decoration-line underline-offset-4 hover:text-cream"
+            className="text-muted underline decoration-line underline-offset-4 hover:text-body"
           >
-            fancy-ui
+            Silicon UI
           </a>
           .
         </p>
@@ -61,12 +61,12 @@ export function SiteFooter() {
             href="https://github.com/james-gibson/le.gume-energy"
             target="_blank"
             rel="noreferrer noopener"
-            className="hover:text-cream"
+            className="hover:text-body"
           >
             james-gibson/le.gume-energy
           </a>{' '}
           · AGPL-3.0 ·{' '}
-          <Link to="/design#handoff" className="hover:text-cream">
+          <Link to="/design#handoff" className="hover:text-body">
             take it with you
           </Link>
         </p>

@@ -65,7 +65,7 @@ function Timeline() {
           r={2.6}
           fill="currentColor"
           opacity={0.85}
-          className={keyframe.tags.includes('analysis-event') ? 'text-violet' : 'text-pulse'}
+          className={keyframe.tags.includes('analysis-event') ? 'text-secondary' : 'text-accent'}
         >
           <title>{`${day(keyframe.timestamp)} · ${keyframe.id}`}</title>
         </circle>
@@ -97,18 +97,18 @@ export function Universes() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
-      <p className="text-xs tracking-[0.18em] text-pulse uppercase">Local-time universe</p>
-      <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-cream sm:text-5xl">
+      <p className="text-xs tracking-[0.18em] text-accent uppercase">Local-time universe</p>
+      <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-body sm:text-5xl">
         The record on a timeline.
       </h1>
       <p className="mt-5 max-w-2xl text-lg leading-8 text-muted">
-        The CSVs also ship as a <code className="font-mono text-cream">Universe</code>: yearly
+        The CSVs also ship as a <code className="font-mono text-body">Universe</code>: yearly
         segments and every analysis event as a keyframe, generated from the published files. The
         module is structural local-time — no runtime dependency, and the JSON is the same data.
       </p>
 
       <div className="mt-6 flex flex-wrap items-center gap-2 text-xs">
-        <span className="rounded-full border border-line px-2.5 py-1 font-mono text-muted">
+        <span className="max-w-full rounded-full border border-line px-2.5 py-1 font-mono break-all text-muted">
           {universe.universeId}
         </span>
         <span className="rounded-full border border-line px-2.5 py-1 text-muted">
@@ -122,9 +122,9 @@ export function Universes() {
         </span>
       </div>
 
-      <figure className="mt-8 rounded-2xl border border-line bg-surface p-5 text-pulse sm:p-6">
+      <figure className="mt-8 rounded-2xl border border-line bg-surface p-5 text-accent sm:p-6">
         <figcaption>
-          <h2 className="text-lg font-semibold tracking-tight text-cream">Timeline</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-body">Timeline</h2>
           <p className="mt-1 text-sm text-muted">
             Yearly segments are bars; the line above carries every keyframe. Violet dots are
             analysis events, pink dots are record milestones.
@@ -135,9 +135,9 @@ export function Universes() {
         </div>
       </figure>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <section className="rounded-2xl border border-line bg-surface p-5 sm:p-6">
-          <h2 className="text-lg font-semibold tracking-tight text-cream">Segments</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-body">Segments</h2>
           <table className="mt-4 w-full border-collapse text-left text-sm">
             <thead className="text-xs tracking-[0.12em] text-muted uppercase">
               <tr>
@@ -152,8 +152,8 @@ export function Universes() {
                   <td className="border-b border-line-soft py-2 font-mono text-xs text-muted">
                     {segment.id.replace('year-', '')}
                   </td>
-                  <td className="border-b border-line-soft py-2 text-cream">{day(segment.start)}</td>
-                  <td className="border-b border-line-soft py-2 text-cream">{day(segment.end)}</td>
+                  <td className="border-b border-line-soft py-2 text-body">{day(segment.start)}</td>
+                  <td className="border-b border-line-soft py-2 text-body">{day(segment.end)}</td>
                 </tr>
               ))}
             </tbody>
@@ -165,25 +165,25 @@ export function Universes() {
         </section>
 
         <section className="rounded-2xl border border-line bg-surface p-5 sm:p-6">
-          <h2 className="text-lg font-semibold tracking-tight text-cream">Metadata</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-body">Metadata</h2>
           <dl className="mt-4 space-y-3 text-sm">
             <div>
               <dt className="text-xs tracking-[0.12em] text-muted uppercase">Canonical name</dt>
-              <dd className="mt-1 text-cream">{universe.metadata.canonicalName}</dd>
+              <dd className="mt-1 text-body">{universe.metadata.canonicalName}</dd>
             </div>
             <div>
               <dt className="text-xs tracking-[0.12em] text-muted uppercase">Granularity</dt>
-              <dd className="mt-1 text-cream">{String(meta.granularity ?? '')}</dd>
+              <dd className="mt-1 text-body">{String(meta.granularity ?? '')}</dd>
             </div>
             <div>
               <dt className="text-xs tracking-[0.12em] text-muted uppercase">Files</dt>
-              <dd className="mt-1 text-cream">
+              <dd className="mt-1 text-body">
                 {Array.isArray(meta.files) ? meta.files.length : 0} published files
               </dd>
             </div>
             <div>
               <dt className="text-xs tracking-[0.12em] text-muted uppercase">Usage</dt>
-              <dd className="mt-1 text-cream">
+              <dd className="mt-1 text-body">
                 {universe.attribution.usage_restrictions.join(', ')}
               </dd>
             </div>
@@ -192,14 +192,14 @@ export function Universes() {
             Download the JSON form:{' '}
             <a
               href={`${DATA}/universes/energy.json`}
-              className="text-pulse underline decoration-pulse/30 underline-offset-4"
+              className="text-accent underline decoration-accent/30 underline-offset-4"
             >
               energy.json
             </a>{' '}
             ·{' '}
             <a
               href={`${DATA}/universes/index.json`}
-              className="text-pulse underline decoration-pulse/30 underline-offset-4"
+              className="text-accent underline decoration-accent/30 underline-offset-4"
             >
               index.json
             </a>
@@ -208,7 +208,7 @@ export function Universes() {
       </div>
 
       <section className="mt-8 rounded-2xl border border-line bg-surface p-5 sm:p-6">
-        <h2 className="text-lg font-semibold tracking-tight text-cream">Keyframes</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-body">Keyframes</h2>
         <p className="mt-1 text-sm text-muted">
           Every analysis event, plus the record start and end, the best production day and the
           utility window. Timestamps are the day at noon UTC with <code>DAY</code> precision.
@@ -230,7 +230,7 @@ export function Universes() {
                   <td className="whitespace-nowrap border-t border-line-soft px-3 py-2 font-mono text-xs text-muted">
                     {day(keyframe.timestamp)}
                   </td>
-                  <td className="border-t border-line-soft px-3 py-2 font-mono text-xs text-cream">
+                  <td className="border-t border-line-soft px-3 py-2 font-mono text-xs text-body">
                     {keyframe.id}
                   </td>
                   <td className="border-t border-line-soft px-3 py-2 text-right font-mono text-xs text-muted">
@@ -250,8 +250,8 @@ export function Universes() {
       </section>
 
       <section className="mt-8 rounded-2xl border border-line bg-surface p-5 sm:p-6">
-        <h2 className="text-lg font-semibold tracking-tight text-cream">Use it</h2>
-        <pre className="mt-3 overflow-x-auto rounded-xl border border-line-soft bg-[#0c0a0c] p-4 font-mono text-[13px] leading-6 text-cream/90">
+        <h2 className="text-lg font-semibold tracking-tight text-body">Use it</h2>
+        <pre className="mt-3 overflow-x-auto rounded-xl border border-line-soft bg-surface-2 p-4 font-mono text-[13px] leading-6 text-body/90">
           <code>{`import { energyRecordUniverse } from './src/universes/energy'
 
 energyRecordUniverse.temporalStructure.keyframes
@@ -260,7 +260,7 @@ energyRecordUniverse.temporalStructure.keyframes
         </pre>
         <p className="mt-3 text-sm text-muted">
           The shape and the regeneration rule are in{' '}
-          <Link to="/docs/universes" className="text-pulse underline decoration-pulse/30 underline-offset-4">
+          <Link to="/docs/universes" className="text-accent underline decoration-accent/30 underline-offset-4">
             the universe guide
           </Link>
           . The timestamp of a keyframe is a <code>bigint</code> in nanoseconds, and the day at

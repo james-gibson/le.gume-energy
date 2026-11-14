@@ -19,7 +19,7 @@ export function SeedPanel({ seedId }: { seedId: string }) {
   return (
     <div className="mt-8 space-y-6">
       <div className="rounded-2xl border border-line bg-surface p-5">
-        <p className="text-xs tracking-[0.14em] text-pulse uppercase">
+        <p className="text-xs tracking-[0.14em] text-accent uppercase">
           {seed.lateral || seed.rung === undefined
             ? 'Lateral · any rung'
             : `Rung ${seed.rung} · ${SCALE[seed.rung].label}`}
@@ -30,17 +30,17 @@ export function SeedPanel({ seedId }: { seedId: string }) {
       <div className="grid gap-4 rounded-2xl border border-line bg-surface p-5 sm:grid-cols-3">
         <div>
           <p className="text-xs tracking-[0.14em] text-muted uppercase">Audience</p>
-          <p className="mt-1 text-sm leading-6 text-cream">{seed.audience}</p>
+          <p className="mt-1 text-sm leading-6 text-body">{seed.audience}</p>
         </div>
         <div>
           <p className="text-xs tracking-[0.14em] text-muted uppercase">Assumes</p>
-          <p className="mt-1 text-sm leading-6 text-cream">{seed.assumes}</p>
+          <p className="mt-1 text-sm leading-6 text-body">{seed.assumes}</p>
         </div>
         <div>
           <p className="text-xs tracking-[0.14em] text-muted uppercase">Entrance</p>
           <Link
             to={seed.entry}
-            className="mt-1 block font-mono text-sm text-pulse underline decoration-pulse/30 underline-offset-4 hover:decoration-pulse"
+            className="mt-1 block font-mono text-sm text-accent underline decoration-accent/30 underline-offset-4 hover:decoration-accent"
           >
             {seed.entry}
           </Link>
@@ -54,7 +54,7 @@ export function SeedPanel({ seedId }: { seedId: string }) {
         <ul className="mt-2 space-y-1 text-sm text-muted">
           {seed.teaches.map((claim) => (
             <li key={claim} className="flex gap-2">
-              <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-pulse" />
+              <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent" />
               {claim}
             </li>
           ))}
@@ -77,7 +77,7 @@ export function SeedPanel({ seedId }: { seedId: string }) {
             One document, not a collection:{' '}
             <a
               href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}${seed.entry}`}
-              className="text-pulse underline decoration-pulse/30 underline-offset-4"
+              className="text-accent underline decoration-accent/30 underline-offset-4"
             >
               open {seed.entry}
             </a>
@@ -94,7 +94,7 @@ export function SeedPanel({ seedId }: { seedId: string }) {
                   <span className="font-mono text-[11px] text-muted/60">
                     {sectionMeta(page.section).label}
                   </span>
-                  <span className="text-sm text-cream">{page.title}</span>
+                  <span className="text-sm text-body">{page.title}</span>
                 </Link>
               </li>
             ))}

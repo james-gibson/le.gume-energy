@@ -9,7 +9,7 @@
  *
  * A shortcut is the isotope's address plus whatever slots are already bound:
  *
- *   https://james-gibson.github.io/le.gume-energy/isotopes/cornichon/?every=weekly
+ *   https://james-gibson.github.io/le.gume-energy/isotopes/cornichon/?window=monthly
  *
  * The empty values are the questions the agent asks. No resolver service: the
  * URL is the address, the page is the expansion.
@@ -45,14 +45,14 @@ export const ISOTOPES: Isotope[] = [
   },
   {
     name: 'cornichon',
-    title: 'Cornichon — spell-check a repository on a schedule',
-    summary: 'A recurring GitHub Actions job that fails loudly on typos, with a project dictionary.',
+    title: 'Cornichon — a chart that is a file, not a library',
+    summary: 'A build-time summary derived from the published CSV, rendered as SVG with no chart runtime.',
     slots: [
-      { name: 'repo', question: 'Which repository should the job run against?', example: 'acme/api' },
-      { name: 'dict', question: 'Which dictionary should carry your domain words?', example: 'acme-terms' },
-      { name: 'every', question: 'How often should it run?', example: 'weekly' },
+      { name: 'data', question: 'Which published file should the summary read?', example: 'solar-production-daily.csv' },
+      { name: 'metric', question: 'Which column should become the picture?', example: 'residual' },
+      { name: 'window', question: 'Which range should it cover?', example: 'monthly' },
     ],
-    presumes: ['github-actions', 'node-22', 'cspell-8', 'issues-write'],
+    presumes: ['node-22', 'csv', 'svg', 'no-chart-library'],
   },
 ]
 

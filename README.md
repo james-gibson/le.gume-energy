@@ -45,7 +45,7 @@ rather than hiding it.
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Vite dev server |
-| `npm run build` | `tsc --noEmit`, Vite build, route shells, `llms.txt`, publish guard |
+| `npm run build` | Regenerate the universe and chart summaries, `tsc --noEmit`, Vite build, prerender, `llms.txt`, publish guard |
 | `npm run smoke` | Renders every route to a string; fails on a render error |
 | `npm run guard` | The guard alone, against an existing `dist/` |
 | `npm run preview` | Serve the production build locally |

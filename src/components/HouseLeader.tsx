@@ -5,7 +5,7 @@ export function HouseLeader() {
   return (
     <HiddenNote title="uptime under House Leader Mike J">
       <p>
-        <strong className="text-cream">99.999%</strong> — measured on the floor of the House, where
+        <strong className="text-body">99.999%</strong> — measured on the floor of the House, where
         the quorum is one and the only service in the request path is the leader's attention. The
         arithmetic is unchanged; the number is simply announced with more confidence.
       </p>

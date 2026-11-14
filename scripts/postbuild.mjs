@@ -261,7 +261,7 @@ const lines = [
   '',
   `Live: ${SITE}/`,
   'Repo: https://github.com/james-gibson/le.gume-energy',
-  'Stack: React 19, Vite, Tailwind CSS v4, fancy-ui (motion). Static output, no runtime services.',
+  'Stack: React 19, Vite, Tailwind CSS v4, Silicon UI (vendored source). Static output, no runtime services.',
   'Source of truth: src/content/<section>/<slug>.md — the file path is the URL.',
   '',
   '## Build and verify',

@@ -12,7 +12,7 @@ Live: https://james-gibson.github.io/le.gume-energy/ · Repo: `james-gibson/le.g
 
 ```bash
 npm run dev      # vite
-npm run build    # tsc, vite, prerender, postbuild, guard   <- what CI runs
+npm run build    # universes, charts, tsc, vite, prerender, postbuild, guard   <- CI
 npm run smoke    # render every route (and the 404) to a string
 npm run guard    # guard alone, against an existing dist/
 npm run charts   # rebuild src/data/charts.json from public/data
@@ -44,6 +44,15 @@ check to make a build pass; fix the output.
 - `/charts` is a live route rendered from `src/data/charts.json`; `npm run charts` regenerates it from `public/data/`.
 - `/universes` renders `src/universes/energy.ts`; `npm run universes` regenerates it and `public/data/universes/*.json` from the CSVs. The module mirrors local-time's `Universe`; do not add a dependency on the private repo.
 - Change a field only with the privacy record in the same commit.
+
+## Design
+
+Components are Silicon UI, installed with the shadcn CLI and vendored as source under
+`src/components/silicon-ui/`. Read the component's page (`https://ui.teamofsilicons.com/<slug>.md`)
+before using a prop; re-running `npx shadcn@latest add @silicon-ui/<slug>` overwrites the local copy.
+Colours, radii and spacing are foundation tokens (`src/components/silicon-ui/foundation.css`); the
+utilities in `src/index.css` alias them, so there is no second palette. `/design` is the live
+catalogue — keep it in step with what the site actually uses.
 
 ## Privacy
 

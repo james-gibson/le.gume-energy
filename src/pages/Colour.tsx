@@ -12,10 +12,10 @@ const byName = new Map(tokens.map((token) => [token.name, token]))
 const hexOf = (name: string) => byName.get(name)?.hex ?? '#000000'
 
 const gradeClass: Record<string, string> = {
-  AAA: 'text-violet',
-  AA: 'text-cream',
+  AAA: 'text-secondary',
+  AA: 'text-body',
   'AA large': 'text-muted',
-  fail: 'text-pulse',
+  fail: 'text-accent',
 }
 
 /**
@@ -32,8 +32,8 @@ export function Colour() {
 
   return (
     <div className="mx-auto w-full max-w-5xl px-5 py-14 sm:px-8 sm:py-20">
-      <p className="text-xs tracking-[0.18em] text-pulse uppercase">Colour</p>
-      <h1 className="mt-3 text-4xl font-semibold tracking-tight text-cream sm:text-5xl">
+      <p className="text-xs tracking-[0.18em] text-accent uppercase">Colour</p>
+      <h1 className="mt-3 text-4xl font-semibold tracking-tight text-body sm:text-5xl">
         Every shade, one page.
       </h1>
       <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
@@ -51,7 +51,7 @@ export function Colour() {
                 className="block h-12 w-full rounded-lg border border-line-soft"
                 style={{ backgroundColor: token.hex }}
               />
-              <p className="mt-2 font-mono text-xs text-cream">{token.name}</p>
+              <p className="mt-2 font-mono text-xs text-body">{token.name}</p>
               <p className="font-mono text-[11px] text-muted">{token.hex}</p>
               <p className="mt-1 text-[11px] leading-4 text-muted/80">{token.role}</p>
             </li>
@@ -82,7 +82,7 @@ export function Colour() {
             <tbody>
               {tokens.map((fg) => (
                 <tr key={fg.name} className="border-t border-line-soft">
-                  <th scope="row" className="px-3 py-1.5 font-mono text-[11px] font-normal text-cream">
+                  <th scope="row" className="px-3 py-1.5 font-mono text-[11px] font-normal text-body">
                     {fg.name}
                   </th>
                   {tokens.map((bg) => {
@@ -115,7 +115,7 @@ export function Colour() {
         <h2 className="text-xs tracking-[0.18em] text-muted uppercase">Declared pairs</h2>
         <p className="mt-2 max-w-2xl text-sm text-muted">
           These are the combinations the site actually paints, each with the minimum it must clear.
-          <code className="mx-1 rounded border border-line bg-surface-2 px-1.5 py-0.5 font-mono text-[0.85em] text-pulse">
+          <code className="mx-1 rounded border border-line bg-surface-2 px-1.5 py-0.5 font-mono text-[0.85em] text-accent">
             npm run contrast
           </code>
           fails the build when one drops below its floor.
@@ -130,12 +130,12 @@ export function Colour() {
                 key={`${pair.fg}-${pair.bg}`}
                 className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2.5 text-sm"
               >
-                <span className="font-mono text-xs text-cream">
+                <span className="font-mono text-xs text-body">
                   {pair.fg} on {pair.bg}
                 </span>
                 <span className="font-mono text-xs text-muted">{ratio.toFixed(1)}:1</span>
                 <span className="font-mono text-[11px] text-muted/70">min {pair.min}</span>
-                <span className={`font-mono text-[11px] ${passes ? 'text-violet' : 'text-pulse'}`}>
+                <span className={`font-mono text-[11px] ${passes ? 'text-secondary' : 'text-accent'}`}>
                   {passes ? mark : 'BELOW FLOOR'}
                 </span>
                 <span className="ml-auto text-xs text-muted/70">{pair.note}</span>
@@ -155,21 +155,21 @@ export function Colour() {
           {[
             {
               label: 'accent sweep',
-              style: { backgroundImage: 'linear-gradient(90deg, #ff2d95, #ffc2dd)' },
-              fg: '#0b0a0b',
-              stops: ['#ff2d95', '#ffc2dd'],
+              style: { backgroundImage: 'linear-gradient(90deg, #4b4b4b, #6b6b6b)' },
+              fg: '#ffffff',
+              stops: ['#4b4b4b', '#6b6b6b'],
             },
             {
               label: 'code block',
-              style: { backgroundColor: '#0c0a0c' },
-              fg: '#d9d3c6',
-              stops: ['#0c0a0c', '#0c0a0c'],
+              style: { backgroundColor: '#f7f7f7' },
+              fg: '#1d1d1d',
+              stops: ['#f7f7f7', '#f7f7f7'],
             },
             {
               label: 'surface wash',
-              style: { backgroundImage: 'linear-gradient(180deg, #121013, #191619)' },
-              fg: '#d9d3c6',
-              stops: ['#121013', '#191619'],
+              style: { backgroundImage: 'linear-gradient(180deg, #ffffff, #f7f7f7)' },
+              fg: '#1d1d1d',
+              stops: ['#ffffff', '#f7f7f7'],
             },
           ].map((sample) => {
             const worst = Math.min(...sample.stops.map((stop) => contrast(sample.fg, stop)))
@@ -191,8 +191,8 @@ export function Colour() {
       </section>
 
       <p className="mt-12 text-sm text-muted">
-        The components and their props are on <Link className="text-pulse underline decoration-pulse/30 underline-offset-4" to="/design">/design</Link>;
-        the decision behind this palette is <a className="text-pulse underline decoration-pulse/30 underline-offset-4" href="/docs/palette">Ivory, dimmed</a>.
+        The components and their props are on <Link className="text-accent underline decoration-accent/30 underline-offset-4" to="/design">/design</Link>;
+        the decision behind this palette is <a className="text-accent underline decoration-accent/30 underline-offset-4" href="/docs/palette">Ivory, dimmed</a>.
       </p>
     </div>
   )

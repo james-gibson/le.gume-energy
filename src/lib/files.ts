@@ -8,7 +8,7 @@
 import readme from '../../README.md?raw'
 import agents from '../../AGENTS.md?raw'
 import license from '../../LICENSE?raw'
-import spellWorkflow from '../../examples/cornichon/spell.yml?raw'
+import chartScript from '../../scripts/chart-data.mjs?raw'
 
 export type SourceFile = { path: string; text: string }
 
@@ -16,5 +16,5 @@ export const NON_HOSTED_FILES: SourceFile[] = [
   { path: 'README.md', text: readme },
   { path: 'AGENTS.md', text: agents },
   { path: 'LICENSE', text: license },
-  { path: 'examples/cornichon/spell.yml', text: spellWorkflow },
+  { path: 'scripts/chart-data.mjs', text: chartScript },
 ]

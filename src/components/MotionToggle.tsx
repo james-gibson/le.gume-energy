@@ -1,40 +1,42 @@
-import { ToggleGroup, ToggleGroupItem } from 'fancy-ui-react'
+import SegmentedControl from '../components/silicon-ui/segmented-control/segmented-control'
 import { useMotion, type MotionMode } from '../lib/motion'
 
-const OPTIONS: { value: MotionMode; label: string; title: string }[] = [
-  { value: 'still', label: 'Still', title: 'No ambient motion — the ladder’s rung 0–1 default' },
-  { value: 'calm', label: 'Calm', title: 'Reveals and counting numbers, no loops — rung 2–3' },
-  { value: 'full', label: 'Full', title: 'Everything the design calls for — rung 4' },
+const OPTIONS: { value: MotionMode; label: string }[] = [
+  { value: 'still', label: 'Still' },
+  { value: 'calm', label: 'Calm' },
+  { value: 'full', label: 'Full' },
 ]
 
 /**
  * The reader's side of the ladder: a stored motion preference, defaulting to the
- * current seed's rung. fancy-ui's own ToggleGroup, because a control for the
- * design system should be part of the design system.
+ * current seed's rung. Silicon UI's own segmented control, because a control for
+ * the design system should be part of the design system.
+ *
+ * The control has no disabled state: with the OS asking for reduced motion there
+ * is nothing to choose, so it is replaced by the sentence that says so.
  */
 export function MotionToggle() {
   const { mode, auto, setMode, reduced } = useMotion()
 
+  if (reduced) {
+    return (
+      <span className="font-mono text-[10px] text-muted/70" aria-live="polite">
+        os: reduced motion
+      </span>
+    )
+  }
+
   return (
     <div className="flex items-center gap-2">
-      <ToggleGroup
-        type="single"
-        value={mode}
-        onValueChange={(next) => {
-          if (typeof next === 'string' && next) setMode(next as MotionMode)
-        }}
-        size="sm"
+      <SegmentedControl
         label="Motion preference"
-        disabled={reduced}
-      >
-        {OPTIONS.map((option) => (
-          <ToggleGroupItem key={option.value} value={option.value} label={option.title}>
-            {option.label}
-          </ToggleGroupItem>
-        ))}
-      </ToggleGroup>
-      <span className="hidden font-mono text-[10px] text-muted/60 xl:inline" aria-live="polite">
-        {reduced ? 'os: reduced' : `ladder: ${auto}`}
+        size="xs"
+        value={mode}
+        onValueChange={(next) => setMode(next as MotionMode)}
+        options={OPTIONS}
+      />
+      <span className="hidden font-mono text-[10px] text-muted/60 2xl:inline" aria-live="polite">
+        ladder: {auto}
       </span>
     </div>
   )

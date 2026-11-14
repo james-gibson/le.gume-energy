@@ -1,194 +1,151 @@
 ---
-title: Cornichon — spell-check a repository on a schedule
-description: Three files that compose into a recurring job, a worked example of slots, and why the baseline is the interesting part.
+title: Cornichon — a chart that is a file, not a library
+description: A committed summary derived from the published CSVs, and an SVG drawn at build time, so the page has no chart runtime and no second copy of the numbers.
 order: 3
-updated: 2026-11-12
-slots: repo, dict, every
-presumes: github-actions, node-22, cspell-8, issues-write
-tags: isotope, ci, cspell
+updated: 2026-11-13
+slots: data, metric, window
+presumes: node-22, csv, svg, no-chart-library
+tags: isotope, charts, build
 seeds: isotopes, agent-operations
 ---
 
-# Cornichon — spell-check a repository on a schedule
+# Cornichon — a chart that is a file, not a library
 
-A repository accumulates typos the way a kitchen accumulates crumbs: nobody adds one on purpose,
-and after a month the prose looks careless. Checking on every pull request catches them at the
-source, but it also slows every push and blocks work on words nobody agreed on yet.
+This page is called **cornichon** — a small gherkin, picked often. A recurring job that turns one
+published table into one picture, at build time, and leaves the picture as text you can read in a
+diff.
 
-This isotope is the smaller, cheaper version: a **scheduled job** that checks the whole tree, says
-what changed, and stays out of everyone's way until there is something to say.
-
-The kit is in the repository at
-[`examples/cornichon/`](https://github.com/james-gibson/le.gume-energy/tree/main/examples/cornichon) —
-three files, copy-paste install, nothing to compile.
+It is the isotope this site runs: `npm run charts` regenerates `src/data/charts.json`, and the build
+runs it before Vite ever sees the route.
 
 ## What it proves
 
-A recurring quality check can be complete without being a gate: no blocked pull requests, no
-per-push latency, and one place that asks "has our prose drifted?"
+A chart does not need a runtime. If the data is already a file in the repository, the chart can be:
 
-It also proves the compound shape — this is the isotope with **slots** (repository, dictionary,
-cadence), and it is the reason a QR code can carry an instruction this long in 83 bytes.
+1. a **derivation** — a small script that reads the published CSV and writes a committed summary;
+2. a **summary** — JSON small enough to bundle, with the source file named inside it;
+3. a **renderer** — a React route that draws SVG from the summary with `currentColor`.
+
+The result is a chart that works with JavaScript off, survives a hard reload, and cannot describe a
+different export than the one on disk.
 
 ## The parts
 
-Three pieces combine. None of them is optional, and each one is small enough to read in a sitting.
-
-| Piece | File | What it decides |
+| Part | File | What it does |
 | --- | --- | --- |
-| The clock | `spell.yml` → `on.schedule` | when it runs (`every` slot) |
-| The dictionary | `cspell.json` | what counts as a word (`dict` slot) |
-| The recurrence logic | `spell.yml` → baseline diff + issue upsert | what is worth telling anyone |
-| The report | job summary + one issue | where a person already looks |
+| Derivation | `scripts/chart-data.mjs` | Reads four published CSVs, writes `src/data/charts.json` |
+| Summary | `src/data/charts.json` | Months, clear-day residuals, one day's curve, self-consumption |
+| Renderer | `src/pages/Charts.tsx` | SVG from the summary; no chart library, no fetch |
+| Hook | `npm run charts`, and `npm run build` | Regenerates before the build, so a stale summary never ships |
+| Contract | `src/content/docs/charts.md` | States the method and the limit next to the picture |
 
-The `repo` slot is answered by where the files land.
+## The shape
 
-## How they combine
+The derivation is a handful of `filter`/`map` calls over `parseCsv`, and a `generated_from` block
+that names every input:
 
-```text
-schedule (cron)
-   └─▶ cspell over **/*.md …          "what does the dictionary not know?"
-        └─▶ diff against the baseline  "what is new since we last accepted?"
-             ├─ empty  → summary says "nothing new", no issue
-             └─ words  → summary + one issue, updated not duplicated
-```
+```js
+const daily = await read('solar-production-daily.csv')
+const clear = daily
+  .filter((row) => row.clear_day === '1' && row.residual !== '')
+  .map((row) => ({ d: row.date_local, r: round(row.residual, 4) }))
 
-The clock decides *when*, the dictionary decides *what*, and the diff decides *whether anyone is
-told*. That third piece is the one most spell-check jobs omit, and it is why they get muted.
-
-## The clock
-
-```yaml
-on:
-  schedule:
-    - cron: '17 6 * * 1' # Mondays 06:17 UTC
-  workflow_dispatch:      # run it by hand while setting it up
-
-concurrency:
-  group: spell
-  cancel-in-progress: false
-```
-
-Two details worth keeping: an off-the-hour minute (the top of the hour is congested on hosted
-runners), and `concurrency` so a slow run cannot overlap the next one and report the same words
-twice.
-
-## The dictionary
-
-```json
-{
-  "version": "0.2",
-  "language": "en",
-  "files": ["**/*.md", "**/*.ts", "**/*.tsx"],
-  "ignorePaths": ["node_modules/**", "dist/**", "package-lock.json"],
-  "allowCompoundWords": true,
-  "words": ["cspell", "cornichon", "silverskin", "gherkin"]
+const payload = {
+  generated_from: {
+    daily: 'public/data/solar-production-daily.csv',
+    /* …three more… */
+  },
+  summary,
+  monthly,
+  residuals: clear,
 }
 ```
 
-`words` is the project's vocabulary: domain nouns, product names, the surname of everyone who
-wrote a comment. Keep it curated and reviewed like code — this file is the difference between a
-useful report and forty false alarms.
+`generated_from` is the part people skip. A summary without its sources is a rumour with a
+timestamp; with them, a reader can regenerate it and a reviewer can diff it.
 
-## The recurrence logic
+The renderer is plain SVG, coloured by the page:
 
-```bash
-# 1. one word per line, stdout only; a non-zero exit is normal (findings are the output)
-npx cspell@8 '**/*.md' '**/*.ts' --no-progress --words-only --unique --no-summary > found.txt || true
-sort -u -o found.txt found.txt
-
-# 2. the baseline is accepted debt; only the difference is news
-comm -23 found.txt <(sort -u spell-baseline.txt) > new.txt
+```jsx
+<rect x={x} y={y} width={bar} height={height} fill="currentColor" opacity={0.85}>
+  <title>{`${row.m}: ${row.kwh.toFixed(1)} kWh`}</title>
+</rect>
 ```
 
-Then one issue, not one per run:
+`currentColor` is not decoration. It lets the chart inherit the site's palette instead of shipping a
+second colour system that drifts the first time the theme changes.
 
-```bash
-if [ -s new.txt ]; then
-  existing=$(gh issue list --state open --search '"Scheduled spell check: new words" in:title' \
-             --json number --jq '.[0].number // empty')
-  if [ -n "$existing" ]; then gh issue comment "$existing" --body "$body"
-  else gh issue create --title 'Scheduled spell check: new words' --body "$body"; fi
-fi
-```
+## Why a summary, and not the CSV
 
-The baseline is the whole trick. A repository's unknown words are mostly legitimate — package
-names, protocols, surnames — and reporting all of them weekly is how the report becomes noise. The
-baseline records what was tolerated; the job reports only what appeared since. Each new line is
-then a decision someone can make in ten seconds.
+The full series is 61,015 interval rows and eleven files. Bundling them to draw forty bars would
+cost more than the rest of the site. The summary is the smallest thing that answers the questions the
+charts ask — and it is committed, so the diff shows the data moving.
 
-Verified behaviour, rehearsed end to end: empty baseline → the current findings; accept them →
-zero; introduce `flurb` → exactly `flurb`. That is the entire mechanism.
+The limit is written on the page: the summary is a fixed set of views. A question outside the set
+needs a new field in the script, not a filter in the browser.
 
 ## The slots
 
 | Slot | Question | Example |
 | --- | --- | --- |
-| `repo` | Which repository should the job run against? | `acme/api` |
-| `dict` | Which dictionary should carry your domain words? | `acme-terms` |
-| `every` | How often should it run? | `weekly` |
+| `data` | Which published file should the summary read? | `solar-production-daily.csv` |
+| `metric` | Which column should become the picture? | `residual` |
+| `window` | Which range should it cover? | `monthly` |
 
-A shortcut can bind some of them. `…?every=weekly` means "weekly, ask me the other two".
+A shortcut can bind some of them. `…?window=monthly` means "monthly, ask me the other two".
 
 ## Agent prompt
 
 ```text
-You are implementing le.gume isotope cornichon (spell-check a repository on a schedule).
+You are implementing le.gume isotope cornichon (draw a chart from a published table at build time).
 
-Bound slots: every=weekly
+Bound slots: window=monthly
 Ask for any slot that is not bound above, one question at a time:
-  repo  — which repository should the job run against?
-  dict  — which dictionary file should carry the project's domain words?
+  data   — which published CSV should the summary read?
+  metric — which column of it should become the picture?
 Then:
-1. Copy examples/cornichon/spell.yml from james-gibson/le.gume-energy into .github/workflows/spell.yml,
-   and set the cron to `every`.
-2. Copy examples/cornichon/cspell.json, seeding `words` from `dict`.
-3. Create an empty spell-baseline.txt, run the workflow by hand once, and read the summary.
-4. Decide each flagged word: dictionary (the project uses it) or baseline (tolerated noise).
-5. Do not make it a required check. It reports; it does not block.
-Report: files added, slot values used, and the first run's new-word count.
+1. Read scripts/chart-data.mjs and add a derivation for that metric; extend `generated_from` with
+   the file you read. Do not fetch anything at runtime.
+2. Commit the regenerated src/data/charts.json in the same change.
+3. Render it in src/pages/Charts.tsx as SVG using currentColor. No chart library.
+4. State the axis, the unit and one limit in the figure's caption.
+5. Run `npm run build`; the guard must pass.
+Report: the field added, the source file, the row count, and the caption's stated limit.
 ```
 
 ## What it costs
 
-- **A dictionary to maintain.** Domain words change; a stale list produces false failures, and
-  false failures are how a scheduled job gets muted.
-- **A baseline that only grows.** Every "accept" is a small decision. Nobody prunes the baseline,
-  so after a year it hides the typos you actually care about. Review it when it passes ~100 lines.
-- **Schedule drift.** A weekly job on a busy repository finds forty typos and nobody fixes them. The
-  useful cadence is the one where the report stays under ten items.
-- **Notification fatigue.** A scheduled failure emails whoever last edited the workflow. Decide the
-  owner before turning it on.
-- **A false sense of correctness.** Spell check catches `teh`, not a sentence that says the opposite
-  of what you meant.
+- **A committed artifact.** It can go stale in a branch; the build regenerates it, so the risk is a
+  confusing diff rather than a wrong page — but only because the build runs the script.
+- **A summary shape that becomes an API.** Once a page reads `charts.monthly[].kwh`, renaming the
+  field is a change in two files and a rebuild. Keep the names boring.
+- **No interactivity.** No crosshair, no zoom, no legend toggle. Those are good; they are also a
+  chart library, and this isotope exists to show what you get without one.
+- **One more thing to run before the build.** It is fast because it is small. A summary that takes a
+  minute to derive is a service pretending to be a script.
 
 ## Take this, not that
 
-**Take:** the schedule instead of the per-PR gate; the separate dictionary; the baseline diff; the
-single updated issue.
+**Take:** the derivation script, the committed summary, `generated_from`, the `currentColor` SVG,
+the caption that states the limit.
 
-**Leave:** a required status check, per-file overrides, and any spelling rule stricter than
-"unknown word". A job that blocks merges over `kubectl` will be deleted within a month.
+**Leave:** a chart library, a data fetch at runtime, a second copy of the numbers in prose, and any
+interaction you cannot justify in one sentence.
 
 ## What would break it
 
-- Making it required. The first false positive then costs someone an afternoon, and the job loses
-  its sponsor.
-- Growing the dictionary by clicking "add to dictionary" on every failure. That is how a spell
-  check becomes a list of every word the project has ever used.
-- Never pruning the baseline. It is a debt ledger, not a permanent exemption.
-- Running it on generated files. The report becomes noise, and noise is ignored before signal
-  arrives.
-
-## Why it is not enabled on this site
-
-The kit is here and tested, but this repository does not run it. A recurring job needs an owner and
-a cadence chosen for the repository's traffic; enabling it here would either be ignored or would
-email one person about words they already know. That is a decision this site would rather state
-than fake — and the same honesty the job itself is built to provide.
+- **Integrating the sparse intervals.** SolarEdge returns only intervals with production. A daily
+  total summed from the 15-minute file is wrong, and a chart drawn from it is confidently wrong.
+- **Reading `public/data` at runtime.** On Pages that is a fetch, a loading state and a 404 whenever
+  the path changes; at build time it is a file.
+- **Letting the summary name its fields but not its sources.** `generated_from` is the only reason a
+  reviewer can tell which export the picture came from.
+- **Drawing the wrong column.** The chart is only as honest as the derivation; the caption and the
+  docs page are where that honesty is checked.
 
 ## Build it
 
-- The kit: [`examples/cornichon/`](https://github.com/james-gibson/le.gume-energy/tree/main/examples/cornichon)
-- The operating contract: [/docs/for-agents](/docs/for-agents)
+- The derivation: [`scripts/chart-data.mjs`](https://github.com/james-gibson/le.gume-energy/blob/main/scripts/chart-data.mjs)
+- The renderer: [`src/pages/Charts.tsx`](https://github.com/james-gibson/le.gume-energy/blob/main/src/pages/Charts.tsx)
+- The method and the limit: [/docs/charts](/docs/charts)
 - The isotope format, and the pickle shelf: [/isotopes/what-is-an-isotope](/isotopes/what-is-an-isotope)

@@ -1,4 +1,4 @@
-import { CopyButton } from 'fancy-ui-react'
+import { CopyButton } from './silicon-ui/copy-button/copy-button'
 import { QRCodeSVG } from 'qrcode.react'
 
 /**
@@ -33,7 +33,7 @@ export function AgentHandoff({
       aria-labelledby={`${id ?? 'handoff'}-title`}
     >
       <div className="grid gap-0 sm:grid-cols-[auto_1fr]">
-        <div className="flex items-center justify-center border-b border-line-soft bg-[#f4f1e8] p-6 sm:border-r sm:border-b-0">
+        <div className="flex items-center justify-center border-b border-line-soft bg-white p-6 sm:border-r sm:border-b-0">
           {/* Decorative duplicate: the same text is visible on the right. */}
           <div aria-hidden="true">
             <QRCodeSVG
@@ -41,25 +41,25 @@ export function AgentHandoff({
               size={size}
               level="M"
               marginSize={2}
-              bgColor="#f4f1e8"
-              fgColor="#0b0a0b"
+              bgColor="#ffffff"
+              fgColor="#1d1d1d"
               title="Instructions for an agent"
             />
           </div>
         </div>
 
         <div className="p-6">
-          <p className="text-xs tracking-[0.16em] text-pulse uppercase">Take it with you</p>
-          <h2 id={`${id ?? 'handoff'}-title`} className="mt-2 text-xl font-semibold text-cream">
+          <p className="text-xs tracking-[0.16em] text-accent uppercase">Take it with you</p>
+          <h2 id={`${id ?? 'handoff'}-title`} className="mt-2 text-xl font-semibold text-body">
             {title}
           </h2>
           <p className="mt-2 max-w-prose text-sm leading-6 text-muted">{note}</p>
 
           <div className="mt-4 flex items-start gap-3">
-            <pre className="min-w-0 flex-1 overflow-x-auto rounded-xl border border-line-soft bg-[#0c0a0c] p-3 font-mono text-[12px] leading-6 break-words whitespace-pre-wrap text-cream/85">
+            <pre className="min-w-0 flex-1 overflow-x-auto rounded-xl border border-line-soft bg-surface-2 p-3 font-mono text-[12px] leading-6 break-words whitespace-pre-wrap text-body/85">
               {instructions}
             </pre>
-            <CopyButton value={instructions} label="Copy" copiedLabel="Copied" size="sm" />
+            <CopyButton value={instructions} label="Copy" />
           </div>
 
           <p className="mt-3 text-xs text-muted/70">

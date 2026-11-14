@@ -1,20 +1,48 @@
 @import "tailwindcss";
-@import "fancy-ui-react/tailwind.css";
+@import "./components/silicon-ui/foundation.css";
 
-@theme {
+/*
+ * Silicon UI owns the palette. Its foundation declares the semantic tokens
+ * (--background, --surface, --foreground, --text-muted, --border, --accent) and
+ * every vendored component's CSS module reads them, so the page utilities below
+ * are an alias layer, not a second palette. Change a colour in foundation.css and
+ * the site and its components move together.
+ *
+ * The aliases are `inline` so a utility emits `var(--surface)`, not the value the
+ * token held at build time — that is what keeps a theme switch working.
+ */
+@theme inline {
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", monospace;
 
-  --color-ink: #0b0a0b;
-  --color-surface: #121013;
-  --color-surface-2: #191619;
-  --color-line: #2a242a;
-  --color-line-soft: #201b20;
-  --color-cream: #d9d3c6;
-  --color-muted: #a49a9e;
-  --color-pulse: #ff2d95;
-  --color-pulse-deep: #c81e6f;
-  --color-violet: #ffc2dd;
+  --color-page: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-muted);
+  --color-line: var(--border);
+  --color-line-soft: var(--border-subtle);
+  --color-body: var(--foreground);
+  --color-muted: var(--text-secondary);
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-strong);
+  --color-secondary: var(--accent-strong);
+}
+
+/*
+ * Silicon's display scale is its own (4xl is 3.25rem, not 2.25rem). This site
+ * keeps Tailwind's, because every heading was written against it and the
+ * component CSS only uses the small end (xs–lg), where the two agree.
+ */
+:root {
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+
+  /* Softer than silicon's 6/8/12px: the site's cards were drawn at 12–16px. */
+  --radius-control: 8px;
+  --radius-container: 12px;
+  --radius-overlay: 16px;
 }
 
 html {
@@ -23,29 +51,29 @@ html {
 }
 
 body {
-  background-color: var(--color-ink);
-  color: var(--color-cream);
+  background-color: var(--background);
+  color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background-color: color-mix(in oklab, var(--color-pulse) 32%, transparent);
-  color: var(--color-cream);
+  background-color: color-mix(in oklab, var(--accent) 28%, transparent);
+  color: var(--foreground);
 }
 
 /* A quiet grid that hints at a plot plan without becoming a pattern. */
 .plot-grid {
   background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--color-line) 55%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--color-line) 55%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in oklab, var(--border) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--border) 55%, transparent) 1px, transparent 1px);
   background-size: 96px 96px;
   mask-image: radial-gradient(70% 60% at 50% 0%, black, transparent 78%);
 }
 
 .hairline {
-  border: 1px solid var(--color-line);
+  border: 1px solid var(--border);
 }
 
 @media (prefers-reduced-motion: reduce) {

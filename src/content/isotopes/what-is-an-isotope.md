@@ -44,7 +44,7 @@ An isotope carries a **cost centre** and a **profit function**, and the page for
 them attached to each other.
 
 - The cost centre is the "what it costs" section: the standing obligation — upgrades, certificates,
-  a dictionary to prune, an owner — required to keep it alive.
+  a summary to keep honest, an owner — required to keep it alive.
 - The profit function is the system itself: what it lets a person stop doing by hand.
 
 A cost with no function is an expense; a function with no cost is a fantasy. Naming both is what
@@ -79,8 +79,8 @@ looking at is not an assessment — it is a guess with a confident tone.
 That is why an isotope declares its presumptions in frontmatter, next to its slots:
 
 ```yaml
-slots: repo, dict, every
-presumes: github-actions, node-22, cspell-8, issues-write
+slots: data, metric, window
+presumes: node-22, csv, svg, no-chart-library
 ```
 
 The line is not a security audit. It is what makes one possible: you cannot assess an attack against
@@ -119,9 +119,8 @@ The middle two are the ones that do the work. "What it costs" is where a demo be
 
 ## Compounds — isotopes with slots
 
-Some isotopes cannot be applied without decisions only you can make: which repository, which
-dictionary, how often. Those pages declare **slots** instead of pretending there is one right
-answer.
+Some isotopes cannot be applied without decisions only you can make: which table, which column,
+which range. Those pages declare **slots** instead of pretending there is one right answer.
 
 A slot is a question with a name. The page lists them, the agent asks them, and the shortcut below
 carries the answers that are already known.
@@ -132,11 +131,11 @@ An isotope page is long on purpose; a QR code is small on purpose. The bridge is
 isotope's address plus whatever slots are already bound.
 
 ```text
-https://james-gibson.github.io/le.gume-energy/isotopes/cornichon/?every=weekly
+https://james-gibson.github.io/le.gume-energy/isotopes/cornichon/?window=monthly
 ```
 
 An empty value is a question still to ask. Given the line above, the agent should fetch the page,
-read the *Agent prompt*, and ask about `repo` and `dict` — then write the job. No resolver service,
+read the *Agent prompt*, and ask about `data` and `metric` — then write the job. No resolver service,
 no database: the URL is the whole protocol, and the page is the expansion.
 
 That is why the molar mass of the code matters: a compact address beats a paragraph of instructions,
@@ -152,8 +151,8 @@ short enough to scan, complete after one fetch.
 ## The collection
 
 Two so far. [Silverskin](/isotopes/silverskin) is the site you are reading: whole, self-contained,
-the base of the plate. [Cornichon](/isotopes/cornichon) is the first compound — a small recurring
-check with three slots.
+the base of the plate. [Cornichon](/isotopes/cornichon) is the compound — a recurring derivation
+with three slots, and the job that draws the charts you can open from the header.
 
 Each new isotope is one page and one name from the shelf. Each page is derived from something that
 actually runs — the same rule the rest of this site follows, applied to the catalogue itself.

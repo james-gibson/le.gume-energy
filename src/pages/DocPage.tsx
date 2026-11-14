@@ -23,15 +23,15 @@ export function DocPage({ page }: { page: Page }) {
     <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[minmax(0,1fr)_220px]">
       <article className="min-w-0">
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-muted">
-          <Link to={`/${page.section}`} className="hover:text-cream">
+          <Link to={`/${page.section}`} className="hover:text-body">
             {meta.label}
           </Link>
           <span className="text-muted/40">/</span>
-          <span className="text-cream/80">{page.title}</span>
+          <span className="text-body/80">{page.title}</span>
         </nav>
 
         <header className="mt-5 border-b border-line-soft pb-8">
-          <h1 className="text-3xl font-semibold tracking-tight text-cream sm:text-4xl">
+          <h1 className="text-3xl font-semibold tracking-tight text-body sm:text-4xl">
             {page.title}
           </h1>
           {page.description && (
@@ -48,7 +48,7 @@ export function DocPage({ page }: { page: Page }) {
               href={editUrl}
               target="_blank"
               rel="noreferrer noopener"
-              className="ml-auto underline decoration-line underline-offset-4 hover:text-cream"
+              className="ml-auto underline decoration-line underline-offset-4 hover:text-body"
             >
               Edit this page
             </a>
@@ -72,10 +72,10 @@ export function DocPage({ page }: { page: Page }) {
           {prev ? (
             <Link
               to={`/${prev.section}/${prev.slug}`}
-              className="group rounded-xl border border-line p-4 transition-colors hover:border-pulse/40 hover:bg-surface"
+              className="group rounded-xl border border-line p-4 transition-colors hover:border-accent/40 hover:bg-surface"
             >
               <span className="text-xs text-muted">Previous</span>
-              <span className="mt-1 block text-sm text-cream group-hover:text-pulse">{prev.title}</span>
+              <span className="mt-1 block text-sm text-body group-hover:text-accent">{prev.title}</span>
             </Link>
           ) : (
             <span />
@@ -83,10 +83,10 @@ export function DocPage({ page }: { page: Page }) {
           {next && (
             <Link
               to={`/${next.section}/${next.slug}`}
-              className="group rounded-xl border border-line p-4 text-right transition-colors hover:border-pulse/40 hover:bg-surface"
+              className="group rounded-xl border border-line p-4 text-right transition-colors hover:border-accent/40 hover:bg-surface"
             >
               <span className="text-xs text-muted">Next</span>
-              <span className="mt-1 block text-sm text-cream group-hover:text-pulse">{next.title}</span>
+              <span className="mt-1 block text-sm text-body group-hover:text-accent">{next.title}</span>
             </Link>
           )}
         </nav>
@@ -101,7 +101,7 @@ export function DocPage({ page }: { page: Page }) {
                 <li key={heading.id} className={heading.depth === 3 ? 'pl-3' : ''}>
                   <a
                     href={`#${heading.id}`}
-                    className="text-sm text-muted transition-colors hover:text-cream"
+                    className="text-sm text-muted transition-colors hover:text-body"
                   >
                     {heading.text}
                   </a>

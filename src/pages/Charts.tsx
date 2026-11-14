@@ -29,10 +29,10 @@ function Figure({
   return (
     <figure className="rounded-2xl border border-line bg-surface p-5 sm:p-6">
       <figcaption>
-        <h2 className="text-lg font-semibold tracking-tight text-cream">{title}</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-body">{title}</h2>
         <p className="mt-1 text-sm text-muted">{note}</p>
       </figcaption>
-      <div className="mt-5 text-pulse">{children}</div>
+      <div className="mt-5 text-accent">{children}</div>
     </figure>
   )
 }
@@ -124,7 +124,7 @@ function Residuals() {
         x2={W - PAD.r}
         y1={y(0, min, max)}
         y2={y(0, min, max)}
-        className="text-cream/40"
+        className="text-body/40"
         stroke="currentColor"
         strokeWidth={1.5}
       />
@@ -137,7 +137,7 @@ function Residuals() {
             r={2.1}
             fill="currentColor"
             opacity={0.8}
-            className={row.r < 0 ? 'text-violet' : 'text-pulse'}
+            className={row.r < 0 ? 'text-secondary' : 'text-accent'}
           >
             <title>{`${row.d}: ${row.r.toFixed(3)}`}</title>
           </circle>
@@ -193,7 +193,7 @@ function SelfConsumption() {
         x2={W - PAD.r}
         y1={y(0.5, 0, 1)}
         y2={y(0.5, 0, 1)}
-        className="text-cream/30"
+        className="text-body/30"
         stroke="currentColor"
         strokeDasharray="5 5"
         strokeWidth={1}
@@ -229,8 +229,8 @@ export function Charts() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
-      <p className="text-xs tracking-[0.18em] text-pulse uppercase">Charts</p>
-      <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-cream sm:text-5xl">
+      <p className="text-xs tracking-[0.18em] text-accent uppercase">Charts</p>
+      <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-body sm:text-5xl">
         The record, at four scales.
       </h1>
       <p className="mt-5 max-w-2xl text-lg leading-8 text-muted">
@@ -247,7 +247,7 @@ export function Charts() {
           { k: 'Self-consumed', v: `${(summary.self_window_avg * 100).toFixed(1)}%` },
         ].map((fact) => (
           <div key={fact.k} className="rounded-xl border border-line bg-surface px-4 py-3">
-            <p className="font-mono text-xl font-semibold text-cream">{fact.v}</p>
+            <p className="font-mono text-xl font-semibold text-body">{fact.v}</p>
             <p className="mt-1 text-[11px] tracking-[0.14em] text-muted uppercase">{fact.k}</p>
           </div>
         ))}
@@ -285,16 +285,16 @@ export function Charts() {
 
       <p className="mt-8 text-sm text-muted">
         The source columns and the arithmetic are in{' '}
-        <Link to="/guides/query" className="text-pulse underline decoration-pulse/30 underline-offset-4">
+        <Link to="/guides/query" className="text-accent underline decoration-accent/30 underline-offset-4">
           the query guide
         </Link>{' '}
         and the method is in{' '}
-        <Link to="/docs/charts" className="text-pulse underline decoration-pulse/30 underline-offset-4">
+        <Link to="/docs/charts" className="text-accent underline decoration-accent/30 underline-offset-4">
           how the charts are built
         </Link>
-        . Raw files: <a href={`${DATA}/manifest.json`} className="text-pulse underline decoration-pulse/30 underline-offset-4">manifest</a>,{' '}
-        <a href={`${DATA}/solar-production-monthly.csv`} className="text-pulse underline decoration-pulse/30 underline-offset-4">monthly</a>,{' '}
-        <a href={`${DATA}/solar-production-daily.csv`} className="text-pulse underline decoration-pulse/30 underline-offset-4">daily</a>.
+        . Raw files: <a href={`${DATA}/manifest.json`} className="text-accent underline decoration-accent/30 underline-offset-4">manifest</a>,{' '}
+        <a href={`${DATA}/solar-production-monthly.csv`} className="text-accent underline decoration-accent/30 underline-offset-4">monthly</a>,{' '}
+        <a href={`${DATA}/solar-production-daily.csv`} className="text-accent underline decoration-accent/30 underline-offset-4">daily</a>.
       </p>
     </div>
   )

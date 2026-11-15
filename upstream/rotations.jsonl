@@ -8,3 +8,5 @@
 {"event":"rotation","rotation":"r000004","isotope":"interventions","subject":"2026-11-15 interventions","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T09:56:07.914Z"}
 {"event":"open","isotope":"charts","note":"hour-of-day generation vs import, with the utility's tariff window","at":"2026-11-15T10:08:40.434Z"}
 {"event":"rotation","rotation":"r000005","isotope":"charts","subject":"2026-11-15 tou","gates":["build","doom","a11y","contrast","overflow","guard"],"at":"2026-11-15T10:08:40.490Z"}
+{"event":"open","isotope":"tariff","note":"TOU vs flat in dollars, and what a peak kWh from storage is worth","at":"2026-11-15T20:00:33.587Z"}
+{"event":"rotation","rotation":"r000006","isotope":"tariff","subject":"2026-11-15 rates","gates":["build","doom","a11y","contrast","overflow","guard"],"at":"2026-11-15T20:00:33.631Z"}

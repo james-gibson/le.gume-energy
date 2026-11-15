@@ -301,7 +301,28 @@ if (!interventionText) {
   }
 }
 
-// --- 11. seeds are declared, populated and resolvable ---------------------
+// --- 11. the tariff is a supplied sheet, not a guess -----------------------
+// Every dollar on /charts comes from this file. A missing season, or a plan
+// without a price, would silently become zero somewhere downstream; refuse it.
+try {
+  const rates = JSON.parse(await readText('src/data/rates.json'))
+  if (rates.schema !== 'kb-energy-rates/1') fail('tariff', `schema is "${rates.schema}"`)
+  for (const season of ['summer', 'winter']) {
+    const tou = rates.plans?.tou?.[season]
+    if (!tou || !(tou.on_peak >= 0) || !(tou.off_peak >= 0)) {
+      fail('tariff', `no on/off-peak prices for ${season}`)
+    }
+    if (!(rates.plans?.flat?.[season] >= 0)) fail('tariff', `no flat price for ${season}`)
+  }
+  if (!rates.as_of || !rates.source) fail('tariff', 'the sheet has no as_of date or source')
+  if (!Array.isArray(rates.seasons?.summer) || !Array.isArray(rates.seasons?.winter)) {
+    fail('tariff', 'the season months are not declared')
+  }
+} catch (error) {
+  fail('tariff', `src/data/rates.json is not usable: ${error.message}`)
+}
+
+// --- 12. seeds are declared, populated and resolvable ---------------------
 // A seed promises an audience an entrance. The registry is TypeScript, so it is
 // read as text here: ids and entry routes, then cross-checked against the pages
 // that declare membership in frontmatter.
@@ -376,7 +397,7 @@ for (const entry of seedEntries) {
   }
 }
 
-// --- 12. the satire keeps its promises ------------------------------------
+// --- 13. the satire keeps its promises ------------------------------------
 // A page that claims "no CSS" or "no script" is a testable claim. If the claim
 // rots, the seed is a lie with a URL.
 const bare = await readText('public/bare/index.html').catch(() => '')
@@ -392,7 +413,7 @@ if (!nojs) {
   fail('satire', 'public/nojs/index.html claims no JavaScript but contains a <script>')
 }
 
-// --- 13. the deck is a file you could hand over ---------------------------
+// --- 14. the deck is a file you could hand over ---------------------------
 // It has to open from file:// on a machine that has never seen this project:
 // no script, no network, a sane number of slides, and small enough to copy
 // without thinking about it.
@@ -413,7 +434,7 @@ if (!deck) {
   }
 }
 
-// --- 14. one door for agents ----------------------------------------------
+// --- 15. one door for agents ----------------------------------------------
 // Agent capability varies from a model that can follow one instruction to one
 // that will invent a plan. The only thing that serves both is a single, stable
 // payload and a single place it is printed. A second payload is a second door.
@@ -434,7 +455,7 @@ if (!footer.includes('<AgentCta')) {
   fail('agents', 'SiteFooter does not render the agent call to action')
 }
 
-// --- 15. agent-ready: find and read --------------------------------------
+// --- 16. agent-ready: find and read --------------------------------------
 // AgentReady's essentials, checked because a claim in a page is worth what the
 // build enforces. Act is out of scope: this is a site to read, not a product to
 // transact through, so no MCP server or CLI is claimed.
@@ -483,7 +504,7 @@ for (const shell of shells) {
   }
 }
 
-// --- 16. child seeds ship back -------------------------------------------
+// --- 17. child seeds ship back -------------------------------------------
 // The upstream rule is a norm, not a mechanism — but a norm nobody can find is
 // not a norm. The skill states it and this check refuses a build where the
 // statement has been deleted during a refactor.
@@ -495,7 +516,7 @@ if (!/upstream/i.test(skill) || !/isotope/i.test(skill)) {
   fail('upstream', 'the upstream rule no longer mentions isotopes or upstreaming')
 }
 
-// --- 17. the feed is generated and complete ------------------------------
+// --- 18. the feed is generated and complete ------------------------------
 // A feed is a build artefact, not a service. If it stops listing a page, the
 // claim that a feed needs a garden stops being true here.
 const feed = await readText('dist/feed.xml').catch(() => '')
@@ -507,7 +528,7 @@ if (!feed) {
   }
 }
 
-// --- 18. rules.md, the file a child seed defers to -----------------------
+// --- 19. rules.md, the file a child seed defers to -----------------------
 // Stable ids, one line each. A child fetches this and records overrides; if the
 // ids move, every child's override silently stops matching.
 const rulesFile = await readText('dist/rules.md').catch(() => '')
@@ -521,7 +542,7 @@ if (!rulesFile) {
   if (!/^version: \S+/m.test(rulesFile)) fail('rules', 'dist/rules.md has no version line')
 }
 
-// --- 19. the rotation record is served, and it is the ledger's state --------
+// --- 20. the rotation record is served, and it is the ledger's state --------
 // The seed decides its updates from `upstream/rotations.jsonl`. Publishing that
 // decision is what makes "this seed manages its own updates" checkable rather
 // than asserted, and comparing it here means the page and the ledger cannot
@@ -543,7 +564,7 @@ if (!publishedRotation) {
   if (ledger.gaps.length) fail('rotation', `the id sequence has a gap: ${ledger.gaps.join(', ')}`)
 }
 
-// --- 20. size sanity ------------------------------------------------------
+// --- 21. size sanity ------------------------------------------------------
 const total = (await Promise.all(files.map(async (f) => (await stat(f)).size))).reduce(
   (a, b) => a + b,
   0,

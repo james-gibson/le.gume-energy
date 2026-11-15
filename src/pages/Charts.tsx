@@ -882,6 +882,164 @@ function TouDays() {
   )
 }
 
+function Pricing() {
+  const { observed, seasonal } = charts.pricing
+  const groups = [
+    { label: 'billed winter, 30 d', flat: observed.flat, tou: observed.tou, days: observed.days },
+    ...seasonal.map((row) => ({
+      label: `${row.season}, metered ${row.days} d`,
+      flat: row.flat,
+      tou: row.tou,
+      days: row.days,
+    })),
+  ]
+  const max = Math.ceil(Math.max(...groups.map((group) => Math.max(group.flat, group.tou))) / 50) * 50
+  const ticks = Array.from({ length: 5 }, (_, i) => (max / 4) * i)
+  const band = IW / groups.length
+  const bar = Math.min(46, band * 0.28)
+  const cents = (value: number) => `${(value * 100).toFixed(1)}¢`
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Cost under the time-of-use plan against the flat rate">
+      <title>Cost under the time-of-use plan against the flat rate, by window</title>
+      <Grid min={0} max={max} ticks={ticks} />
+      {groups.map((group, i) => {
+        const left = PAD.l + i * band + band / 2
+        const flatTop = y(group.flat, 0, max)
+        const touTop = y(group.tou, 0, max)
+        const delta = group.tou - group.flat
+        return (
+          <g key={group.label}>
+            <rect
+              x={left - bar - 2}
+              y={flatTop}
+              width={bar}
+              height={PAD.t + IH - flatTop}
+              rx={2}
+              className="text-secondary"
+              fill="currentColor"
+              opacity={0.85}
+            >
+              <title>{`${group.label}: flat $${group.flat.toFixed(2)}`}</title>
+            </rect>
+            <rect
+              x={left + 2}
+              y={touTop}
+              width={bar}
+              height={PAD.t + IH - touTop}
+              rx={2}
+              className="text-accent"
+              fill="currentColor"
+              opacity={0.9}
+            >
+              <title>{`${group.label}: time of use $${group.tou.toFixed(2)}`}</title>
+            </rect>
+            <text
+              x={left}
+              y={Math.min(flatTop, touTop) - 8}
+              textAnchor="middle"
+              className="fill-current text-[10px] text-muted"
+            >{`${delta > 0 ? '+' : ''}${delta.toFixed(2)}`}</text>
+            <text x={left} y={H - 12} textAnchor="middle" className="fill-current text-[10px] text-muted/70">
+              {group.label}
+            </text>
+          </g>
+        )
+      })}
+      <g className="fill-current text-[10px] text-muted/70">
+        <text x={PAD.l - 9} y={PAD.t + 10} textAnchor="end">{`$${max}`}</text>
+        <text x={PAD.l + 4} y={PAD.t + 10} className="fill-current text-secondary">
+          flat
+        </text>
+        <text x={PAD.l + 4} y={PAD.t + 24} className="fill-current text-accent">
+          time of use
+        </text>
+      </g>
+      <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted/70">
+        {`usage only · no $${charts.pricing.excluded.service_facility_month_usd.toFixed(2)} service charge, no riders`}
+      </text>
+      <text x={W - PAD.r} y={PAD.t + 24} textAnchor="end" className="fill-current text-[10px] text-muted/70">
+        {`summer on-peak ${cents(charts.pricing.rates.tou.summer.on_peak)} as supplied`}
+      </text>
+    </svg>
+  )
+}
+
+function Spread() {
+  const { spread, storage } = charts.pricing
+  const rows = [
+    { label: 'winter', value: spread.winter, kwh: storage.winter_on_peak_kwh, note: `$${storage.winter_saved_usd.toFixed(2)} saved` },
+    { label: 'summer, as supplied', value: spread.summer_as_given, kwh: storage.summer_on_peak_kwh, note: 'storing loses' },
+    { label: 'summer, if swapped', value: spread.summer_if_swapped, kwh: storage.summer_on_peak_kwh, note: 'storing pays' },
+  ]
+  const limit = Math.ceil(Math.max(...rows.map((row) => Math.abs(row.value))) * 100)
+  const mid = PAD.t + IH / 2
+  const scale = IW / 2 / limit
+  const band = IW / rows.length
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Value of shifting a peak kilowatt hour to off-peak">
+      <title>Value of moving one kilowatt hour from off-peak to on-peak, by reading</title>
+      <line x1={PAD.l} x2={W - PAD.r} y1={mid} y2={mid} className="text-body/40" stroke="currentColor" strokeWidth={1} />
+      {[-limit, -limit / 2, limit / 2, limit].map((tick) => (
+        <g key={tick}>
+          <line
+            x1={PAD.l + IW / 2 + tick * scale}
+            x2={PAD.l + IW / 2 + tick * scale}
+            y1={PAD.t}
+            y2={PAD.t + IH}
+            className="text-line/60"
+            stroke="currentColor"
+            strokeDasharray="3 5"
+          />
+          <text
+            x={PAD.l + IW / 2 + tick * scale}
+            y={PAD.t + IH + 14}
+            textAnchor="middle"
+            className="fill-current text-[10px] text-muted/70"
+          >
+            {`${tick > 0 ? '+' : ''}${tick}¢`}
+          </text>
+        </g>
+      ))}
+      {rows.map((row, i) => {
+        const value = row.value * 100
+        const left = PAD.l + i * band + band / 2
+        const width = Math.max(2, Math.abs(value) * scale)
+        const x = left - width / 2
+        const top = value >= 0 ? mid - 16 : mid + 2
+        return (
+          <g key={row.label}>
+            <rect
+              x={x}
+              y={top}
+              width={width}
+              height={14}
+              rx={2}
+              className={value >= 0 ? 'text-accent' : 'text-secondary'}
+              fill="currentColor"
+              opacity={0.9}
+            >
+              <title>{`${row.label}: ${value.toFixed(2)}¢ per kWh moved (${row.kwh.toFixed(1)} kWh observed)`}</title>
+            </rect>
+            <text x={left} y={PAD.t + 10} textAnchor="middle" className="fill-current text-[10px] text-muted">
+              {row.label}
+            </text>
+            <text
+              x={left}
+              y={value >= 0 ? top - 5 : top + 22}
+              textAnchor="middle"
+              className="fill-current text-[10px] text-body"
+            >
+              {`${value > 0 ? '+' : ''}${value.toFixed(2)}¢ · ${row.note}`}
+            </text>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
 export function Charts() {
   usePageMeta(
     'Charts',
@@ -1024,6 +1182,20 @@ export function Charts() {
           note={`The ${charts.touDays.days.length} days that carry an on/off-peak split, ${charts.touDays.from} → ${charts.touDays.to}: ${charts.touDays.totals.off.toFixed(0)} kWh off-peak against ${charts.touDays.totals.on.toFixed(0)} kWh on-peak. Those days are recent and autumn, so they are drawn on their own rather than mixed into the summer shape above — two windows, two questions.`}
         >
           <TouDays />
+        </Figure>
+
+        <Figure
+          title="Time of use or flat rate, in dollars"
+          note={`The two plans priced against the same recorded kWh: flat against on/off-peak, by window. Winter is dearer on time of use and summer is much cheaper, because the supplied summer off-peak (${(charts.pricing.rates.tou.summer.off_peak * 100).toFixed(2)}¢) sits below the flat rate (${(charts.pricing.rates.flat.summer * 100).toFixed(2)}¢) either way the summer row is read. Usage only — the $${charts.pricing.excluded.service_facility_month_usd.toFixed(2)} service charge and the bill riders are excluded, and a fixed charge is identical under both plans anyway.`}
+        >
+          <Pricing />
+        </Figure>
+
+        <Figure
+          title="What a peak kilowatt hour is worth from storage"
+          note={`Moving one kWh from off-peak to on-peak in the winter tariff is worth ${(charts.pricing.spread.winter * 100).toFixed(2)}¢, so the ${charts.pricing.storage.winter_on_peak_kwh.toFixed(1)} kWh this household imported at peak over the billed 30 days would have saved $${charts.pricing.storage.winter_saved_usd.toFixed(2)}. Summer depends entirely on how the supplied sheet is read: as written, on-peak is below off-peak and storage destroys value; with those two figures exchanged it pays. The chart draws both rather than picking one.`}
+        >
+          <Spread />
         </Figure>
       </div>
 

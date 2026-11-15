@@ -18,6 +18,7 @@ import { derive, loadInterventions } from './interventions.mjs'
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)))
 const DATA = join(ROOT, 'public/data')
 const OUT = join(ROOT, 'src/data/charts.json')
+const RATES = JSON.parse(await readFile(join(ROOT, 'src/data/rates.json'), 'utf8'))
 
 const read = async (name) => parseCsv(await readFile(join(DATA, name), 'utf8'))
 const number = (value) => (value === '' || value === undefined ? null : Number(value))
@@ -316,6 +317,86 @@ const touDays = {
   },
 }
 
+// --- what the tariff costs, in dollars -------------------------------------
+// The rates are a supplied sheet (`src/data/rates.json`), not something derived
+// from the record. Everything below multiplies recorded kWh by those prices and
+// nothing else: no fixed charge, no riders, no tax.
+const rateSeason = (date) => (RATES.seasons.summer.includes(date.slice(5, 7)) ? 'summer' : 'winter')
+const price = (season, bucket, reading = 'asGiven') => {
+  const tou = RATES.plans.tou[season]
+  const [on, off] = reading === 'swapped' ? [tou.off_peak, tou.on_peak] : [tou.on_peak, tou.off_peak]
+  const flat = RATES.plans.flat[season]
+  return bucket === 'on' ? on : bucket === 'off' ? off : flat
+}
+const cost = (on, off, season, reading = 'asGiven') =>
+  Number((on * price(season, 'on', reading) + off * price(season, 'off', reading)).toFixed(2))
+const flatCost = (kwh, season) => Number((kwh * price(season, 'flat')).toFixed(2))
+
+// The 30 billed days carry the utility's own split, and they are all winter.
+const observed = {
+  from: touRows[0]?.date_local ?? null,
+  to: touRows[touRows.length - 1]?.date_local ?? null,
+  days: touRows.length,
+  on: round(touRows.reduce((sum, row) => sum + Number(row.grid_on_peak_kwh), 0), 1),
+  off: round(touRows.reduce((sum, row) => sum + Number(row.grid_off_peak_kwh), 0), 1),
+}
+observed.tou = cost(observed.on, observed.off, 'winter')
+observed.flat = flatCost(observed.on + observed.off, 'winter')
+observed.delta = Number((observed.tou - observed.flat).toFixed(2))
+
+// The hourly window applies the tariff boundary to metered import, so it can be
+// split by season: May is winter, June to August is summer.
+const hourlyBuckets = new Map()
+for (const row of gridHourly) {
+  if (row.series !== 'Interval') continue
+  const hour = hourOf(row)
+  const bucket = peak && hour >= peak.from && hour <= peak.to ? 'on' : 'off'
+  const key = row.date_local
+  const entry = hourlyBuckets.get(key) ?? { on: 0, off: 0 }
+  entry[bucket] += Number(row.value) || 0
+  hourlyBuckets.set(key, entry)
+}
+const bySeason = { summer: { on: 0, off: 0, days: 0 }, winter: { on: 0, off: 0, days: 0 } }
+for (const [date, entry] of hourlyBuckets) {
+  const season = rateSeason(date)
+  bySeason[season].on += entry.on
+  bySeason[season].off += entry.off
+  bySeason[season].days += 1
+}
+const seasonal = ['winter', 'summer'].map((season) => {
+  const on = round(bySeason[season].on, 1)
+  const off = round(bySeason[season].off, 1)
+  const tou = cost(on, off, season)
+  const flat = flatCost(on + off, season)
+  return { season, days: bySeason[season].days, on, off, tou, flat, delta: Number((tou - flat).toFixed(2)) }
+})
+
+// Per kWh, what moving an hour from off-peak to on-peak is worth. As supplied,
+// summer is negative: the sheet puts on-peak below off-peak.
+const spread = (season, reading = 'asGiven') =>
+  Number((price(season, 'on', reading) - price(season, 'off', reading)).toFixed(5))
+const storage = {
+  winter_on_peak_kwh: observed.on,
+  winter_saved_usd: Number((observed.on * spread('winter')).toFixed(2)),
+  summer_on_peak_kwh: seasonal.find((row) => row.season === 'summer')?.on ?? 0,
+}
+
+const pricing = {
+  as_of: RATES.as_of,
+  source: RATES.source,
+  excluded: RATES.excluded,
+  reading: RATES.reading,
+  rates: RATES.plans,
+  observed,
+  seasonal,
+  spread: {
+    winter: spread('winter'),
+    summer_as_given: spread('summer'),
+    summer_if_swapped: spread('summer', 'swapped'),
+  },
+  storage,
+}
+
 const payload = {
   generated_from: {
     manifest: 'public/data/manifest.json',
@@ -342,6 +423,7 @@ const payload = {
   interventions,
   tou,
   touDays,
+  pricing,
   changes,
   windows,
 }
@@ -353,5 +435,6 @@ console.log(
     `${payload.curve.points.length} intervals on ${curveDate}, ${payload.self.length} utility days, ` +
     `${payload.balance.length} balance months, ${payload.yearly.length} years, ` +
     `${payload.recent.series.length} recent days, ${payload.recent.events.length} recent event(s), ` +
-    `${payload.interventions.length} intervention(s), ${payload.touDays.days.length} TOU day(s)`,
+    `${payload.interventions.length} intervention(s), ${payload.touDays.days.length} TOU day(s), ` +
+    `pricing ${payload.pricing.observed.tou} vs ${payload.pricing.observed.flat} (TOU vs flat)`,
 )

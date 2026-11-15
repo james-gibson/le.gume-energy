@@ -1,0 +1,23 @@
+{
+  "schema": "kb-energy-rates/1",
+  "as_of": "2026-11-15",
+  "source": "utility rate sheet, supplied by the account holder",
+  "currency": "USD",
+  "unit": "per kWh",
+  "seasons": {
+    "summer": ["06", "07", "08", "09"],
+    "winter": ["10", "11", "12", "01", "02", "03", "04", "05"]
+  },
+  "plans": {
+    "tou": {
+      "summer": { "on_peak": 0.021277, "off_peak": 0.07884 },
+      "winter": { "on_peak": 0.18331, "off_peak": 0.06792 }
+    },
+    "flat": { "summer": 0.1038, "winter": 0.0857 }
+  },
+  "excluded": {
+    "service_facility_month_usd": 7.1,
+    "note": "Other bill riders, fees and taxes are not in these rates, and no fixed charge is included in any figure the site prints."
+  },
+  "reading": "Summer on-peak (2.13¢) is reported BELOW summer off-peak (7.88¢). That inverts the usual incentive — it would pay to use power at peak — and is very likely a transcription swap. The site prices both readings rather than choosing one silently; the swapped summer figures are the on-peak and off-peak values exchanged."
+}

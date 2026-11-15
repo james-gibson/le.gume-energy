@@ -61,6 +61,9 @@ on the figure.
   a reading of zero import rather than a hole in the data.
 - Peak and off-peak, day by day: the 30 recent days that carry an on/off-peak
   split, drawn on their own because they are a different and later window.
+- Time of use against the flat rate, in dollars, by window — and the value of
+  moving a peak kWh from off-peak, in cents. The rates are supplied, the kWh are
+  measured; see [what the tariff costs](/docs/tariff).
 - One clear day at 15-minute resolution: the highest-energy day in the record.
 - The self-consumption ratio over the utility window.
 - Where monthly production goes: self-consumed and exported stacked, with the

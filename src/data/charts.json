@@ -3328,6 +3328,71 @@
       "off": 265
     }
   },
+  "pricing": {
+    "as_of": "2026-11-15",
+    "source": "utility rate sheet, supplied by the account holder",
+    "excluded": {
+      "service_facility_month_usd": 7.1,
+      "note": "Other bill riders, fees and taxes are not in these rates, and no fixed charge is included in any figure the site prints."
+    },
+    "reading": "Summer on-peak (2.13¢) is reported BELOW summer off-peak (7.88¢). That inverts the usual incentive — it would pay to use power at peak — and is very likely a transcription swap. The site prices both readings rather than choosing one silently; the swapped summer figures are the on-peak and off-peak values exchanged.",
+    "rates": {
+      "tou": {
+        "summer": {
+          "on_peak": 0.021277,
+          "off_peak": 0.07884
+        },
+        "winter": {
+          "on_peak": 0.18331,
+          "off_peak": 0.06792
+        }
+      },
+      "flat": {
+        "summer": 0.1038,
+        "winter": 0.0857
+      }
+    },
+    "observed": {
+      "from": "2026-10-15",
+      "to": "2026-11-13",
+      "days": 30,
+      "on": 49.7,
+      "off": 265,
+      "tou": 27.11,
+      "flat": 26.97,
+      "delta": 0.14
+    },
+    "seasonal": [
+      {
+        "season": "winter",
+        "days": 31,
+        "on": 75.2,
+        "off": 207.8,
+        "tou": 27.9,
+        "flat": 24.25,
+        "delta": 3.65
+      },
+      {
+        "season": "summer",
+        "days": 92,
+        "on": 747.9,
+        "off": 1464.4,
+        "tou": 131.37,
+        "flat": 229.64,
+        "delta": -98.27
+      }
+    ],
+    "spread": {
+      "winter": 0.11539,
+      "summer_as_given": -0.05756,
+      "summer_if_swapped": 0.05756
+    },
+    "storage": {
+      "winter_on_peak_kwh": 49.7,
+      "winter_saved_usd": 5.73,
+      "summer_on_peak_kwh": 747.9
+    }
+  },
   "changes": [
     {
       "start": "2026-01-10",

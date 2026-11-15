@@ -103,7 +103,9 @@ for (const pair of palette.pairs) {
 // Two inks that mean different things have to be told apart. The ladder is the
 // declared series order, so adding a series cannot skip the measurement.
 const series = palette.series ?? []
-const grounds = ['page', 'surface']
+// Each seed names its own grounds: the child paints on page/surface, the parent
+// on ink/surface. The script is shared, the palette is not.
+const grounds = (palette.grounds ?? ['page', 'surface']).filter(hexOf)
 for (let i = 0; i < series.length; i += 1) {
   for (let j = i + 1; j < series.length; j += 1) {
     const a = hexOf(series[i])

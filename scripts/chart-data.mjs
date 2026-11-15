@@ -274,9 +274,10 @@ for (const row of gridHourly) {
   importedByHour[hourOf(row)] += Number(row.value) || 0
 }
 
-// The tariff boundary the utility reports: the hours its `On Peak` series marks
-// with a non-zero value. Taken from the rows themselves, not from a guess about
-// how a utility prices an afternoon.
+// The tariff boundary is the rate sheet's (5 p.m. to 9 p.m., Monday to Friday),
+// and the utility's own `On Peak` series is checked against it rather than used
+// to infer it: a boundary read from 24 hours of rows is a coincidence, a
+// boundary in the sheet is a contract.
 const onPeakHours = [
   ...new Set(
     gridHourly
@@ -284,8 +285,14 @@ const onPeakHours = [
       .map((row) => hourOf(row)),
   ),
 ].sort((a, b) => a - b)
-const peak = onPeakHours.length
-  ? { from: onPeakHours[0], to: onPeakHours[onPeakHours.length - 1], hours: onPeakHours }
+const sheetPeak = RATES.peak_window
+const peak = sheetPeak
+  ? {
+      from: sheetPeak.from_hour,
+      to: sheetPeak.to_hour - 1,
+      weekdays: sheetPeak.weekdays,
+      agrees: onPeakHours.length ? onPeakHours[0] === sheetPeak.from_hour && onPeakHours[onPeakHours.length - 1] === sheetPeak.to_hour - 1 : null,
+    }
   : null
 
 const tou = {
@@ -346,11 +353,14 @@ observed.delta = Number((observed.tou - observed.flat).toFixed(2))
 
 // The hourly window applies the tariff boundary to metered import, so it can be
 // split by season: May is winter, June to August is summer.
+const weekdayOf = (date) => new Date(`${date}T12:00:00Z`).getUTCDay()
+const isPeakHour = (date, hour) =>
+  Boolean(peak) && hour >= peak.from && hour <= peak.to && peak.weekdays.includes(weekdayOf(date))
 const hourlyBuckets = new Map()
 for (const row of gridHourly) {
   if (row.series !== 'Interval') continue
   const hour = hourOf(row)
-  const bucket = peak && hour >= peak.from && hour <= peak.to ? 'on' : 'off'
+  const bucket = isPeakHour(row.date_local, hour) ? 'on' : 'off'
   const key = row.date_local
   const entry = hourlyBuckets.get(key) ?? { on: 0, off: 0 }
   entry[bucket] += Number(row.value) || 0
@@ -373,12 +383,14 @@ const seasonal = ['winter', 'summer'].map((season) => {
 
 // Per kWh, what moving an hour from off-peak to on-peak is worth. As supplied,
 // summer is negative: the sheet puts on-peak below off-peak.
-const spread = (season, reading = 'asGiven') =>
-  Number((price(season, 'on', reading) - price(season, 'off', reading)).toFixed(5))
+const spread = (season) => Number((price(season, 'on') - price(season, 'off')).toFixed(5))
 const storage = {
   winter_on_peak_kwh: observed.on,
   winter_saved_usd: Number((observed.on * spread('winter')).toFixed(2)),
   summer_on_peak_kwh: seasonal.find((row) => row.season === 'summer')?.on ?? 0,
+  summer_saved_usd: Number(
+    ((seasonal.find((row) => row.season === 'summer')?.on ?? 0) * spread('summer')).toFixed(2),
+  ),
 }
 
 const pricing = {
@@ -389,11 +401,8 @@ const pricing = {
   rates: RATES.plans,
   observed,
   seasonal,
-  spread: {
-    winter: spread('winter'),
-    summer_as_given: spread('summer'),
-    summer_if_swapped: spread('summer', 'swapped'),
-  },
+  spread: { winter: spread('winter'), summer: spread('summer') },
+  peak_window: RATES.peak_window,
   storage,
 }
 

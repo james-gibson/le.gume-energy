@@ -799,7 +799,7 @@ function Tou() {
             x={px(peak.from) - (px(1) - px(0)) / 2 + 4}
             y={PAD.t + 10}
             className="fill-current text-[10px] text-muted"
-          >{`on-peak ${String(peak.from).padStart(2, '0')}:00–${String(peak.to + 1).padStart(2, '0')}:00`}</text>
+          >{`on-peak ${String(peak.from).padStart(2, '0')}:00–${String(peak.to + 1).padStart(2, '0')}:00 Mon–Fri`}</text>
         </>
       )}
       <path d={area} fill="currentColor" opacity={0.18} />
@@ -959,7 +959,7 @@ function Pricing() {
         {`usage only · no $${charts.pricing.excluded.service_facility_month_usd.toFixed(2)} service charge, no riders`}
       </text>
       <text x={W - PAD.r} y={PAD.t + 24} textAnchor="end" className="fill-current text-[10px] text-muted/70">
-        {`summer on-peak ${cents(charts.pricing.rates.tou.summer.on_peak)} as supplied`}
+        {`summer on-peak ${cents(charts.pricing.rates.tou.summer.on_peak)} · weekends off-peak`}
       </text>
     </svg>
   )
@@ -968,9 +968,8 @@ function Pricing() {
 function Spread() {
   const { spread, storage } = charts.pricing
   const rows = [
-    { label: 'winter', value: spread.winter, kwh: storage.winter_on_peak_kwh, note: `$${storage.winter_saved_usd.toFixed(2)} saved` },
-    { label: 'summer, as supplied', value: spread.summer_as_given, kwh: storage.summer_on_peak_kwh, note: 'storing loses' },
-    { label: 'summer, if swapped', value: spread.summer_if_swapped, kwh: storage.summer_on_peak_kwh, note: 'storing pays' },
+    { label: 'winter', value: spread.winter, kwh: storage.winter_on_peak_kwh, note: `$${storage.winter_saved_usd.toFixed(2)} on ${storage.winter_on_peak_kwh.toFixed(1)} kWh` },
+    { label: 'summer', value: spread.summer, kwh: storage.summer_on_peak_kwh, note: `$${storage.summer_saved_usd.toFixed(2)} on ${storage.summer_on_peak_kwh.toFixed(1)} kWh` },
   ]
   const limit = Math.ceil(Math.max(...rows.map((row) => Math.abs(row.value))) * 100)
   const mid = PAD.t + IH / 2
@@ -1137,7 +1136,7 @@ export function Charts() {
 
         <Figure
           title="Generation against grid import, by hour"
-          note={`Mean output and mean import at each clock hour over ${charts.tou.window.days} days (${charts.tou.window.from} → ${charts.tou.window.to}). Import is zero through the middle of the day because there is no import to record — the meter is running backwards, not missing. The shaded window is the tariff boundary the utility reports in its own on/off-peak series.`}
+          note={`Mean output and mean import at each clock hour over ${charts.tou.window.days} days (${charts.tou.window.from} → ${charts.tou.window.to}). Import is zero through the middle of the day because there is no import to record — the meter is running backwards, not missing. The shaded window is the tariff's: 5 to 9 p.m., Monday to Friday, read from the rate sheet and checked against the utility's own on/off-peak series. The hourly means mix weekdays and weekends, which the tariff does not — the summer and winter splits below do respect it.`}
         >
           <Tou />
         </Figure>
@@ -1186,14 +1185,14 @@ export function Charts() {
 
         <Figure
           title="Time of use or flat rate, in dollars"
-          note={`The two plans priced against the same recorded kWh: flat against on/off-peak, by window. Winter is dearer on time of use and summer is much cheaper, because the supplied summer off-peak (${(charts.pricing.rates.tou.summer.off_peak * 100).toFixed(2)}¢) sits below the flat rate (${(charts.pricing.rates.flat.summer * 100).toFixed(2)}¢) either way the summer row is read. Usage only — the $${charts.pricing.excluded.service_facility_month_usd.toFixed(2)} service charge and the bill riders are excluded, and a fixed charge is identical under both plans anyway.`}
+          note={`The two plans priced against the same recorded kWh, by window. Time of use is dearer in all three, because the peak price (${(charts.pricing.rates.tou.summer.on_peak * 100).toFixed(2)}¢ summer, ${(charts.pricing.rates.tou.winter.on_peak * 100).toFixed(2)}¢ winter) is well above the flat rate and this house does use the evening. Usage only — the $${charts.pricing.excluded.service_facility_month_usd.toFixed(2)} service charge and the bill riders are excluded, and a fixed charge is identical under both plans anyway.`}
         >
           <Pricing />
         </Figure>
 
         <Figure
           title="What a peak kilowatt hour is worth from storage"
-          note={`Moving one kWh from off-peak to on-peak in the winter tariff is worth ${(charts.pricing.spread.winter * 100).toFixed(2)}¢, so the ${charts.pricing.storage.winter_on_peak_kwh.toFixed(1)} kWh this household imported at peak over the billed 30 days would have saved $${charts.pricing.storage.winter_saved_usd.toFixed(2)}. Summer depends entirely on how the supplied sheet is read: as written, on-peak is below off-peak and storage destroys value; with those two figures exchanged it pays. The chart draws both rather than picking one.`}
+          note={`What one kWh is worth when it moves from off-peak to on-peak: ${(charts.pricing.spread.winter * 100).toFixed(2)}¢ in winter, ${(charts.pricing.spread.summer * 100).toFixed(2)}¢ in summer. Against this household's own peak energy that is $${charts.pricing.storage.winter_saved_usd.toFixed(2)} over the billed 30 days and $${charts.pricing.storage.summer_saved_usd.toFixed(2)} across the metered summer — a ceiling on arbitrage, not a battery's return: no round-trip loss, no power limit, no days already full.`}
         >
           <Spread />
         </Figure>

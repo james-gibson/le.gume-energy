@@ -15,40 +15,63 @@ recorded kWh by them and print the result in dollars.
 
 ## The rates as supplied
 
-Read as dollars per kWh — the sheet says "cents per kilowatt hour" but writes `0.10380`, and the only
-reading consistent with a flat rate of about ten and a half cents is dollars. Rendered here as cents.
-
-| season | on-peak | off-peak | flat |
+| plan | period | summer, Jun 1 – Sep 30 | winter, Oct 1 – May 31 |
 | --- | --- | --- | --- |
-| summer, Jun 1 – Sep 30 | 2.13¢ | 7.88¢ | 10.38¢ |
-| winter, Oct 1 – May 31 | 18.33¢ | 6.79¢ | 8.57¢ |
+| Time of use (RE-TOU) | on-peak, 5–9 p.m. Mon–Fri | 21.28¢ | 18.33¢ |
+| Time of use (RE-TOU) | off-peak, all other times | 7.88¢ | 6.79¢ |
+| Flat rate (R-OO) | all day | 10.38¢ | 8.57¢ |
+
+The on-peak window is **5 p.m. to 9 p.m., Monday to Friday**; 9 p.m. is off-peak again, and weekends
+are off-peak all day. `21:00` is exclusive in the code so the hour is never counted twice.
 
 Excluded from every figure the site prints: the **$7.10/month Service & Facility charge**, and all
 other riders, fees and taxes. The fixed charge is identical under both plans, so it never changes
 which plan wins — but it does mean the totals here are lower than a real bill.
 
-## The summer reading is suspect
+## Where the boundary comes from
 
-As supplied, **summer on-peak (2.13¢) is below summer off-peak (7.88¢)**. That inverts the usual
-incentive — it would pay to use power at peak — and is very likely a transcription swap. The site
-does not silently choose: it prices the record both ways and draws both.
+The sheet: `peak_window` in `src/data/rates.json`. The utility's own hourly `On Peak` series is
+**checked against it, not used to infer it** — a boundary read from a day of rows is a coincidence, a
+boundary in the sheet is a contract. The derivation records whether the two agree (`agrees: true` at
+the time of writing), so a utility that moves its window shows up as a disagreement rather than a
+silently wrong chart.
 
-The plan comparison survives either reading, because summer off-peak is under the flat rate whether
-it is the 7.88¢ or the 2.13¢ figure. The **storage** conclusion does not survive it: as written,
-moving a kWh from off-peak to peak in summer *loses* 5.76¢; with the two figures exchanged it *pays*
-5.76¢. That is the whole reason to show both rather than pick the tidier one.
+Peak hours are counted on the local calendar day: Saturday and Sunday evening are off-peak even
+though the clock says 5 p.m.
+
+## What the two plans cost here
+
+Priced against the same recorded kWh:
+
+| window | flat | time of use | TOU costs |
+| --- | --- | --- | --- |
+| billed winter, 30 days (2026-10-15 → 11-13) | $26.97 | $27.11 | **+$0.14** |
+| metered winter, May 2025, 31 days | $24.25 | $25.21 | **+$0.96** |
+| metered summer, Jun–Aug 2025, 92 days | $229.64 | $244.14 | **+$14.50** |
+
+Time of use is dearer in all three windows. The peak price is more than double the flat rate, and
+this house does use the evening: 520.6 kWh of the summer import lands in the 5–9 p.m. window, against
+1,691.7 kWh off-peak.
+
+## What shifting a peak kWh is worth
+
+| season | spread | peak energy in the window | value |
+| --- | --- | --- | --- |
+| winter | 11.54¢/kWh | 49.7 kWh (billed 30 days) | $5.73 |
+| summer | 13.39¢/kWh | 520.6 kWh (metered 92 days) | $69.72 |
+
+That is a **ceiling** on arbitrage, not a battery's return. Round-trip losses, power limits, and the
+days a battery is already full are not in it, and neither is the cost of the battery.
 
 ## How a window is priced
 
 1. **Billed days.** The 30 days that carry the utility's own on/off-peak split, priced directly.
    All of them are winter.
-2. **Metered import.** The hourly utility file applies the tariff boundary (17:00–21:00, read from
-   the utility's `On Peak` series) to metered import, then prices each day in the season its date
-   falls in. May is winter; June to August is summer. That is how the summer dollars exist at all,
-   since no billed summer day carries a split.
-3. **Storage value.** The spread between on-peak and off-peak, per kWh, times the on-peak energy that
-   could have been moved. It is a ceiling on arbitrage, not a battery's return: round-trip losses,
-   power limits and the days a battery is already full are not in it.
+2. **Metered import.** The hourly utility file is split by the sheet's weekday rule, then priced by
+   the season its date falls in. May is winter; June to August is summer. That is how the summer
+   dollars exist at all, since no billed summer day carries a split.
+3. **Storage value.** The on-peak minus off-peak price, times the on-peak energy that could have been
+   moved.
 
 Two windows, two questions: the summer shape comes from metered hourly import in 2025, the billed
 split from thirty autumn days in 2026. They are never averaged together.

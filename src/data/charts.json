@@ -3160,12 +3160,14 @@
     "peak": {
       "from": 17,
       "to": 20,
-      "hours": [
-        17,
-        18,
-        19,
-        20
-      ]
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "agrees": true
     }
   },
   "touDays": {
@@ -3335,11 +3337,10 @@
       "service_facility_month_usd": 7.1,
       "note": "Other bill riders, fees and taxes are not in these rates, and no fixed charge is included in any figure the site prints."
     },
-    "reading": "Summer on-peak (2.13¢) is reported BELOW summer off-peak (7.88¢). That inverts the usual incentive — it would pay to use power at peak — and is very likely a transcription swap. The site prices both readings rather than choosing one silently; the swapped summer figures are the on-peak and off-peak values exchanged.",
     "rates": {
       "tou": {
         "summer": {
-          "on_peak": 0.021277,
+          "on_peak": 0.21277,
           "off_peak": 0.07884
         },
         "winter": {
@@ -3366,31 +3367,43 @@
       {
         "season": "winter",
         "days": 31,
-        "on": 75.2,
-        "off": 207.8,
-        "tou": 27.9,
+        "on": 51.9,
+        "off": 231.1,
+        "tou": 25.21,
         "flat": 24.25,
-        "delta": 3.65
+        "delta": 0.96
       },
       {
         "season": "summer",
         "days": 92,
-        "on": 747.9,
-        "off": 1464.4,
-        "tou": 131.37,
+        "on": 520.6,
+        "off": 1691.7,
+        "tou": 244.14,
         "flat": 229.64,
-        "delta": -98.27
+        "delta": 14.5
       }
     ],
     "spread": {
       "winter": 0.11539,
-      "summer_as_given": -0.05756,
-      "summer_if_swapped": 0.05756
+      "summer": 0.13393
+    },
+    "peak_window": {
+      "from_hour": 17,
+      "to_hour": 21,
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "note": "On-peak is 5 p.m. to 9 p.m., Monday to Friday. The end hour is exclusive: 21:00 is off-peak again. Weekends are off-peak all day."
     },
     "storage": {
       "winter_on_peak_kwh": 49.7,
       "winter_saved_usd": 5.73,
-      "summer_on_peak_kwh": 747.9
+      "summer_on_peak_kwh": 520.6,
+      "summer_saved_usd": 69.72
     }
   },
   "changes": [

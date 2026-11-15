@@ -438,6 +438,74 @@ const pricing = {
   storage,
 }
 
+// --- used against exported, and the on-peak share that decides the plan ---
+// Consumption is self-consumed plus imported; export is the rest of generation.
+// They are worth reading together: this household exports more than a third of
+// what it makes while still importing 315 kWh, and the plan turns on WHEN that
+// import lands.
+const joinedDays = joined.filter((row) => row.grid_series_count !== '0' && row.solar_production_kwh !== '')
+const usedSeries = joinedDays.map((row) => {
+  const self = Number(row.self_consumed_kwh) || 0
+  const imported = Number(row.grid_consumption_kwh) || 0
+  return {
+    d: row.date_local,
+    self: round(self, 2),
+    imported: round(imported, 2),
+    used: round(self + imported, 2),
+    exported: round(Number(row.grid_export_kwh) || 0, 2),
+    produced: round(Number(row.solar_production_kwh) || 0, 2),
+  }
+})
+const sumOf = (key) => round(usedSeries.reduce((sum, row) => sum + row[key], 0), 1)
+const usedVsExported = {
+  from: usedSeries[0]?.d ?? null,
+  to: usedSeries[usedSeries.length - 1]?.d ?? null,
+  days: usedSeries.length,
+  series: usedSeries,
+  totals: {
+    used: sumOf('used'),
+    self: sumOf('self'),
+    imported: sumOf('imported'),
+    exported: sumOf('exported'),
+    produced: sumOf('produced'),
+  },
+}
+
+// The break-even question: at what on-peak share does TOU equal the flat rate?
+// With on = s·T and off = (1-s)·T:
+//   s·p_on + (1-s)·p_off = flat          ->  s = (flat - p_off) / (p_on - p_off)
+// and with the solar credit included, the plan-level credits shift the answer.
+// Solved for the exact net-equality, not the closed form above, so the credit
+// and the window are both in it.
+const breakevenFor = (window, season, creditIncluded) => {
+  const on = window.on
+  const off = window.off
+  const total = on + off
+  const pOn = price(season, 'on')
+  const pOff = price(season, 'off')
+  const flatRate = price(season, 'flat')
+  let shift = 0
+  if (creditIncluded) {
+    const entry = credit.find((row) => row.season === season)
+    shift = (entry?.credit_tou ?? 0) - (entry?.credit_flat ?? 0)
+  }
+  const onBreakEven = Math.max(0, (total * (flatRate - pOff) + shift) / (pOn - pOff))
+  return {
+    days: window.days,
+    on: round(on, 1),
+    total: round(total, 1),
+    share: round(on / total, 4),
+    threshold: round(onBreakEven / total, 4),
+    move_kwh: round(Math.max(0, on - onBreakEven), 1),
+    move_per_day: round(Math.max(0, on - onBreakEven) / Math.max(1, window.days), 2),
+    credit_included: creditIncluded,
+  }
+}
+const breakeven = [
+  { window: 'billed winter, 30 d', ...breakevenFor(observed, 'winter', false) },
+  ...seasonal.map((row) => ({ window: `metered ${row.season}, ${row.days} d`, ...breakevenFor(row, row.season, true) })),
+]
+
 const payload = {
   generated_from: {
     manifest: 'public/data/manifest.json',
@@ -465,6 +533,8 @@ const payload = {
   tou,
   touDays,
   pricing,
+  usedVsExported,
+  breakeven,
   changes,
   windows,
 }
@@ -477,5 +547,6 @@ console.log(
     `${payload.balance.length} balance months, ${payload.yearly.length} years, ` +
     `${payload.recent.series.length} recent days, ${payload.recent.events.length} recent event(s), ` +
     `${payload.interventions.length} intervention(s), ${payload.touDays.days.length} TOU day(s), ` +
-    `pricing ${payload.pricing.observed.tou} vs ${payload.pricing.observed.flat} (TOU vs flat)`,
+    `pricing ${payload.pricing.observed.tou} vs ${payload.pricing.observed.flat} (TOU vs flat), ` +
+    `${payload.usedVsExported.totals.used} used / ${payload.usedVsExported.totals.exported} exported`,
 )

@@ -95,6 +95,42 @@ The credit is computed for the two **metered** windows only. The 30 billed days 
 total and no hourly export to bucket, so they are priced on import alone; that table is in the
 comparison above and is not mixed into a net figure.
 
+## The break-even share
+
+The plan decision collapses to one ratio: **the share of imported energy that lands in 5–9 p.m.**
+
+```
+s* = (flat - off-peak) / (on-peak - off-peak)
+
+winter:  (8.57 - 6.79) / (18.33 - 6.79)  = 15.4%
+summer: (10.38 - 7.88) / (21.28 - 7.88)  = 18.6%
+```
+
+Above that share time of use costs more; below it, less. The solar credit moves the line a little,
+so the site solves the exact net-equality per window rather than quoting the closed form.
+
+| window | on-peak share | break-even | energy to move |
+| --- | --- | --- | --- |
+| billed winter, 30 days | 15.8% | 15.4% | 1.2 kWh (0.04/day) |
+| metered winter, 31 days | 18.3% | 16.0% | 6.7 kWh (0.22/day) |
+| metered summer, 92 days | 23.5% | 17.8% | 126.9 kWh (1.38/day) |
+
+So the adjustment is a rounding error in winter and roughly 1.4 kWh a day in summer — a load the size
+of a dishwasher, moved out of the evening.
+
+### What the ratio does *not* know
+
+- **A repair or a parasitic draw removed at night moves the ratio the wrong way.** It lowers the
+  denominator (total import) while leaving the 5–9 p.m. energy alone, so the *share* rises even though
+  the bill falls. A smaller bill is still worth having, but it is not progress toward time of use
+  paying back.
+- **A battery moves both sides at once**: it removes on-peak import and adds off-peak charging. That
+  is the one change that attacks the ratio directly, and it is worth 11.54¢/kWh in winter and
+  13.39¢/kWh in summer — before round-trip losses and the battery's cost, which this record cannot
+  price.
+- **The ratio is a share, not a schedule.** Two houses with the same share can have very different
+  bills if one shifts a big load and the other a small one with a different duty cycle.
+
 ## How a window is priced
 
 1. **Billed days.** The 30 days that carry the utility's own on/off-peak split, priced directly.

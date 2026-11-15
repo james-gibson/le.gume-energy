@@ -1106,6 +1106,119 @@ function NetBill() {
   )
 }
 
+function UsedExported() {
+  const { series, totals } = charts.usedVsExported
+  const maxUp = Math.max(10, Math.ceil(Math.max(...series.map((row) => row.used)) / 10) * 10)
+  const maxDown = Math.max(10, Math.ceil(Math.max(...series.map((row) => row.exported)) / 10) * 10)
+  const zero = PAD.t + (IH * maxUp) / (maxUp + maxDown)
+  const up = (value: number) => zero - (value / maxUp) * (zero - PAD.t)
+  const down = (value: number) => zero + (value / maxDown) * (PAD.t + IH - zero)
+  const band = IW / series.length
+  const bar = Math.max(1.5, band * 0.72)
+  const months = series
+    .map((row, i) => ({ i, month: row.d.slice(0, 7) }))
+    .filter((entry, i, all) => i === 0 || entry.month !== all[i - 1].month)
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Electricity used against exported, by day">
+      <title>Electricity used (self-consumed plus imported) against exported, day by day</title>
+      {[maxUp, maxUp / 2].map((tick) => (
+        <g key={`up-${tick}`}>
+          <line x1={PAD.l} x2={W - PAD.r} y1={up(tick)} y2={up(tick)} className="text-line/60" stroke="currentColor" strokeDasharray="3 5" />
+          <text x={PAD.l - 9} y={up(tick)} textAnchor="end" dominantBaseline="middle" className="fill-current text-[10px] text-muted/70">
+            {tick}
+          </text>
+        </g>
+      ))}
+      {[maxDown / 2, maxDown].map((tick) => (
+        <g key={`down-${tick}`}>
+          <line x1={PAD.l} x2={W - PAD.r} y1={down(tick)} y2={down(tick)} className="text-line/60" stroke="currentColor" strokeDasharray="3 5" />
+          <text x={PAD.l - 9} y={down(tick)} textAnchor="end" dominantBaseline="middle" className="fill-current text-[10px] text-muted/70">
+            {tick}
+          </text>
+        </g>
+      ))}
+      <line x1={PAD.l} x2={W - PAD.r} y1={zero} y2={zero} className="text-body/40" stroke="currentColor" strokeWidth={1} />
+      {series.map((row, i) => {
+        const left = PAD.l + i * band + (band - bar) / 2
+        return (
+          <g key={row.d}>
+            <rect x={left} y={up(row.self)} width={bar} height={Math.max(0.5, zero - up(row.self))} className="text-accent" fill="currentColor" opacity={0.9}>
+              <title>{`${row.d}: ${row.self.toFixed(1)} kWh self-consumed of ${row.used.toFixed(1)} used`}</title>
+            </rect>
+            <rect x={left} y={up(row.used)} width={bar} height={Math.max(0, up(row.self) - up(row.used))} className="text-secondary" fill="currentColor" opacity={0.8}>
+              <title>{`${row.d}: ${row.imported.toFixed(1)} kWh imported`}</title>
+            </rect>
+            <rect x={left} y={zero} width={bar} height={Math.max(0.5, down(row.exported) - zero)} className="text-muted" fill="currentColor" opacity={0.75}>
+              <title>{`${row.d}: ${row.exported.toFixed(1)} kWh exported of ${row.produced.toFixed(1)} produced`}</title>
+            </rect>
+          </g>
+        )
+      })}
+      <g className="fill-current text-[10px]">
+        <text x={PAD.l + 4} y={PAD.t + 10} className="fill-current text-accent">self-consumed</text>
+        <text x={PAD.l + 4} y={PAD.t + 24} className="fill-current text-secondary">imported</text>
+        <text x={PAD.l + 4} y={zero + 14} className="fill-current text-muted">exported</text>
+        <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted/70">
+          {`${totals.used.toFixed(0)} kWh used · ${totals.exported.toFixed(0)} exported · ${totals.produced.toFixed(0)} produced`}
+        </text>
+      </g>
+      <g className="fill-current text-[10px] text-muted/70">
+        {months.map((entry) => (
+          <text key={entry.month} x={PAD.l + entry.i * band + band / 2} y={H - 4} textAnchor="middle">
+            {entry.month.slice(2)}
+          </text>
+        ))}
+      </g>
+    </svg>
+  )
+}
+
+function Breakeven() {
+  const rows = charts.breakeven
+  const max = Math.ceil(Math.max(...rows.map((row) => Math.max(row.share, row.threshold))) * 40) / 40
+  const left = 168
+  const width = W - left - 24
+  const rowHeight = 46
+  const height = 26 + rows.length * rowHeight
+  const x = (share: number) => left + (share / max) * width
+
+  return (
+    <svg viewBox={`0 0 ${W} ${height}`} className="w-full" role="img" aria-label="On-peak share of import against the break-even share">
+      <title>On-peak share of import, against the share at which time of use equals the flat rate</title>
+      {rows.map((row, i) => {
+        const top = 22 + i * rowHeight
+        const behind = row.share > row.threshold
+        return (
+          <g key={row.window}>
+            <text x={left - 10} y={top + 10} textAnchor="end" className="fill-current text-[10px] text-muted">
+              {row.window}
+            </text>
+            <rect x={left} y={top} width={x(row.share) - left} height={16} rx={2} className={behind ? 'text-secondary' : 'text-accent'} fill="currentColor" opacity={0.85}>
+              <title>{`${row.window}: on-peak ${(row.share * 100).toFixed(1)}% of ${row.total.toFixed(0)} kWh`}</title>
+            </rect>
+            <line x1={x(row.threshold)} x2={x(row.threshold)} y1={top - 3} y2={top + 19} className="text-body" stroke="currentColor" strokeWidth={1.5} />
+            <text x={x(row.threshold)} y={top - 5} textAnchor="middle" className="fill-current text-[9px] text-muted">
+              {`${(row.threshold * 100).toFixed(1)}%`}
+            </text>
+            <text x={left + 8} y={top + 11} className="fill-current text-[10px] text-body">
+              {`${(row.share * 100).toFixed(1)}%`}
+            </text>
+            <text x={x(Math.max(row.share, row.threshold)) + 10} y={top + 11} className="fill-current text-[10px] text-muted">
+              {row.move_kwh > 0
+                ? `move ${row.move_kwh.toFixed(1)} kWh · ${row.move_per_day.toFixed(2)}/day`
+                : 'already under the line'}
+            </text>
+            <text x={left} y={top + 32} className="fill-current text-[9px] text-muted/70">
+              {`${row.on.toFixed(1)} kWh on-peak of ${row.total.toFixed(0)} over ${row.days} days${row.credit_included ? ', credit included' : ', import only'}`}
+            </text>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
 export function Charts() {
   usePageMeta(
     'Charts',
@@ -1269,6 +1382,20 @@ export function Charts() {
           note={`Import cost minus the credit earned on export, priced at the rate in force when the energy was sent back. Winter sends ${charts.pricing.credit.find((row) => row.season === 'winter')?.total.toFixed(1)} kWh and summer ${charts.pricing.credit.find((row) => row.season === 'summer')?.total.toFixed(1)} kWh; only ${((charts.pricing.credit.find((row) => row.season === 'summer')?.on_peak_share ?? 0) * 100).toFixed(0)}% of the summer export lands in the 5–9 p.m. window, which is the utility's point: under time of use your own generation earns the higher credit only when it is produced in the evening. Net of that, flat wins both seasons — by more in summer than import alone, because the flat plan also credits 10.38¢ for the off-peak export that TOU credits at 7.88¢.`}
         >
           <NetBill />
+        </Figure>
+
+        <Figure
+          title="Used against exported"
+          note={`The ${charts.usedVsExported.days} days the utility join covers, in order: ${charts.usedVsExported.totals.used.toFixed(0)} kWh used against ${charts.usedVsExported.totals.exported.toFixed(0)} kWh exported, out of ${charts.usedVsExported.totals.produced.toFixed(0)} kWh produced. Used is self-consumed plus imported, so the upper bars are what the house took and the lower bars are what the panels gave away. The two blocks are not contiguous — May to August 2025, then October and November 2026 — and the second block is where the ${charts.usedVsExported.series.filter((row) => row.d.startsWith('2026')).length}-day billed window begins.`}
+        >
+          <UsedExported />
+        </Figure>
+
+        <Figure
+          title="What has to move for time of use to pay back"
+          note="The plan turns on one ratio: the share of imported energy that lands in the 5–9 p.m. window. Above the line, time of use costs more; below it, it costs less. The line is the share at which the two plans price the same energy — with the solar credit included where the window has hourly export. The text is how much on-peak energy has to move, and how much that is per day."
+        >
+          <Breakeven />
         </Figure>
       </div>
 

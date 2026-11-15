@@ -3435,6 +3435,1279 @@
       "summer_saved_usd": 69.72
     }
   },
+  "usedVsExported": {
+    "from": "2025-05-01",
+    "to": "2026-11-13",
+    "days": 153,
+    "series": [
+      {
+        "d": "2025-05-01",
+        "self": 35.36,
+        "imported": 10.01,
+        "used": 45.37,
+        "exported": 0.56,
+        "produced": 35.92
+      },
+      {
+        "d": "2025-05-02",
+        "self": 42.97,
+        "imported": 8.58,
+        "used": 51.56,
+        "exported": 0.47,
+        "produced": 43.44
+      },
+      {
+        "d": "2025-05-03",
+        "self": 41.72,
+        "imported": 8.03,
+        "used": 49.75,
+        "exported": 0.48,
+        "produced": 42.2
+      },
+      {
+        "d": "2025-05-04",
+        "self": 40.7,
+        "imported": 9.11,
+        "used": 49.81,
+        "exported": 0.26,
+        "produced": 40.96
+      },
+      {
+        "d": "2025-05-05",
+        "self": 33.39,
+        "imported": 8.5,
+        "used": 41.89,
+        "exported": 0.75,
+        "produced": 34.14
+      },
+      {
+        "d": "2025-05-06",
+        "self": 3.33,
+        "imported": 14.43,
+        "used": 17.75,
+        "exported": 2.04,
+        "produced": 5.36
+      },
+      {
+        "d": "2025-05-07",
+        "self": 17.75,
+        "imported": 13.62,
+        "used": 31.37,
+        "exported": 1.26,
+        "produced": 19.01
+      },
+      {
+        "d": "2025-05-08",
+        "self": 42.44,
+        "imported": 9.26,
+        "used": 51.7,
+        "exported": 0.58,
+        "produced": 43.02
+      },
+      {
+        "d": "2025-05-09",
+        "self": 39.45,
+        "imported": 8.47,
+        "used": 47.92,
+        "exported": 0.41,
+        "produced": 39.86
+      },
+      {
+        "d": "2025-05-10",
+        "self": 40.75,
+        "imported": 8.68,
+        "used": 49.43,
+        "exported": 0.57,
+        "produced": 41.32
+      },
+      {
+        "d": "2025-05-11",
+        "self": 37.44,
+        "imported": 8.69,
+        "used": 46.13,
+        "exported": 1.01,
+        "produced": 38.46
+      },
+      {
+        "d": "2025-05-12",
+        "self": 39.84,
+        "imported": 10.24,
+        "used": 50.09,
+        "exported": 0.01,
+        "produced": 39.85
+      },
+      {
+        "d": "2025-05-13",
+        "self": 33.13,
+        "imported": 8.19,
+        "used": 41.33,
+        "exported": 0.19,
+        "produced": 33.32
+      },
+      {
+        "d": "2025-05-14",
+        "self": 33.52,
+        "imported": 15.13,
+        "used": 48.65,
+        "exported": 0.43,
+        "produced": 33.95
+      },
+      {
+        "d": "2025-05-15",
+        "self": 43.42,
+        "imported": 9.61,
+        "used": 53.03,
+        "exported": 0.23,
+        "produced": 43.65
+      },
+      {
+        "d": "2025-05-16",
+        "self": 40.7,
+        "imported": 8.75,
+        "used": 49.45,
+        "exported": 0.1,
+        "produced": 40.8
+      },
+      {
+        "d": "2025-05-17",
+        "self": 29.34,
+        "imported": 5.97,
+        "used": 35.3,
+        "exported": 0.66,
+        "produced": 30
+      },
+      {
+        "d": "2025-05-18",
+        "self": 29.77,
+        "imported": 6.25,
+        "used": 36.02,
+        "exported": 0.63,
+        "produced": 30.41
+      },
+      {
+        "d": "2025-05-19",
+        "self": 27.96,
+        "imported": 5.83,
+        "used": 33.79,
+        "exported": 0.4,
+        "produced": 28.37
+      },
+      {
+        "d": "2025-05-20",
+        "self": 41.69,
+        "imported": 6.71,
+        "used": 48.4,
+        "exported": 0.19,
+        "produced": 41.88
+      },
+      {
+        "d": "2025-05-21",
+        "self": 41.34,
+        "imported": 6.31,
+        "used": 47.65,
+        "exported": 0.61,
+        "produced": 41.95
+      },
+      {
+        "d": "2025-05-22",
+        "self": 39.87,
+        "imported": 5.82,
+        "used": 45.69,
+        "exported": 0.28,
+        "produced": 40.15
+      },
+      {
+        "d": "2025-05-23",
+        "self": 37.05,
+        "imported": 6.07,
+        "used": 43.12,
+        "exported": 0.31,
+        "produced": 37.37
+      },
+      {
+        "d": "2025-05-24",
+        "self": 22.98,
+        "imported": 11.14,
+        "used": 34.12,
+        "exported": 0.21,
+        "produced": 23.19
+      },
+      {
+        "d": "2025-05-25",
+        "self": 10.72,
+        "imported": 16.03,
+        "used": 26.75,
+        "exported": 0.39,
+        "produced": 11.11
+      },
+      {
+        "d": "2025-05-26",
+        "self": 21.18,
+        "imported": 8.79,
+        "used": 29.98,
+        "exported": 0.25,
+        "produced": 21.43
+      },
+      {
+        "d": "2025-05-27",
+        "self": 33.34,
+        "imported": 10.05,
+        "used": 43.4,
+        "exported": 0.69,
+        "produced": 34.03
+      },
+      {
+        "d": "2025-05-28",
+        "self": 33.29,
+        "imported": 15.52,
+        "used": 48.81,
+        "exported": 0.99,
+        "produced": 34.29
+      },
+      {
+        "d": "2025-05-29",
+        "self": 23.83,
+        "imported": 6.22,
+        "used": 30.05,
+        "exported": 0.45,
+        "produced": 24.27
+      },
+      {
+        "d": "2025-05-30",
+        "self": 36.74,
+        "imported": 6.83,
+        "used": 43.57,
+        "exported": 0.12,
+        "produced": 36.86
+      },
+      {
+        "d": "2025-05-31",
+        "self": 39.72,
+        "imported": 6.15,
+        "used": 45.86,
+        "exported": 0.25,
+        "produced": 39.96
+      },
+      {
+        "d": "2025-06-01",
+        "self": 34.84,
+        "imported": 10.23,
+        "used": 45.07,
+        "exported": 0.82,
+        "produced": 35.66
+      },
+      {
+        "d": "2025-06-02",
+        "self": 25.6,
+        "imported": 7.08,
+        "used": 32.68,
+        "exported": 0.13,
+        "produced": 25.73
+      },
+      {
+        "d": "2025-06-03",
+        "self": 11.98,
+        "imported": 9.91,
+        "used": 21.9,
+        "exported": 0.39,
+        "produced": 12.37
+      },
+      {
+        "d": "2025-06-04",
+        "self": 31.16,
+        "imported": 7.44,
+        "used": 38.6,
+        "exported": 0.62,
+        "produced": 31.78
+      },
+      {
+        "d": "2025-06-05",
+        "self": 35.38,
+        "imported": 9.51,
+        "used": 44.88,
+        "exported": 0.5,
+        "produced": 35.88
+      },
+      {
+        "d": "2025-06-06",
+        "self": 32.77,
+        "imported": 6.84,
+        "used": 39.6,
+        "exported": 0.34,
+        "produced": 33.1
+      },
+      {
+        "d": "2025-06-07",
+        "self": 40.66,
+        "imported": 6.82,
+        "used": 47.48,
+        "exported": 0.04,
+        "produced": 40.7
+      },
+      {
+        "d": "2025-06-08",
+        "self": 30.99,
+        "imported": 5.69,
+        "used": 36.69,
+        "exported": 0.36,
+        "produced": 31.36
+      },
+      {
+        "d": "2025-06-09",
+        "self": 40.65,
+        "imported": 6.32,
+        "used": 46.97,
+        "exported": 0.13,
+        "produced": 40.78
+      },
+      {
+        "d": "2025-06-10",
+        "self": 39.93,
+        "imported": 7.79,
+        "used": 47.73,
+        "exported": 0.36,
+        "produced": 40.29
+      },
+      {
+        "d": "2025-06-11",
+        "self": 30.86,
+        "imported": 15.03,
+        "used": 45.88,
+        "exported": 4.58,
+        "produced": 35.44
+      },
+      {
+        "d": "2025-06-12",
+        "self": 18.49,
+        "imported": 8.94,
+        "used": 27.43,
+        "exported": 7.77,
+        "produced": 26.26
+      },
+      {
+        "d": "2025-06-13",
+        "self": 29.41,
+        "imported": 15.47,
+        "used": 44.88,
+        "exported": 6.79,
+        "produced": 36.2
+      },
+      {
+        "d": "2025-06-14",
+        "self": 33.11,
+        "imported": 27.55,
+        "used": 60.66,
+        "exported": 5.95,
+        "produced": 39.06
+      },
+      {
+        "d": "2025-06-15",
+        "self": 28.03,
+        "imported": 35.38,
+        "used": 63.41,
+        "exported": 2.76,
+        "produced": 30.79
+      },
+      {
+        "d": "2025-06-16",
+        "self": 37.23,
+        "imported": 27.87,
+        "used": 65.1,
+        "exported": 3.17,
+        "produced": 40.4
+      },
+      {
+        "d": "2025-06-17",
+        "self": 7.8,
+        "imported": 32.67,
+        "used": 40.47,
+        "exported": 6.8,
+        "produced": 14.6
+      },
+      {
+        "d": "2025-06-18",
+        "self": 38.31,
+        "imported": 29.3,
+        "used": 67.61,
+        "exported": 1.96,
+        "produced": 40.27
+      },
+      {
+        "d": "2025-06-19",
+        "self": 37.95,
+        "imported": 32.98,
+        "used": 70.93,
+        "exported": 2.42,
+        "produced": 40.36
+      },
+      {
+        "d": "2025-06-20",
+        "self": 38.95,
+        "imported": 37.53,
+        "used": 76.48,
+        "exported": 1.67,
+        "produced": 40.62
+      },
+      {
+        "d": "2025-06-21",
+        "self": 38.76,
+        "imported": 37.23,
+        "used": 75.98,
+        "exported": 1,
+        "produced": 39.76
+      },
+      {
+        "d": "2025-06-22",
+        "self": 39.32,
+        "imported": 41.19,
+        "used": 80.51,
+        "exported": 1.28,
+        "produced": 40.6
+      },
+      {
+        "d": "2025-06-23",
+        "self": 18.22,
+        "imported": 21.92,
+        "used": 40.15,
+        "exported": 3.25,
+        "produced": 21.48
+      },
+      {
+        "d": "2025-06-24",
+        "self": 19.25,
+        "imported": 16.57,
+        "used": 35.82,
+        "exported": 6.32,
+        "produced": 25.57
+      },
+      {
+        "d": "2025-06-25",
+        "self": 21.19,
+        "imported": 15.24,
+        "used": 36.43,
+        "exported": 6.62,
+        "produced": 27.81
+      },
+      {
+        "d": "2025-06-26",
+        "self": 37.22,
+        "imported": 25.52,
+        "used": 62.74,
+        "exported": 3.11,
+        "produced": 40.33
+      },
+      {
+        "d": "2025-06-27",
+        "self": 34.42,
+        "imported": 32.93,
+        "used": 67.35,
+        "exported": 2.77,
+        "produced": 37.19
+      },
+      {
+        "d": "2025-06-28",
+        "self": 35.67,
+        "imported": 26.29,
+        "used": 61.96,
+        "exported": 2.69,
+        "produced": 38.36
+      },
+      {
+        "d": "2025-06-29",
+        "self": 27.43,
+        "imported": 15.11,
+        "used": 42.54,
+        "exported": 6.77,
+        "produced": 34.2
+      },
+      {
+        "d": "2025-06-30",
+        "self": 22.97,
+        "imported": 15.14,
+        "used": 38.11,
+        "exported": 3.35,
+        "produced": 26.33
+      },
+      {
+        "d": "2025-07-01",
+        "self": 29.48,
+        "imported": 13.87,
+        "used": 43.35,
+        "exported": 7.52,
+        "produced": 37
+      },
+      {
+        "d": "2025-07-02",
+        "self": 37.05,
+        "imported": 28.02,
+        "used": 65.07,
+        "exported": 1.48,
+        "produced": 38.53
+      },
+      {
+        "d": "2025-07-03",
+        "self": 32.54,
+        "imported": 20.84,
+        "used": 53.38,
+        "exported": 6.68,
+        "produced": 39.22
+      },
+      {
+        "d": "2025-07-04",
+        "self": 26.26,
+        "imported": 27.6,
+        "used": 53.86,
+        "exported": 4.59,
+        "produced": 30.85
+      },
+      {
+        "d": "2025-07-05",
+        "self": 28.36,
+        "imported": 21.06,
+        "used": 49.42,
+        "exported": 5.79,
+        "produced": 34.15
+      },
+      {
+        "d": "2025-07-06",
+        "self": 38.74,
+        "imported": 23.26,
+        "used": 62.01,
+        "exported": 0.85,
+        "produced": 39.59
+      },
+      {
+        "d": "2025-07-07",
+        "self": 27.98,
+        "imported": 19.03,
+        "used": 47,
+        "exported": 6.77,
+        "produced": 34.75
+      },
+      {
+        "d": "2025-07-08",
+        "self": 30.4,
+        "imported": 28.32,
+        "used": 58.72,
+        "exported": 5.28,
+        "produced": 35.68
+      },
+      {
+        "d": "2025-07-09",
+        "self": 38.38,
+        "imported": 33.87,
+        "used": 72.25,
+        "exported": 0.74,
+        "produced": 39.12
+      },
+      {
+        "d": "2025-07-10",
+        "self": 15.6,
+        "imported": 29.74,
+        "used": 45.34,
+        "exported": 6.76,
+        "produced": 22.35
+      },
+      {
+        "d": "2025-07-11",
+        "self": 27.84,
+        "imported": 12.42,
+        "used": 40.25,
+        "exported": 9.6,
+        "produced": 37.44
+      },
+      {
+        "d": "2025-07-12",
+        "self": 36.41,
+        "imported": 21.18,
+        "used": 57.59,
+        "exported": 1.93,
+        "produced": 38.34
+      },
+      {
+        "d": "2025-07-13",
+        "self": 37.35,
+        "imported": 21.47,
+        "used": 58.82,
+        "exported": 0.68,
+        "produced": 38.03
+      },
+      {
+        "d": "2025-07-14",
+        "self": 28.79,
+        "imported": 37.84,
+        "used": 66.63,
+        "exported": 2.67,
+        "produced": 31.46
+      },
+      {
+        "d": "2025-07-15",
+        "self": 21.3,
+        "imported": 35.49,
+        "used": 56.79,
+        "exported": 9.77,
+        "produced": 31.07
+      },
+      {
+        "d": "2025-07-16",
+        "self": 14.28,
+        "imported": 24.09,
+        "used": 38.37,
+        "exported": 3.89,
+        "produced": 18.17
+      },
+      {
+        "d": "2025-07-17",
+        "self": 30.91,
+        "imported": 31.87,
+        "used": 62.78,
+        "exported": 2.69,
+        "produced": 33.6
+      },
+      {
+        "d": "2025-07-18",
+        "self": 29.4,
+        "imported": 29.39,
+        "used": 58.79,
+        "exported": 5.56,
+        "produced": 34.96
+      },
+      {
+        "d": "2025-07-19",
+        "self": 30.94,
+        "imported": 26.59,
+        "used": 57.53,
+        "exported": 4.88,
+        "produced": 35.82
+      },
+      {
+        "d": "2025-07-20",
+        "self": 30.99,
+        "imported": 39.49,
+        "used": 70.48,
+        "exported": 3.26,
+        "produced": 34.25
+      },
+      {
+        "d": "2025-07-21",
+        "self": 28.25,
+        "imported": 40.29,
+        "used": 68.54,
+        "exported": 5.12,
+        "produced": 33.37
+      },
+      {
+        "d": "2025-07-22",
+        "self": 25.32,
+        "imported": 31.3,
+        "used": 56.62,
+        "exported": 4.03,
+        "produced": 29.36
+      },
+      {
+        "d": "2025-07-23",
+        "self": 23.39,
+        "imported": 21.36,
+        "used": 44.75,
+        "exported": 7.68,
+        "produced": 31.07
+      },
+      {
+        "d": "2025-07-24",
+        "self": 22.11,
+        "imported": 21.13,
+        "used": 43.24,
+        "exported": 6.33,
+        "produced": 28.44
+      },
+      {
+        "d": "2025-07-25",
+        "self": 35.95,
+        "imported": 24.04,
+        "used": 59.99,
+        "exported": 1.08,
+        "produced": 37.03
+      },
+      {
+        "d": "2025-07-26",
+        "self": 34.19,
+        "imported": 34.55,
+        "used": 68.74,
+        "exported": 1.89,
+        "produced": 36.08
+      },
+      {
+        "d": "2025-07-27",
+        "self": 35.67,
+        "imported": 37.37,
+        "used": 73.05,
+        "exported": 1.15,
+        "produced": 36.83
+      },
+      {
+        "d": "2025-07-28",
+        "self": 27.67,
+        "imported": 26.9,
+        "used": 54.57,
+        "exported": 5.56,
+        "produced": 33.23
+      },
+      {
+        "d": "2025-07-29",
+        "self": 11.2,
+        "imported": 27.92,
+        "used": 39.13,
+        "exported": 5.02,
+        "produced": 16.22
+      },
+      {
+        "d": "2025-07-30",
+        "self": 25.5,
+        "imported": 23.39,
+        "used": 48.89,
+        "exported": 2.01,
+        "produced": 27.51
+      },
+      {
+        "d": "2025-07-31",
+        "self": 25.16,
+        "imported": 23.79,
+        "used": 48.95,
+        "exported": 4.44,
+        "produced": 29.6
+      },
+      {
+        "d": "2025-08-01",
+        "self": 24.05,
+        "imported": 18.74,
+        "used": 42.78,
+        "exported": 5.2,
+        "produced": 29.25
+      },
+      {
+        "d": "2025-08-02",
+        "self": 17.42,
+        "imported": 25.23,
+        "used": 42.65,
+        "exported": 4.59,
+        "produced": 22.01
+      },
+      {
+        "d": "2025-08-03",
+        "self": 32.93,
+        "imported": 23.79,
+        "used": 56.72,
+        "exported": 3.04,
+        "produced": 35.98
+      },
+      {
+        "d": "2025-08-04",
+        "self": 31.94,
+        "imported": 29.33,
+        "used": 61.27,
+        "exported": 2.75,
+        "produced": 34.68
+      },
+      {
+        "d": "2025-08-05",
+        "self": 28.89,
+        "imported": 34.48,
+        "used": 63.37,
+        "exported": 3.02,
+        "produced": 31.91
+      },
+      {
+        "d": "2025-08-06",
+        "self": 17.22,
+        "imported": 33.47,
+        "used": 50.69,
+        "exported": 9.15,
+        "produced": 26.37
+      },
+      {
+        "d": "2025-08-07",
+        "self": 26.2,
+        "imported": 45.21,
+        "used": 71.41,
+        "exported": 5.76,
+        "produced": 31.96
+      },
+      {
+        "d": "2025-08-08",
+        "self": 20.25,
+        "imported": 35.68,
+        "used": 55.93,
+        "exported": 3.14,
+        "produced": 23.39
+      },
+      {
+        "d": "2025-08-09",
+        "self": 24.86,
+        "imported": 27.55,
+        "used": 52.41,
+        "exported": 4.53,
+        "produced": 29.38
+      },
+      {
+        "d": "2025-08-10",
+        "self": 21.77,
+        "imported": 23.43,
+        "used": 45.2,
+        "exported": 3.4,
+        "produced": 25.18
+      },
+      {
+        "d": "2025-08-11",
+        "self": 31.11,
+        "imported": 25.87,
+        "used": 56.98,
+        "exported": 2.98,
+        "produced": 34.09
+      },
+      {
+        "d": "2025-08-12",
+        "self": 33.46,
+        "imported": 27.72,
+        "used": 61.18,
+        "exported": 0.35,
+        "produced": 33.81
+      },
+      {
+        "d": "2025-08-13",
+        "self": 31.31,
+        "imported": 37.23,
+        "used": 68.53,
+        "exported": 1.92,
+        "produced": 33.23
+      },
+      {
+        "d": "2025-08-14",
+        "self": 26.86,
+        "imported": 32.66,
+        "used": 59.52,
+        "exported": 1.83,
+        "produced": 28.7
+      },
+      {
+        "d": "2025-08-15",
+        "self": 27.96,
+        "imported": 28.52,
+        "used": 56.48,
+        "exported": 4.37,
+        "produced": 32.32
+      },
+      {
+        "d": "2025-08-16",
+        "self": 22.85,
+        "imported": 26.26,
+        "used": 49.11,
+        "exported": 3.64,
+        "produced": 26.49
+      },
+      {
+        "d": "2025-08-17",
+        "self": 31.93,
+        "imported": 31.61,
+        "used": 63.54,
+        "exported": 2.15,
+        "produced": 34.08
+      },
+      {
+        "d": "2025-08-18",
+        "self": 23.3,
+        "imported": 26.72,
+        "used": 50.02,
+        "exported": 8.07,
+        "produced": 31.37
+      },
+      {
+        "d": "2025-08-19",
+        "self": 30.21,
+        "imported": 25.67,
+        "used": 55.87,
+        "exported": 2.6,
+        "produced": 32.81
+      },
+      {
+        "d": "2025-08-20",
+        "self": 31.01,
+        "imported": 38.42,
+        "used": 69.43,
+        "exported": 1.14,
+        "produced": 32.14
+      },
+      {
+        "d": "2025-08-21",
+        "self": 30.22,
+        "imported": 36.27,
+        "used": 66.48,
+        "exported": 2.1,
+        "produced": 32.32
+      },
+      {
+        "d": "2025-08-22",
+        "self": 25.04,
+        "imported": 16.57,
+        "used": 41.61,
+        "exported": 3.25,
+        "produced": 28.29
+      },
+      {
+        "d": "2025-08-23",
+        "self": 29.01,
+        "imported": 23.87,
+        "used": 52.88,
+        "exported": 0.95,
+        "produced": 29.97
+      },
+      {
+        "d": "2025-08-24",
+        "self": 20.6,
+        "imported": 13.45,
+        "used": 34.04,
+        "exported": 1.51,
+        "produced": 22.11
+      },
+      {
+        "d": "2025-08-25",
+        "self": 14.98,
+        "imported": 12.53,
+        "used": 27.51,
+        "exported": 3.55,
+        "produced": 18.53
+      },
+      {
+        "d": "2025-08-26",
+        "self": 24.16,
+        "imported": 16.13,
+        "used": 40.29,
+        "exported": 2.31,
+        "produced": 26.47
+      },
+      {
+        "d": "2025-08-27",
+        "self": 23.75,
+        "imported": 17.49,
+        "used": 41.24,
+        "exported": 1.02,
+        "produced": 24.77
+      },
+      {
+        "d": "2025-08-28",
+        "self": 25.07,
+        "imported": 17.12,
+        "used": 42.18,
+        "exported": 4.2,
+        "produced": 29.27
+      },
+      {
+        "d": "2025-08-29",
+        "self": 15.5,
+        "imported": 16.15,
+        "used": 31.65,
+        "exported": 5.26,
+        "produced": 20.77
+      },
+      {
+        "d": "2025-08-30",
+        "self": 20.59,
+        "imported": 13.61,
+        "used": 34.19,
+        "exported": 5.59,
+        "produced": 26.17
+      },
+      {
+        "d": "2025-08-31",
+        "self": 30.86,
+        "imported": 22.79,
+        "used": 53.66,
+        "exported": 0.6,
+        "produced": 31.46
+      },
+      {
+        "d": "2026-10-15",
+        "self": 5.25,
+        "imported": 11.07,
+        "used": 16.32,
+        "exported": 5.16,
+        "produced": 10.4
+      },
+      {
+        "d": "2026-10-16",
+        "self": 4.35,
+        "imported": 9.88,
+        "used": 14.23,
+        "exported": 16.8,
+        "produced": 21.15
+      },
+      {
+        "d": "2026-10-17",
+        "self": 5.97,
+        "imported": 11.63,
+        "used": 17.6,
+        "exported": 14.2,
+        "produced": 20.16
+      },
+      {
+        "d": "2026-10-18",
+        "self": 5.71,
+        "imported": 9.29,
+        "used": 14.99,
+        "exported": 12.68,
+        "produced": 18.39
+      },
+      {
+        "d": "2026-10-19",
+        "self": 6.04,
+        "imported": 8.16,
+        "used": 14.2,
+        "exported": 13.26,
+        "produced": 19.3
+      },
+      {
+        "d": "2026-10-20",
+        "self": 4.5,
+        "imported": 9.06,
+        "used": 13.56,
+        "exported": 9.11,
+        "produced": 13.61
+      },
+      {
+        "d": "2026-10-21",
+        "self": 6.21,
+        "imported": 8.25,
+        "used": 14.46,
+        "exported": 13.06,
+        "produced": 19.27
+      },
+      {
+        "d": "2026-10-22",
+        "self": 4.71,
+        "imported": 9.03,
+        "used": 13.73,
+        "exported": 6.68,
+        "produced": 11.38
+      },
+      {
+        "d": "2026-10-23",
+        "self": 4.89,
+        "imported": 8.28,
+        "used": 13.17,
+        "exported": 13.65,
+        "produced": 18.54
+      },
+      {
+        "d": "2026-10-24",
+        "self": 5.31,
+        "imported": 8.8,
+        "used": 14.11,
+        "exported": 8.89,
+        "produced": 14.2
+      },
+      {
+        "d": "2026-10-25",
+        "self": 5.28,
+        "imported": 10.4,
+        "used": 15.68,
+        "exported": 13,
+        "produced": 18.28
+      },
+      {
+        "d": "2026-10-26",
+        "self": 5.12,
+        "imported": 10.19,
+        "used": 15.31,
+        "exported": 7.58,
+        "produced": 12.7
+      },
+      {
+        "d": "2026-10-27",
+        "self": 4.91,
+        "imported": 9.82,
+        "used": 14.73,
+        "exported": 14.09,
+        "produced": 19
+      },
+      {
+        "d": "2026-10-28",
+        "self": 4.67,
+        "imported": 11.31,
+        "used": 15.99,
+        "exported": 9.41,
+        "produced": 14.08
+      },
+      {
+        "d": "2026-10-29",
+        "self": 6.05,
+        "imported": 10,
+        "used": 16.06,
+        "exported": 11.63,
+        "produced": 17.68
+      },
+      {
+        "d": "2026-10-30",
+        "self": 5.27,
+        "imported": 9.48,
+        "used": 14.75,
+        "exported": 10.61,
+        "produced": 15.88
+      },
+      {
+        "d": "2026-10-31",
+        "self": 4.43,
+        "imported": 11.08,
+        "used": 15.51,
+        "exported": 3.32,
+        "produced": 7.75
+      },
+      {
+        "d": "2026-11-01",
+        "self": 4.12,
+        "imported": 12.5,
+        "used": 16.63,
+        "exported": 7.55,
+        "produced": 11.67
+      },
+      {
+        "d": "2026-11-02",
+        "self": 3.64,
+        "imported": 13.47,
+        "used": 17.11,
+        "exported": 0.6,
+        "produced": 4.24
+      },
+      {
+        "d": "2026-11-03",
+        "self": 4.39,
+        "imported": 11.55,
+        "used": 15.95,
+        "exported": 10.73,
+        "produced": 15.12
+      },
+      {
+        "d": "2026-11-04",
+        "self": 5.58,
+        "imported": 11.29,
+        "used": 16.87,
+        "exported": 8.86,
+        "produced": 14.44
+      },
+      {
+        "d": "2026-11-05",
+        "self": 5.11,
+        "imported": 11.45,
+        "used": 16.56,
+        "exported": 10.82,
+        "produced": 15.93
+      },
+      {
+        "d": "2026-11-06",
+        "self": 5.94,
+        "imported": 9.91,
+        "used": 15.85,
+        "exported": 9.07,
+        "produced": 15
+      },
+      {
+        "d": "2026-11-07",
+        "self": 4.35,
+        "imported": 12.33,
+        "used": 16.68,
+        "exported": 11.4,
+        "produced": 15.75
+      },
+      {
+        "d": "2026-11-08",
+        "self": 4.74,
+        "imported": 11.75,
+        "used": 16.48,
+        "exported": 10.64,
+        "produced": 15.38
+      },
+      {
+        "d": "2026-11-09",
+        "self": 5.09,
+        "imported": 10.95,
+        "used": 16.03,
+        "exported": 9.97,
+        "produced": 15.06
+      },
+      {
+        "d": "2026-11-10",
+        "self": 4.84,
+        "imported": 12.32,
+        "used": 17.15,
+        "exported": 11.07,
+        "produced": 15.9
+      },
+      {
+        "d": "2026-11-11",
+        "self": 4.6,
+        "imported": 13.79,
+        "used": 18.39,
+        "exported": 10.59,
+        "produced": 15.19
+      },
+      {
+        "d": "2026-11-12",
+        "self": 6.11,
+        "imported": 11.94,
+        "used": 18.05,
+        "exported": 8.45,
+        "produced": 14.56
+      },
+      {
+        "d": "2026-11-13",
+        "self": 10.64,
+        "imported": 5.77,
+        "used": 16.41,
+        "exported": 3.55,
+        "produced": 14.19
+      }
+    ],
+    "totals": {
+      "used": 6620.1,
+      "self": 3793.8,
+      "imported": 2826.3,
+      "exported": 636.6,
+      "produced": 4430.4
+    }
+  },
+  "breakeven": [
+    {
+      "window": "billed winter, 30 d",
+      "days": 30,
+      "on": 49.7,
+      "total": 314.7,
+      "share": 0.1579,
+      "threshold": 0.1541,
+      "move_kwh": 1.2,
+      "move_per_day": 0.04,
+      "credit_included": false
+    },
+    {
+      "window": "metered winter, 31 d",
+      "days": 31,
+      "on": 51.9,
+      "total": 283,
+      "share": 0.1834,
+      "threshold": 0.1596,
+      "move_kwh": 6.7,
+      "move_per_day": 0.22,
+      "credit_included": true
+    },
+    {
+      "window": "metered summer, 92 d",
+      "days": 92,
+      "on": 520.6,
+      "total": 2212.3,
+      "share": 0.2353,
+      "threshold": 0.178,
+      "move_kwh": 126.9,
+      "move_per_day": 1.38,
+      "credit_included": true
+    }
+  ],
   "changes": [
     {
       "start": "2026-01-10",

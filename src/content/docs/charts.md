@@ -67,6 +67,11 @@ on the figure.
 - The solar credit and the net bill: import cost minus the credit earned on
   export, priced at the rate in force when it was exported, for the two metered
   windows.
+- Used against exported, day by day, over the days the utility join covers:
+  self-consumed and imported above the line, exported below it.
+- What has to move for time of use to pay back: the on-peak share of import
+  against the break-even share, and the kWh per day that has to leave the
+  evening.
 - One clear day at 15-minute resolution: the highest-energy day in the record.
 - The self-consumption ratio over the utility window.
 - Where monthly production goes: self-consumed and exported stacked, with the

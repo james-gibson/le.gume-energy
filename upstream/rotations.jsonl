@@ -14,3 +14,5 @@
 {"event":"rotation","rotation":"r000007","isotope":"tariff","subject":"2026-11-15 rate sheet v2","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T20:04:50.609Z"}
 {"event":"open","isotope":"tariff","note":"solar credit at the export-time rate: flat wins net in both metered windows","at":"2026-11-15T20:09:29.412Z"}
 {"event":"rotation","rotation":"r000008","isotope":"tariff","subject":"2026-11-15 credit","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T20:09:29.458Z"}
+{"event":"open","isotope":"tariff","note":"used vs exported, and the on-peak share that decides the plan","at":"2026-11-15T20:16:54.917Z"}
+{"event":"rotation","rotation":"r000009","isotope":"tariff","subject":"2026-11-15 breakeven","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T20:16:54.963Z"}

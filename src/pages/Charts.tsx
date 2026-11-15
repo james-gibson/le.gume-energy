@@ -1160,7 +1160,7 @@ function UsedExported() {
         <text x={PAD.l + 4} y={PAD.t + 24} className="fill-current text-secondary">imported</text>
         <text x={PAD.l + 4} y={zero + 14} className="fill-current text-muted">exported</text>
         <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted/70">
-          {`${totals.used.toFixed(0)} kWh used · ${totals.exported.toFixed(0)} exported · ${totals.produced.toFixed(0)} produced`}
+          {`${totals.used.toLocaleString(undefined, { maximumFractionDigits: 0 })} kWh used · ${totals.exported.toFixed(0)} exported · ${totals.produced.toFixed(0)} produced`}
         </text>
       </g>
       <g className="fill-current text-[10px] text-muted/70">
@@ -1386,7 +1386,7 @@ export function Charts() {
 
         <Figure
           title="Used against exported"
-          note={`The ${charts.usedVsExported.days} days the utility join covers, in order: ${charts.usedVsExported.totals.used.toFixed(0)} kWh used against ${charts.usedVsExported.totals.exported.toFixed(0)} kWh exported, out of ${charts.usedVsExported.totals.produced.toFixed(0)} kWh produced. Used is self-consumed plus imported, so the upper bars are what the house took and the lower bars are what the panels gave away. The two blocks are not contiguous — May to August 2025, then October and November 2026 — and the second block is where the ${charts.usedVsExported.series.filter((row) => row.d.startsWith('2026')).length}-day billed window begins.`}
+          note={`The ${charts.usedVsExported.days} days the utility join covers, in order: ${charts.usedVsExported.totals.used.toLocaleString(undefined, { maximumFractionDigits: 0 })} kWh used against ${charts.usedVsExported.totals.exported.toFixed(0)} kWh exported, out of ${charts.usedVsExported.totals.produced.toLocaleString(undefined, { maximumFractionDigits: 0 })} kWh produced. Used is self-consumed plus imported, so the upper bars are what the house took and the lower bars are what the panels gave away. The two blocks are not contiguous — May to August 2025, then October and November 2026 — and the second block is where the ${charts.usedVsExported.series.filter((row) => row.d.startsWith('2026')).length}-day billed window begins.`}
         >
           <UsedExported />
         </Figure>

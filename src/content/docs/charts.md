@@ -17,7 +17,7 @@ widgets. The route is `/charts`; the data is a small JSON summary; the drawing i
 | File | Role |
 | --- | --- |
 | `scripts/chart-data.mjs` | Reads the published CSVs and writes `src/data/charts.json` |
-| `src/pages/Charts.tsx` | Renders four SVG charts from that JSON |
+| `src/pages/Charts.tsx` | Renders eight SVG charts from that JSON |
 
 `npm run build` runs the extractor first, so the charts cannot describe a different export than
 the files under `public/data/`. Run it alone with:
@@ -30,7 +30,8 @@ npm run charts
 
 The site already ships React and Tailwind. A charting dependency would add a renderer, a theme
 model and a second source of truth for colours, in exchange for scales this page computes in a
-few lines. The four charts are a bar series, a scatter, an area line and a ratio line.
+few lines. The charts are bar series, a scatter, area and line series, a stacked split and a
+histogram — all of them primitives the browser already draws.
 
 The trade is real: there is no zoom, no brushing, no tooltip library. Tooltips are `<title>`
 elements inside each mark, so the numbers survive without JavaScript, and the accessible name is
@@ -39,9 +40,22 @@ on the figure.
 ## What is plotted
 
 - Monthly production, all 40 months.
-- Clear-day residual, every clear day in the analysis.
+- Calendar years, with the first and last marked as partial by the note.
+- Mean output at each clock hour, summer against winter. The denominator is the
+  number of *days* in the season, not rows: the intervals are sparse, so a row
+  count would reward a sunny month with more intervals.
 - One clear day at 15-minute resolution: the highest-energy day in the record.
 - The self-consumption ratio over the utility window.
+- Where monthly production goes: self-consumed and exported stacked, with the
+  house's grid draw as a dot. Only the months the utility join covers, placed by
+  date so the gap is visible.
+- Clear-day residual, every clear day in the analysis.
+- The distribution of that residual, binned at 0.02, with the share inside ±0.02.
+
+Two of these are derived in `scripts/chart-data.mjs` beyond the raw sums:
+`diurnal` (mean kW per clock hour per season, over the distinct days) and
+`balance` (monthly self-consumed / exported / drawn, over rows the utility series
+covers). Both are committed in `src/data/charts.json` with the rest.
 
 ## The sparse-interval trap
 

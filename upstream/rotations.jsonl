@@ -1,2 +1,4 @@
 {"event":"open","isotope":"rules","note":"29d863e: vendored rules + catch-up check + rotation record","at":"2026-11-15T09:07:22.007Z"}
 {"event":"rotation","rotation":"r000001","isotope":"rules","subject":"29d863e","gates":["build","doom","a11y","contrast","guard"],"at":"2026-11-15T09:07:22.044Z"}
+{"event":"open","isotope":"charts","note":"four more charts: calendar years, day shape, grid balance, residual distribution","at":"2026-11-15T09:33:24.461Z"}
+{"event":"rotation","rotation":"r000002","isotope":"charts","subject":"2026-11-15","gates":["build","doom","a11y","contrast","overflow","guard"],"at":"2026-11-15T09:33:24.501Z"}

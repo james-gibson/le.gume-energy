@@ -25,6 +25,8 @@ const round = (value, digits) => Number(Number(value).toFixed(digits))
 const daily = await read('solar-production-daily.csv')
 const monthly = await read('solar-production-monthly.csv')
 const intervals = await read('solar-production-15min.csv')
+const hourly = await read('solar-production-hourly.csv')
+const yearly = await read('solar-production-yearly.csv')
 const joined = await read('energy-daily-joined.csv')
 
 const clear = daily
@@ -70,6 +72,55 @@ const summary = {
     : null,
 }
 
+// --- the shape of a day, by season ----------------------------------------
+// The intervals are sparse (SolarEdge returns production, not a day of zeros),
+// so the denominator is the number of *days* in the season, not the number of
+// rows: a summer hour is the mean kW at that clock hour over every summer day.
+const SEASON = { winter: ['12', '01', '02'], summer: ['06', '07', '08'] }
+const seasonOf = (row) => {
+  const month = row.date_local.slice(5, 7)
+  return Object.entries(SEASON).find(([, months]) => months.includes(month))?.[0] ?? null
+}
+const daysBySeason = { summer: new Set(), winter: new Set() }
+for (const row of hourly) {
+  const season = seasonOf(row)
+  if (season) daysBySeason[season].add(row.date_local)
+}
+const diurnal = Array.from({ length: 24 }, (_, hour) => {
+  const entry = { h: hour, summer: 0, winter: 0 }
+  for (const season of ['summer', 'winter']) {
+    const days = daysBySeason[season].size
+    if (!days) continue
+    let total = 0
+    for (const row of hourly) {
+      if (seasonOf(row) !== season) continue
+      const clockHour = Number(row.interval_start_local.slice(11, 13))
+      if (clockHour === hour) total += Number(row.production_kw) || 0
+    }
+    entry[season] = round(total / days, 3)
+  }
+  return entry
+})
+
+// --- where the production goes, by month -----------------------------------
+// Self-consumed + exported = production on every row the utility window covers.
+// Grid consumption is the house's draw from the utility, kept as its own series
+// because it is not part of the solar split.
+const sumBy = (rows, key) => rows.reduce((sum, row) => sum + (number(row[key]) ?? 0), 0)
+const months = [...new Set(joined.map((row) => row.date_local.slice(0, 7)))].sort()
+const balance = months.map((month) => {
+  const rows = joined.filter(
+    (row) => row.date_local.slice(0, 7) === month && row.grid_series_count !== '0',
+  )
+  return {
+    m: month,
+    production: rows.length ? round(sumBy(rows, 'solar_production_kwh'), 1) : null,
+    self: rows.length ? round(sumBy(rows, 'self_consumed_kwh'), 1) : null,
+    export: rows.length ? round(sumBy(rows, 'grid_export_kwh'), 1) : null,
+    consumption: rows.length ? round(sumBy(rows, 'grid_consumption_kwh'), 1) : null,
+  }
+})
+
 const payload = {
   generated_from: {
     manifest: 'public/data/manifest.json',
@@ -86,11 +137,18 @@ const payload = {
   residuals: clear,
   curve: { date: curveDate, points: curve },
   self,
+  diurnal: { days: { summer: daysBySeason.summer.size, winter: daysBySeason.winter.size }, hours: diurnal },
+  balance,
+  yearly: yearly.map((row) => ({
+    year: row.date_local.slice(0, 4),
+    mwh: round((number(row.production_kwh) ?? 0) / 1000, 2),
+  })),
 }
 
 await mkdir(dirname(OUT), { recursive: true })
 await writeFile(OUT, `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
 console.log(
   `charts: ${payload.monthly.length} months, ${payload.residuals.length} clear days, ` +
-    `${payload.curve.points.length} intervals on ${curveDate}, ${payload.self.length} utility days`,
+    `${payload.curve.points.length} intervals on ${curveDate}, ${payload.self.length} utility days, ` +
+    `${payload.balance.length} balance months, ${payload.yearly.length} years`,
 )

@@ -207,7 +207,7 @@ export function Home() {
           <Link to="/docs/for-agents" className="text-accent underline decoration-accent/30 underline-offset-4">
             The agent contract
           </Link>{' '}
-          starts at <span className="font-mono">/llms.txt</span>. Four views of the data are on{' '}
+          starts at <span className="font-mono">/llms.txt</span>. Eight views of the data are on{' '}
           <Link to="/charts" className="text-accent underline decoration-accent/30 underline-offset-4">
             the charts page
           </Link>. The record also ships as a{' '}

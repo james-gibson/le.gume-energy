@@ -2102,5 +2102,433 @@
       "production": 14.19,
       "export": 3.55
     }
+  ],
+  "diurnal": {
+    "days": {
+      "summer": 294,
+      "winter": 271
+    },
+    "hours": [
+      {
+        "h": 0,
+        "summer": 0,
+        "winter": 0
+      },
+      {
+        "h": 1,
+        "summer": 0,
+        "winter": 0
+      },
+      {
+        "h": 2,
+        "summer": 0,
+        "winter": 0
+      },
+      {
+        "h": 3,
+        "summer": 0,
+        "winter": 0
+      },
+      {
+        "h": 4,
+        "summer": 0,
+        "winter": 0
+      },
+      {
+        "h": 5,
+        "summer": 0.006,
+        "winter": 0
+      },
+      {
+        "h": 6,
+        "summer": 0.138,
+        "winter": 0.003
+      },
+      {
+        "h": 7,
+        "summer": 1.182,
+        "winter": 0.15
+      },
+      {
+        "h": 8,
+        "summer": 2.367,
+        "winter": 0.809
+      },
+      {
+        "h": 9,
+        "summer": 3.329,
+        "winter": 1.45
+      },
+      {
+        "h": 10,
+        "summer": 4.123,
+        "winter": 1.952
+      },
+      {
+        "h": 11,
+        "summer": 4.591,
+        "winter": 2.335
+      },
+      {
+        "h": 12,
+        "summer": 4.65,
+        "winter": 1.963
+      },
+      {
+        "h": 13,
+        "summer": 4.137,
+        "winter": 1.346
+      },
+      {
+        "h": 14,
+        "summer": 3.049,
+        "winter": 0.822
+      },
+      {
+        "h": 15,
+        "summer": 1.906,
+        "winter": 0.451
+      },
+      {
+        "h": 16,
+        "summer": 1.064,
+        "winter": 0.137
+      },
+      {
+        "h": 17,
+        "summer": 0.546,
+        "winter": 0.014
+      },
+      {
+        "h": 18,
+        "summer": 0.322,
+        "winter": 0
+      },
+      {
+        "h": 19,
+        "summer": 0.121,
+        "winter": 0
+      },
+      {
+        "h": 20,
+        "summer": 0.007,
+        "winter": 0
+      },
+      {
+        "h": 21,
+        "summer": 0,
+        "winter": 0
+      },
+      {
+        "h": 22,
+        "summer": 0,
+        "winter": 0
+      },
+      {
+        "h": 23,
+        "summer": 0,
+        "winter": 0
+      }
+    ]
+  },
+  "balance": [
+    {
+      "m": "2023-08",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2023-09",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2023-10",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2023-11",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2023-12",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-01",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-02",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-03",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-04",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-05",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-06",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-07",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-08",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-09",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-10",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-11",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2024-12",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2025-01",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2025-02",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2025-03",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2025-04",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2025-05",
+      "production": 1050.5,
+      "self": 1034.7,
+      "export": 15.8,
+      "consumption": 283
+    },
+    {
+      "m": "2025-06",
+      "production": 1003.3,
+      "self": 918.5,
+      "export": 84.7,
+      "consumption": 587.5
+    },
+    {
+      "m": "2025-07",
+      "production": 1023.1,
+      "self": 887.4,
+      "export": 135.7,
+      "consumption": 837.5
+    },
+    {
+      "m": "2025-08",
+      "production": 899.3,
+      "self": 795.3,
+      "export": 104,
+      "consumption": 803.5
+    },
+    {
+      "m": "2025-09",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2025-10",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2025-11",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2025-12",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2026-01",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2026-02",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2026-03",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2026-04",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2026-05",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2026-06",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2026-07",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2026-08",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2026-09",
+      "production": null,
+      "self": null,
+      "export": null,
+      "consumption": null
+    },
+    {
+      "m": "2026-10",
+      "production": 271.8,
+      "self": 88.7,
+      "export": 183.1,
+      "consumption": 165.8
+    },
+    {
+      "m": "2026-11",
+      "production": 182.4,
+      "self": 69.1,
+      "export": 113.3,
+      "consumption": 149
+    }
+  ],
+  "yearly": [
+    {
+      "year": "2023",
+      "mwh": 2.32
+    },
+    {
+      "year": "2024",
+      "mwh": 8.37
+    },
+    {
+      "year": "2025",
+      "mwh": 8.36
+    },
+    {
+      "year": "2026",
+      "mwh": 7.92
+    }
   ]
 }

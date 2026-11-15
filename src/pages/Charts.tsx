@@ -222,8 +222,233 @@ function SelfConsumption() {
   )
 }
 
+function Yearly() {
+  const rows = charts.yearly
+  const max = Math.ceil(Math.max(...rows.map((row) => row.mwh)))
+  const ticks = Array.from({ length: max + 1 }, (_, i) => i)
+  const band = IW / rows.length
+  const bar = Math.max(8, band * 0.55)
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Production by calendar year">
+      <title>Metered production by calendar year</title>
+      <Grid min={0} max={max} ticks={ticks} />
+      {rows.map((row, i) => {
+        const top = y(row.mwh, 0, max)
+        const left = PAD.l + i * band + (band - bar) / 2
+        return (
+          <g key={row.year}>
+            <rect
+              x={left}
+              y={top}
+              width={bar}
+              height={PAD.t + IH - top}
+              rx={2}
+              fill="currentColor"
+              opacity={0.85}
+            >
+              <title>{`${row.year}: ${row.mwh.toFixed(2)} MWh`}</title>
+            </rect>
+            <text
+              x={left + bar / 2}
+              y={top - 7}
+              textAnchor="middle"
+              className="fill-current text-[11px] text-muted"
+            >
+              {row.mwh.toFixed(1)}
+            </text>
+          </g>
+        )
+      })}
+      <g className="fill-current text-[10px] text-muted/70">
+        {rows.map((row, i) => (
+          <text key={row.year} x={PAD.l + i * band + band / 2} y={H - 12} textAnchor="middle">
+            {row.year}
+          </text>
+        ))}
+      </g>
+    </svg>
+  )
+}
+
+function Diurnal() {
+  const { hours, days } = charts.diurnal
+  const max = Math.max(1, Math.ceil(Math.max(...hours.map((row) => Math.max(row.summer, row.winter)))))
+  const ticks = Array.from({ length: max + 1 }, (_, i) => i)
+  const px = (hour: number) => PAD.l + (hour / 23) * IW
+  const summer = hours.map<[number, number]>((row) => [px(row.h), y(row.summer, 0, max)])
+  const winter = hours.map<[number, number]>((row) => [px(row.h), y(row.winter, 0, max)])
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Mean production by hour, summer and winter">
+      <title>Mean output by clock hour, summer versus winter</title>
+      <Grid min={0} max={max} ticks={ticks} />
+      <path d={path(summer)} className="text-accent" fill="none" stroke="currentColor" strokeWidth={2} />
+      <path
+        d={path(winter)}
+        className="text-secondary"
+        fill="none"
+        stroke="currentColor"
+        strokeDasharray="6 4"
+        strokeWidth={2}
+      />
+      <g className="fill-current text-[10px]">
+        <text x={PAD.l + IW - 96} y={PAD.t + 2} className="fill-current text-accent">
+          summer ({days.summer} d)
+        </text>
+        <text x={PAD.l + IW - 96} y={PAD.t + 16} className="fill-current text-secondary">
+          winter ({days.winter} d)
+        </text>
+      </g>
+      <g className="fill-current text-[10px] text-muted/70">
+        {[0, 6, 12, 18].map((hour) => (
+          <text key={hour} x={px(hour)} y={H - 12} textAnchor="middle">
+            {String(hour).padStart(2, '0')}:00
+          </text>
+        ))}
+      </g>
+    </svg>
+  )
+}
+
+function Balance() {
+  // The utility join only covers part of the record, and not contiguously: six
+  // months, four in 2025 and two in 2026. Bars are placed by date, so the hole
+  // between them is visible instead of implied by an even band.
+  const covered = charts.balance.filter((row) => row.production !== null)
+  const months = charts.balance.map((row) => row.m)
+  const firstAt = months.indexOf(covered[0]?.m ?? months[0])
+  const lastAt = months.indexOf(covered[covered.length - 1]?.m ?? months[months.length - 1])
+  const span = Math.max(1, lastAt - firstAt + 1)
+  const band = IW / span
+  const bar = Math.max(4, Math.min(28, band * 0.6))
+  const max =
+    Math.ceil(Math.max(...covered.map((row) => Math.max(row.production ?? 0, row.consumption ?? 0))) / 200) * 200
+  const ticks = Array.from({ length: 5 }, (_, i) => (max / 4) * i)
+  const years = covered
+    .map((row) => ({ row, at: months.indexOf(row.m) - firstAt }))
+    .filter((entry, i, all) => i === 0 || entry.row.m.slice(0, 4) !== all[i - 1].row.m.slice(0, 4))
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Where monthly production goes">
+      <title>Monthly production split into self-consumed and exported, with grid draw</title>
+      <Grid min={0} max={max} ticks={ticks} />
+      {covered.map((row) => {
+        const at = months.indexOf(row.m) - firstAt
+        const left = PAD.l + at * band + (band - bar) / 2
+        const top = y(row.production ?? 0, 0, max)
+        const split = y(row.self ?? 0, 0, max)
+        return (
+          <g key={row.m}>
+            <rect
+              x={left}
+              y={split}
+              width={bar}
+              height={PAD.t + IH - split}
+              className="text-accent"
+              fill="currentColor"
+              opacity={0.9}
+            >
+              <title>{`${row.m}: ${(row.self ?? 0).toFixed(0)} kWh self-consumed`}</title>
+            </rect>
+            <rect
+              x={left}
+              y={top}
+              width={bar}
+              height={Math.max(0, split - top)}
+              className="text-secondary"
+              fill="currentColor"
+              opacity={0.9}
+            >
+              <title>{`${row.m}: ${(row.export ?? 0).toFixed(0)} kWh exported`}</title>
+            </rect>
+            <circle cx={left + bar / 2} cy={y(row.consumption ?? 0, 0, max)} r={2.4} className="text-muted" fill="currentColor">
+              <title>{`${row.m}: ${(row.consumption ?? 0).toFixed(0)} kWh drawn from the grid`}</title>
+            </circle>
+          </g>
+        )
+      })}
+      <g className="fill-current text-[10px] text-muted/70">
+        {years.map((entry) => (
+          <text key={entry.row.m} x={PAD.l + entry.at * band + band / 2} y={H - 12} textAnchor="middle">
+            {entry.row.m.slice(0, 4)}
+          </text>
+        ))}
+      </g>
+    </svg>
+  )
+}
+
+function Histogram() {
+  const values = charts.residuals.map((row) => row.r)
+  const step = 0.02
+  const lo = Math.floor(Math.min(...values) / step) * step
+  const hi = Math.ceil(Math.max(...values) / step) * step
+  const count = Math.max(1, Math.round((hi - lo) / step))
+  const bins = Array.from({ length: count }, (_, i) => ({ from: lo + i * step, n: 0 }))
+  for (const value of values) {
+    const index = Math.min(count - 1, Math.max(0, Math.floor((value - lo) / step)))
+    bins[index].n += 1
+  }
+  const peak = Math.max(...bins.map((bin) => bin.n))
+  const band = IW / bins.length
+  const within = values.filter((value) => Math.abs(value) <= 0.02).length
+  const at = (value: number) => PAD.l + ((value - lo) / (hi - lo)) * IW
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Distribution of clear-day residuals">
+      <title>Distribution of the clear-day residual</title>
+      <Grid min={0} max={peak} ticks={[0, peak / 2, peak]} />
+      <line
+        x1={PAD.l}
+        x2={W - PAD.r}
+        y1={y(0, 0, peak)}
+        y2={y(0, 0, peak)}
+        className="text-body/40"
+        stroke="currentColor"
+        strokeWidth={1.5}
+      />
+      {bins.map((bin, i) => {
+        const top = y(bin.n, 0, peak)
+        return (
+          <rect
+            key={bin.from.toFixed(3)}
+            x={PAD.l + i * band + band * 0.12}
+            y={top}
+            width={band * 0.76}
+            height={PAD.t + IH - top}
+            rx={1}
+            className={bin.from < 0 ? 'text-secondary' : 'text-accent'}
+            fill="currentColor"
+            opacity={0.85}
+          >
+            <title>{`${bin.from.toFixed(2)} to ${(bin.from + step).toFixed(2)}: ${bin.n} day(s)`}</title>
+          </rect>
+        )
+      })}
+      <g className="fill-current text-[10px] text-muted/70">
+        <text x={PAD.l} y={H - 12}>
+          {lo.toFixed(2)}
+        </text>
+        <text x={at(0)} y={H - 12} textAnchor="middle">
+          0
+        </text>
+        <text x={W - PAD.r} y={H - 12} textAnchor="end">
+          {hi.toFixed(2)}
+        </text>
+      </g>
+      <text x={PAD.l + IW - 130} y={PAD.t + 2} className="fill-current text-[10px] text-muted">
+        {`${((within / values.length) * 100).toFixed(0)}% within ±0.02`}
+      </text>
+    </svg>
+  )
+}
+
 export function Charts() {
-  usePageMeta('Charts', 'Four views of the published record: monthly production, clear-day residuals, one clear day, and self-consumption.')
+  usePageMeta(
+    'Charts',
+    'Eight views of the published record: year, month, hour, one clear day, self-consumption, the grid balance, clear-day residuals and their distribution.',
+  )
 
   const summary = charts.summary
 
@@ -231,7 +456,7 @@ export function Charts() {
     <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
       <p className="text-xs tracking-[0.18em] text-accent uppercase">Charts</p>
       <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-body sm:text-5xl">
-        The record, at four scales.
+        The record, eight ways.
       </h1>
       <p className="mt-5 max-w-2xl text-lg leading-8 text-muted">
         Every chart is drawn from the published CSVs at build time and rendered as static SVG. No
@@ -262,10 +487,31 @@ export function Charts() {
         </Figure>
 
         <Figure
+          title="Calendar years"
+          note="Metered energy per calendar year. 2023 starts in August and 2026 runs to the latest published day, so the first and last bars are partial — the shape, not the total, is the comparison."
+        >
+          <Yearly />
+        </Figure>
+
+        <Figure
+          title="The shape of a day"
+          note={`Mean output at each clock hour, summer against winter, over ${charts.diurnal.days.summer} summer and ${charts.diurnal.days.winter} winter days. The winter peak is lower and later; the shoulder hours are where a battery would have to work.`}
+        >
+          <Diurnal />
+        </Figure>
+
+        <Figure
           title="Clear-day residual"
           note="Each dot is a clear day's weather-normalized index minus its seasonal baseline. Negative runs with cold or wet context are snow; a decline across dry days is a soiling candidate."
         >
           <Residuals />
+        </Figure>
+
+        <Figure
+          title="How the residual is distributed"
+          note="The same clear days, counted instead of ordered in time. A tight central mass is a baseline that predicts; a long negative tail is weather the normalization did not explain, and the split either side of zero says whether the model is biased."
+        >
+          <Histogram />
         </Figure>
 
         <Figure
@@ -280,6 +526,13 @@ export function Charts() {
           note="Share of daily production used on site over the utility window. The dashed line is 50%; the ratio falls when a sunny day exports more than the house can absorb."
         >
           <SelfConsumption />
+        </Figure>
+
+        <Figure
+          title="Where the production goes"
+          note={`Monthly production split into self-consumed and exported, with the house's grid draw as a dot, over the ${charts.balance.filter((row) => row.production !== null).length} months the utility join covers. They are not contiguous — four in 2025, two in 2026 — so the bars are placed by date and the gap is left empty rather than drawn as an even band.`}
+        >
+          <Balance />
         </Figure>
       </div>
 

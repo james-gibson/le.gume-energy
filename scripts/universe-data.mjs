@@ -16,12 +16,14 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseCsv } from './csv.mjs'
+import { derive, loadInterventions } from './interventions.mjs'
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)))
 const DATA = join(ROOT, 'public/data')
 const TS_OUT = join(ROOT, 'src/universes/energy.ts')
 const JSON_DIR = join(DATA, 'universes')
 const DAY_NS = 86_400_000_000_000
+const MINUTE_NS = 60_000_000_000
 const BASE = 'https://james-gibson.github.io/le.gume-energy'
 
 const q = (value) => JSON.stringify(value)
@@ -49,7 +51,7 @@ const joined = await read('energy-daily-joined.csv')
 
 const first = daily[0].date_local
 const last = daily[daily.length - 1].date_local
-const endExclusive = addDays(last, 1)
+let endExclusive = addDays(last, 1)
 
 // --- segments: one per calendar year in the record -------------------------
 const years = [...new Set(daily.map((row) => row.date_local.slice(0, 4)))]
@@ -73,7 +75,7 @@ const segments = years.map((year, index) => {
 // --- keyframes: analysis events plus record milestones ---------------------
 const keyframes = []
 const seen = new Set()
-function addKeyframe(baseId, iso, significance, tags, description) {
+function addKeyframe(baseId, iso, significance, tags, description, precision = DAY_NS) {
   let id = baseId
   let attempt = 2
   while (seen.has(id)) {
@@ -88,6 +90,7 @@ function addKeyframe(baseId, iso, significance, tags, description) {
     significance: round(significance, 2),
     tags,
     type: 'milestone',
+    precision,
     certainty: 1,
     description,
   })
@@ -132,6 +135,34 @@ if (utility.length) {
   addKeyframe('utility-window-end', noon(to), 0.6, ['utility', 'window'], `Latest utility day: ${to}`)
 }
 
+// --- interventions: authored instants, not exported days -------------------
+// A person can act today, before the next export runs. The record then has a
+// declared instant past its last day: the keyframe is still real, so the epoch
+// and the final segment are extended to contain it rather than refusing it.
+const interventions = (await loadInterventions()).interventions
+for (const entry of interventions) {
+  const { wh } = derive(entry)
+  addKeyframe(
+    `intervention-${slug(entry.id)}`,
+    entry.at,
+    0.8,
+    ['intervention', slug(entry.circuit), slug(entry.action)],
+    `${entry.action.replace(/-/g, ' ')} · ${entry.circuit}${entry.load ? ` (${entry.load})` : ''}${
+      wh === null ? '' : ` · ${wh} Wh`
+    }`,
+    MINUTE_NS,
+  )
+}
+
+const latestNs = keyframes.reduce((top, keyframe) => (keyframe.ns > top ? keyframe.ns : top), 0n)
+const latestDay = new Date(Number(latestNs / 1_000_000n)).toISOString().slice(0, 10)
+if (addDays(latestDay, 1) > endExclusive) {
+  endExclusive = addDays(latestDay, 1)
+  const finalSegment = segments[segments.length - 1]
+  finalSegment.endIso = midnight(endExclusive)
+  finalSegment.end = at(midnight(endExclusive))
+}
+
 keyframes.sort((a, b) => (a.ns < b.ns ? -1 : a.ns > b.ns ? 1 : a.id.localeCompare(b.id)))
 
 if (!keyframes.length || !segments.length) throw new Error('no segments or keyframes generated')
@@ -173,7 +204,9 @@ const kfLines = keyframes
     (keyframe) =>
       `      { id: ${q(keyframe.id)}, timestamp: at(${q(keyframe.iso)}), significance: ${
         keyframe.significance
-      }, tags: ${q(keyframe.tags)}, type: 'milestone', precision: DAY_NS, certainty: 1, description: ${q(
+      }, tags: ${q(keyframe.tags)}, type: 'milestone', precision: ${
+        keyframe.precision === MINUTE_NS ? 'MINUTE_NS' : 'DAY_NS'
+      }, certainty: 1, description: ${q(
         keyframe.description,
       )} },`,
   )
@@ -186,7 +219,7 @@ const ts = `/**
  * analysis event as a keyframe, and the record milestones. Timestamps are
  * nanoseconds as BigInt, matching local-time's \`TemporalKeyframe\`.
  */
-import { DAY_NS, type LocalTimeUniverse } from './types'
+import { DAY_NS, MINUTE_NS, type LocalTimeUniverse } from './types'
 
 const at = (iso: string) => BigInt(Date.parse(iso)) * 1_000_000n
 
@@ -286,7 +319,7 @@ const plainKeyframes = keyframes.map((keyframe) => ({
   significance: keyframe.significance,
   tags: keyframe.tags,
   type: keyframe.type,
-  precision: DAY_NS,
+  precision: keyframe.precision ?? DAY_NS,
   certainty: keyframe.certainty,
   description: keyframe.description,
 }))

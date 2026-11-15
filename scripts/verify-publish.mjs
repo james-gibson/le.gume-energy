@@ -249,7 +249,59 @@ try {
   if (!error || error.code !== 'ENOENT') throw error
 }
 
-// --- 10. seeds are declared, populated and resolvable ---------------------
+// --- 10. declared interventions are well formed ---------------------------
+// The record cannot detect an unplugged freezer, so the homeowner declares it.
+// A declaration that is malformed, duplicated, or missing from the published
+// universe is a chart that quietly omits an action the person took — the exact
+// failure this file exists to prevent.
+const interventionText = await readText('src/data/interventions.json').catch(() => '')
+if (!interventionText) {
+  fail('interventions', 'src/data/interventions.json is missing')
+} else {
+  try {
+    const payload = JSON.parse(interventionText)
+    if (payload.schema !== 'kb-energy-interventions/1') {
+      fail('interventions', `schema is "${payload.schema}", expected kb-energy-interventions/1`)
+    }
+    const declared = Array.isArray(payload.interventions) ? payload.interventions : null
+    if (!declared) {
+      fail('interventions', '"interventions" is not an array')
+    } else {
+      const seen = new Set()
+      const universe = JSON.parse((await readText('public/data/universes/energy.json')) || '{"temporalStructure":{"keyframes":[]}}')
+      const keyframeIds = new Set((universe.temporalStructure?.keyframes ?? []).map((k) => k.id))
+      const LOCAL = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?[+-]\d{2}:\d{2}$/
+      for (const entry of declared) {
+        if (!entry.id) fail('interventions', 'an intervention has no id')
+        else if (seen.has(entry.id)) fail('interventions', `duplicate id ${entry.id}`)
+        else seen.add(entry.id)
+        if (!LOCAL.test(entry.at ?? '')) {
+          fail('interventions', `${entry.id ?? '(no id)'} does not name a local instant with an offset`)
+          continue
+        }
+        const expected = new Date(entry.at).toISOString().replace(/\.\d{3}Z$/, 'Z')
+        if (entry.at_utc !== expected) fail('interventions', `${entry.id} has at_utc ${entry.at_utc}, expected ${expected}`)
+        const measured = entry.measured ?? {}
+        for (const [key, max] of [['volts', 600], ['amps', 400]]) {
+          if (measured[key] !== undefined && !(Number(measured[key]) >= 0 && Number(measured[key]) <= max)) {
+            fail('interventions', `${entry.id} has ${key} ${measured[key]}, outside 0..${max}`)
+          }
+        }
+        if (measured.pf !== undefined && !(Number(measured.pf) > 0 && Number(measured.pf) <= 1)) {
+          fail('interventions', `${entry.id} has pf ${measured.pf}, outside 0..1`)
+        }
+        const keyframe = `intervention-${entry.id.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`
+        if (!keyframeIds.has(keyframe)) {
+          fail('interventions', `${entry.id} has no "${keyframe}" keyframe in the published universe — run npm run universes`)
+        }
+      }
+    }
+  } catch (error) {
+    fail('interventions', `src/data/interventions.json is not valid: ${error.message}`)
+  }
+}
+
+// --- 11. seeds are declared, populated and resolvable ---------------------
 // A seed promises an audience an entrance. The registry is TypeScript, so it is
 // read as text here: ids and entry routes, then cross-checked against the pages
 // that declare membership in frontmatter.
@@ -324,7 +376,7 @@ for (const entry of seedEntries) {
   }
 }
 
-// --- 11. the satire keeps its promises ------------------------------------
+// --- 12. the satire keeps its promises ------------------------------------
 // A page that claims "no CSS" or "no script" is a testable claim. If the claim
 // rots, the seed is a lie with a URL.
 const bare = await readText('public/bare/index.html').catch(() => '')
@@ -340,7 +392,7 @@ if (!nojs) {
   fail('satire', 'public/nojs/index.html claims no JavaScript but contains a <script>')
 }
 
-// --- 12. the deck is a file you could hand over ---------------------------
+// --- 13. the deck is a file you could hand over ---------------------------
 // It has to open from file:// on a machine that has never seen this project:
 // no script, no network, a sane number of slides, and small enough to copy
 // without thinking about it.
@@ -361,7 +413,7 @@ if (!deck) {
   }
 }
 
-// --- 13. one door for agents ----------------------------------------------
+// --- 14. one door for agents ----------------------------------------------
 // Agent capability varies from a model that can follow one instruction to one
 // that will invent a plan. The only thing that serves both is a single, stable
 // payload and a single place it is printed. A second payload is a second door.
@@ -382,7 +434,7 @@ if (!footer.includes('<AgentCta')) {
   fail('agents', 'SiteFooter does not render the agent call to action')
 }
 
-// --- 14. agent-ready: find and read --------------------------------------
+// --- 15. agent-ready: find and read --------------------------------------
 // AgentReady's essentials, checked because a claim in a page is worth what the
 // build enforces. Act is out of scope: this is a site to read, not a product to
 // transact through, so no MCP server or CLI is claimed.
@@ -431,7 +483,7 @@ for (const shell of shells) {
   }
 }
 
-// --- 15. child seeds ship back -------------------------------------------
+// --- 16. child seeds ship back -------------------------------------------
 // The upstream rule is a norm, not a mechanism — but a norm nobody can find is
 // not a norm. The skill states it and this check refuses a build where the
 // statement has been deleted during a refactor.
@@ -443,7 +495,7 @@ if (!/upstream/i.test(skill) || !/isotope/i.test(skill)) {
   fail('upstream', 'the upstream rule no longer mentions isotopes or upstreaming')
 }
 
-// --- 16. the feed is generated and complete ------------------------------
+// --- 17. the feed is generated and complete ------------------------------
 // A feed is a build artefact, not a service. If it stops listing a page, the
 // claim that a feed needs a garden stops being true here.
 const feed = await readText('dist/feed.xml').catch(() => '')
@@ -455,7 +507,7 @@ if (!feed) {
   }
 }
 
-// --- 17. rules.md, the file a child seed defers to -----------------------
+// --- 18. rules.md, the file a child seed defers to -----------------------
 // Stable ids, one line each. A child fetches this and records overrides; if the
 // ids move, every child's override silently stops matching.
 const rulesFile = await readText('dist/rules.md').catch(() => '')
@@ -469,7 +521,7 @@ if (!rulesFile) {
   if (!/^version: \S+/m.test(rulesFile)) fail('rules', 'dist/rules.md has no version line')
 }
 
-// --- 18. the rotation record is served, and it is the ledger's state --------
+// --- 19. the rotation record is served, and it is the ledger's state --------
 // The seed decides its updates from `upstream/rotations.jsonl`. Publishing that
 // decision is what makes "this seed manages its own updates" checkable rather
 // than asserted, and comparing it here means the page and the ledger cannot
@@ -491,7 +543,7 @@ if (!publishedRotation) {
   if (ledger.gaps.length) fail('rotation', `the id sequence has a gap: ${ledger.gaps.join(', ')}`)
 }
 
-// --- 19. size sanity ------------------------------------------------------
+// --- 20. size sanity ------------------------------------------------------
 const total = (await Promise.all(files.map(async (f) => (await stat(f)).size))).reduce(
   (a, b) => a + b,
   0,

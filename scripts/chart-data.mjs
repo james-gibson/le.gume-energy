@@ -13,6 +13,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseCsv } from './csv.mjs'
+import { derive, loadInterventions } from './interventions.mjs'
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)))
 const DATA = join(ROOT, 'public/data')
@@ -209,6 +210,44 @@ const windows = {
   last_year: windowStats(lastMs - 29 * dayMs - yearMs, lastMs - yearMs),
 }
 
+// --- declared interventions: the half the record cannot detect ------------
+// Each one is measured against the same seven days either side, in raw
+// production and in the weather-normalized residual. The window is a fence, not
+// a proof: a change inside it cannot be attributed to the action alone.
+const shiftDate = (date, days) => {
+  const d = new Date(Date.UTC(+date.slice(0, 4), +date.slice(5, 7) - 1, +date.slice(8, 10)))
+  d.setUTCDate(d.getUTCDate() + days)
+  return d.toISOString().slice(0, 10)
+}
+const interventionWindow = (rows) => {
+  const clearRows = rows.filter((row) => row.clear_day === '1' && row.residual !== '')
+  const production = rows.reduce((sum, row) => sum + (number(row.production_kwh) ?? 0), 0)
+  return {
+    days: rows.length,
+    clear: clearRows.length,
+    mean_kwh: rows.length ? round(production / rows.length, 2) : null,
+    residual: clearRows.length
+      ? round(clearRows.reduce((sum, row) => sum + Number(row.residual), 0) / clearRows.length, 4)
+      : null,
+  }
+}
+const interventions = (await loadInterventions()).interventions.map((entry) => {
+  const day = entry.at.slice(0, 10)
+  return {
+    id: entry.id,
+    at: entry.at,
+    day,
+    circuit: entry.circuit,
+    action: entry.action,
+    load: entry.load ?? null,
+    minutes: entry.minutes ?? null,
+    source: entry.measured?.source ?? null,
+    ...derive(entry),
+    before: interventionWindow(daily.filter((row) => row.date_local >= shiftDate(day, -7) && row.date_local < day)),
+    after: interventionWindow(daily.filter((row) => row.date_local > day && row.date_local <= shiftDate(day, 7))),
+  }
+})
+
 const payload = {
   generated_from: {
     manifest: 'public/data/manifest.json',
@@ -232,6 +271,7 @@ const payload = {
     mwh: round((number(row.production_kwh) ?? 0) / 1000, 2),
   })),
   recent: { to: lastDay, days: recentWindowDays, series: recent, events: recentEvents },
+  interventions,
   changes,
   windows,
 }
@@ -242,5 +282,6 @@ console.log(
   `charts: ${payload.monthly.length} months, ${payload.residuals.length} clear days, ` +
     `${payload.curve.points.length} intervals on ${curveDate}, ${payload.self.length} utility days, ` +
     `${payload.balance.length} balance months, ${payload.yearly.length} years, ` +
-    `${payload.recent.series.length} recent days, ${payload.recent.events.length} recent event(s)`,
+    `${payload.recent.series.length} recent days, ${payload.recent.events.length} recent event(s), ` +
+    `${payload.interventions.length} intervention(s)`,
 )

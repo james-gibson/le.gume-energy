@@ -1,0 +1,5 @@
+{
+  "schema": "kb-energy-interventions/1",
+  "note": "Authored by the homeowner, not exported by a collector. Append with `npm run intervention -- add ...`; the charts, the universe and the guard all read this file.",
+  "interventions": []
+}

@@ -7,9 +7,13 @@
  * `james-gibson/local-time` → `src/core/types.ts`, so the generated module is a
  * structural `Universe` and can be copied into a local-time registry.
  *
- * `TimePrecision` is a numeric enum upstream; `DAY_NS` is its `DAY` value.
+ * `TimePrecision` is a numeric enum upstream; `DAY_NS` is its `DAY` value and
+ * `MINUTE_NS` its `MINUTE`. The exported record is a day-granularity series, so
+ * its keyframes are days; a declared intervention names an instant, so it is a
+ * minute.
  */
 export const DAY_NS = 86_400_000_000_000
+export const MINUTE_NS = 60_000_000_000
 
 export type LocalTimeEpoch = {
   epochId?: string

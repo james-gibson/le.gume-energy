@@ -40,8 +40,11 @@ on the figure.
 ## What is plotted
 
 - The last sixty days of daily production, with clear days solid and the rest
-  faded, a recorded-event band, and the house's grid draw where the utility join
-  reaches. The window ends on the last published day, never on today.
+  faded, a recorded-event band, the house's grid draw where the utility join
+  reaches, and a solid rule marking any declared intervention. The window ends
+  on the last published day, never on today.
+- Declared interventions: what a person did, against which circuit, what was
+  measured, and the seven days either side. See [declared interventions](/docs/interventions).
 - The clear-day residual before and after each of the last eight recorded
   events — the closest thing the record has to an A/B pair.
 - Three thirty-day windows side by side: the last, the one before, and the same

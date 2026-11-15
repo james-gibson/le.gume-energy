@@ -4,3 +4,5 @@
 {"event":"rotation","rotation":"r000002","isotope":"charts","subject":"2026-11-15","gates":["build","doom","a11y","contrast","overflow","guard"],"at":"2026-11-15T09:33:24.501Z"}
 {"event":"open","isotope":"charts","note":"recent: 60-day view, before/after pairs, three-window A/B","at":"2026-11-15T09:45:56.760Z"}
 {"event":"rotation","rotation":"r000003","isotope":"charts","subject":"2026-11-15 recent","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T09:45:56.798Z"}
+{"event":"open","isotope":"interventions","note":"declare actions against a circuit: VA/W/Wh, ±7d fence, MINUTE keyframes","at":"2026-11-15T09:56:07.872Z"}
+{"event":"rotation","rotation":"r000004","isotope":"interventions","subject":"2026-11-15 interventions","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T09:56:07.914Z"}

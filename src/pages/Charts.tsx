@@ -10,6 +10,28 @@ const IW = W - PAD.l - PAD.r
 const IH = H - PAD.t - PAD.b
 const DATA = 'https://james-gibson.github.io/le.gume-energy/data'
 
+/**
+ * `charts.json` is generated, so with no interventions recorded the array is
+ * inferred as `never[]`. The shape is stated here once, where it is read.
+ */
+type InterventionWindow = { days: number; clear: number; mean_kwh: number | null; residual: number | null }
+type Intervention = {
+  id: string
+  at: string
+  day: string
+  circuit: string
+  action: string
+  load: string | null
+  minutes: number | null
+  source: string | null
+  va: number | null
+  watts: number | null
+  wh: number | null
+  before: InterventionWindow
+  after: InterventionWindow
+}
+const interventions = charts.interventions as unknown as Intervention[]
+
 const y = (value: number, min: number, max: number) =>
   PAD.t + (1 - (value - min) / (max - min)) * IH
 const x = (index: number, count: number) =>
@@ -506,6 +528,28 @@ function Recent() {
           </rect>
         )
       })}
+      {interventions
+        .filter((entry) => entry.day >= series[0].d)
+        .map((entry) => {
+          const index = series.findIndex((row) => row.d === entry.day)
+          if (index === -1) return null
+          const cx = center(index)
+          return (
+            <g key={entry.id}>
+              <line
+                x1={cx}
+                x2={cx}
+                y1={PAD.t}
+                y2={PAD.t + IH}
+                className="text-accent-deep"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              />
+              <circle cx={cx} cy={PAD.t + 4} r={2.6} className="text-accent-deep" fill="currentColor" />
+              <title>{`${entry.at}: ${entry.action} ${entry.circuit}`}</title>
+            </g>
+          )
+        })}
       {draw.length > 1 && (
         <path d={path(draw)} className="text-muted" fill="none" stroke="currentColor" strokeDasharray="4 3" strokeWidth={1.5} />
       )}
@@ -657,6 +701,76 @@ function Windows() {
   )
 }
 
+function Interventions() {
+  const rows = interventions
+  if (!rows.length) {
+    return (
+      <div className="grid gap-3">
+        <p className="max-w-2xl text-sm leading-7 text-muted">
+          None recorded yet. An intervention is a thing a person did — unplugged a freezer, removed a
+          standby draw, turned the array off, switched a circuit at the breaker — with whatever was
+          measured at the time. The record cannot see one on its own; it has to be declared, and then it
+          becomes a keyframe and a marker here.
+        </p>
+        <pre className="overflow-x-auto rounded-xl border border-line-soft bg-surface-2 p-4 font-mono text-[13px] leading-6 text-body/90">
+          <code>{`npm run intervention -- add --circuit garage --action unplug \\
+  --load "chest freezer" --minutes 90 --volts 120.1 --amps 1.35 --pf 0.92 \\
+  --source "clamp meter, panel A"`}</code>
+        </pre>
+        <p className="text-sm text-muted">
+          Real power needs a power factor on AC; without one the record keeps apparent power (VA) and
+          leaves watts and watt-hours empty rather than assuming 1.0.
+        </p>
+      </div>
+    )
+  }
+
+  const num = (value: number | null, digits = 1) => (value === null ? '—' : value.toFixed(digits))
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-left text-muted">
+            <th className="pb-2 font-medium">when (local)</th>
+            <th className="pb-2 font-medium">circuit</th>
+            <th className="pb-2 font-medium">action</th>
+            <th className="pb-2 text-right font-medium">VA</th>
+            <th className="pb-2 text-right font-medium">W</th>
+            <th className="pb-2 text-right font-medium">Wh</th>
+            <th className="pb-2 text-right font-medium">kWh/day before → after</th>
+            <th className="pb-2 text-right font-medium">residual before → after</th>
+          </tr>
+        </thead>
+        <tbody className="font-mono text-body">
+          {rows.map((entry) => (
+            <tr key={entry.id} className="border-t border-line">
+              <td className="py-2">{entry.at.slice(0, 16).replace('T', ' ')}</td>
+              <td className="py-2 font-sans text-muted">{entry.circuit}</td>
+              <td className="py-2 font-sans text-muted">
+                {entry.action.replace(/-/g, ' ')}
+                {entry.load ? ` · ${entry.load}` : ''}
+              </td>
+              <td className="py-2 text-right">{num(entry.va)}</td>
+              <td className="py-2 text-right">{num(entry.watts)}</td>
+              <td className="py-2 text-right">{num(entry.wh)}</td>
+              <td className="py-2 text-right">
+                {`${num(entry.before.mean_kwh)} → ${num(entry.after.mean_kwh)}`}
+              </td>
+              <td className="py-2 text-right">
+                {`${num(entry.before.residual, 3)} → ${num(entry.after.residual, 3)}`}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="mt-3 text-sm text-muted/80">
+        {`${rows.length} intervention(s). Each row compares the seven days either side of the action; the residual column is the weather-normalized one, which is the only one that can be compared across seasons.`}
+      </p>
+    </div>
+  )
+}
+
 export function Charts() {
   usePageMeta(
     'Charts',
@@ -704,6 +818,13 @@ export function Charts() {
             note="Bars are daily production, solid for clear days and faded for the rest; the dashed line is the house's draw from the grid where the utility join reaches. The shaded band is a recorded event, and the rule at thirty days separates the two windows compared below."
           >
             <Recent />
+          </Figure>
+
+          <Figure
+            title="Declared interventions"
+            note="What a person did, when, against which circuit, and what it measured. Each row's before-and-after uses the seven days either side; a declared action is a fence, not a proof, because the weather inside the fence is not the same."
+          >
+            <Interventions />
           </Figure>
 
           <Figure

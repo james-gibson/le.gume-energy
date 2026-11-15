@@ -20,7 +20,8 @@
     "universes": "node scripts/universe-data.mjs",
     "rules": "node scripts/sync-upstream.mjs --check",
     "rotation": "node scripts/rotation.mjs",
-    "overflow": "node scripts/overflow.mjs"
+    "overflow": "node scripts/overflow.mjs",
+    "intervention": "node scripts/intervention.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.72.0",

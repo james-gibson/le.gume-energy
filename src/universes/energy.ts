@@ -5,7 +5,7 @@
  * analysis event as a keyframe, and the record milestones. Timestamps are
  * nanoseconds as BigInt, matching local-time's `TemporalKeyframe`.
  */
-import { DAY_NS, type LocalTimeUniverse } from './types'
+import { DAY_NS, MINUTE_NS, type LocalTimeUniverse } from './types'
 
 const at = (iso: string) => BigInt(Date.parse(iso)) * 1_000_000n
 

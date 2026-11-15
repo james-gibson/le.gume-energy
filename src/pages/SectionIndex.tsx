@@ -83,7 +83,7 @@ export function SectionIndex({ section }: { section: SectionId }) {
             </tbody>
           </table>
           {hideNoScript && (
-            <p className="border-t border-line-soft px-4 py-3 text-xs text-muted/70">
+            <p className="border-t border-line-soft px-4 py-3 text-xs text-muted">
               Rung −3 is hidden by JavaScript. Turn scripts off if you want to see it — and the rest
               of this page will go with it, because the script that hid the rung is the script that
               drew the table. That is the entire joke, and it is also the argument.
@@ -105,7 +105,7 @@ export function SectionIndex({ section }: { section: SectionId }) {
               to={`/${page.section}/${page.slug}`}
               className="group flex flex-col gap-2 py-6 transition-colors hover:bg-surface/40 sm:flex-row sm:items-baseline sm:gap-6"
             >
-              <span className="font-mono text-xs text-muted/60 tabular-nums sm:w-8">
+              <span className="font-mono text-xs text-muted tabular-nums sm:w-8">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <span className="min-w-0 flex-1">
@@ -114,7 +114,7 @@ export function SectionIndex({ section }: { section: SectionId }) {
                 </span>
                 <span className="mt-1 block text-sm text-muted">{page.description}</span>
               </span>
-              <span className="shrink-0 font-mono text-xs text-muted/50">
+              <span className="shrink-0 font-mono text-xs text-muted">
                 {page.updated || '—'}
               </span>
             </Link>

@@ -16,7 +16,7 @@ import { SITE_HANDOFF } from './AgentHandoff'
 export function AgentCta() {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 border-t border-line-soft px-5 py-4 sm:px-8">
-      <p className="text-xs text-muted/80">
+      <p className="text-xs text-muted">
         <span className="mr-2 font-mono text-[10px] tracking-[0.18em] text-accent uppercase">
           for agents
         </span>

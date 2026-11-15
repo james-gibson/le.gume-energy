@@ -49,7 +49,7 @@ export const markdownComponents: Components = {
   ol: ({ node: _node, ...props }) => <ol className="my-4 list-decimal space-y-2 pl-6 text-muted marker:text-accent-deep" {...props} />,
   li: ({ node: _node, ...props }) => <li className="leading-7 [&>p]:my-0" {...props} />,
   strong: ({ node: _node, ...props }) => <strong className="font-semibold text-body" {...props} />,
-  em: ({ node: _node, ...props }) => <em className="text-body/90" {...props} />,
+  em: ({ node: _node, ...props }) => <em className="text-body" {...props} />,
   hr: () => <hr className="my-10 border-line-soft" />,
   blockquote: ({ node: _node, ...props }) => (
     <blockquote
@@ -69,7 +69,7 @@ export const markdownComponents: Components = {
     const isBlock = typeof className === 'string' && className.includes('language-')
     if (isBlock) {
       return (
-        <code className="font-mono text-[13px] leading-6 text-body/90" {...props}>
+        <code className="font-mono text-[13px] leading-6 text-body" {...props}>
           {children}
         </code>
       )

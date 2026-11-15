@@ -30,10 +30,10 @@ function Sample({
     <section className="border-t border-line-soft py-10">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="text-lg font-semibold text-body">{title}</h2>
-        <p className="font-mono text-xs text-muted/70">{source}</p>
+        <p className="font-mono text-xs text-muted">{source}</p>
       </div>
       <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">{note}</p>
-      <p className="mt-3 font-mono text-xs text-accent/80">{props}</p>
+      <p className="mt-3 font-mono text-xs text-accent">{props}</p>
       <div className="mt-6 rounded-2xl border border-line bg-surface/60 p-6 sm:p-8">{children}</div>
     </section>
   )
@@ -64,7 +64,7 @@ export function Design() {
         with the same props, rendered by the same bundle. If a sample stops working, the site is
         wrong — which is the point of keeping the documentation and the demo in one file tree.
       </p>
-      <p className="mt-3 max-w-2xl text-sm text-muted/80">
+      <p className="mt-3 max-w-2xl text-sm text-muted">
         Why the page is shaped this way, and what each choice gives up, is written down in{' '}
         <Link
           to="/docs/overview"
@@ -75,7 +75,7 @@ export function Design() {
         .
       </p>
 
-      <p className="mt-3 max-w-2xl text-sm text-muted/80">
+      <p className="mt-3 max-w-2xl text-sm text-muted">
         Components come from{' '}
         <a
           href="https://ui.teamofsilicons.com"
@@ -110,8 +110,8 @@ export function Design() {
                 style={{ backgroundColor: token.hex }}
               />
               <span className="mt-2 block font-mono text-xs text-body">{token.name}</span>
-              <span className="block font-mono text-[11px] text-muted/70">{token.hex}</span>
-              <span className="mt-1 block text-[11px] leading-4 text-muted/70">{token.role}</span>
+              <span className="block font-mono text-[11px] text-muted">{token.hex}</span>
+              <span className="mt-1 block text-[11px] leading-4 text-muted">{token.role}</span>
             </li>
           ))}
         </ul>
@@ -282,7 +282,7 @@ export function Design() {
                 <span className="font-mono text-xs text-accent">{slot.name}</span>
                 <span className="mt-1 block text-xs leading-5 text-muted">{slot.question}</span>
                 {bound[slot.name] ? (
-                  <span className="mt-2 block font-mono text-[11px] text-body/70">
+                  <span className="mt-2 block font-mono text-[11px] text-body">
                     bound: {bound[slot.name]}
                   </span>
                 ) : (
@@ -292,7 +292,7 @@ export function Design() {
             ))}
           </ul>
 
-          <p className="mt-3 font-mono text-xs text-muted/80">
+          <p className="mt-3 font-mono text-xs text-muted">
             presumes: {isotope.presumes.join(', ')}
           </p>
         </div>

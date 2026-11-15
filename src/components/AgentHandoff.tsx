@@ -56,13 +56,13 @@ export function AgentHandoff({
           <p className="mt-2 max-w-prose text-sm leading-6 text-muted">{note}</p>
 
           <div className="mt-4 flex items-start gap-3">
-            <pre className="min-w-0 flex-1 overflow-x-auto rounded-xl border border-line-soft bg-surface-2 p-3 font-mono text-[12px] leading-6 break-words whitespace-pre-wrap text-body/85">
+            <pre className="min-w-0 flex-1 overflow-x-auto rounded-xl border border-line-soft bg-surface-2 p-3 font-mono text-[12px] leading-6 break-words whitespace-pre-wrap text-body">
               {instructions}
             </pre>
             <CopyButton value={instructions} label="Copy" />
           </div>
 
-          <p className="mt-3 text-xs text-muted/70">
+          <p className="mt-3 text-xs text-muted">
             Scan with a phone camera, or copy the text into whichever agent you already have open.
           </p>
         </div>

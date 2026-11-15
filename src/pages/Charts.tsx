@@ -54,7 +54,7 @@ function Figure({
         <h2 className="text-lg font-semibold tracking-tight text-body">{title}</h2>
         <p className="mt-1 text-sm text-muted">{note}</p>
       </figcaption>
-      <div className="mt-5 text-accent">{children}</div>
+      <div className="mt-5 text-series-1">{children}</div>
     </figure>
   )
 }
@@ -69,7 +69,7 @@ function Grid({ min, max, ticks }: { min: number; max: number; ticks: number[] }
             x2={W - PAD.r}
             y1={y(tick, min, max)}
             y2={y(tick, min, max)}
-            className="text-line/70"
+            className="text-line"
             stroke="currentColor"
             strokeDasharray="3 5"
             strokeWidth={1}
@@ -79,7 +79,7 @@ function Grid({ min, max, ticks }: { min: number; max: number; ticks: number[] }
             y={y(tick, min, max)}
             textAnchor="end"
             dominantBaseline="middle"
-            className="fill-current text-[10px] text-muted/70"
+            className="fill-current text-[10px] text-muted"
           >
             {tick.toFixed(tick % 1 === 0 ? 0 : 1)}
           </text>
@@ -112,13 +112,12 @@ function Monthly() {
             height={PAD.t + IH - top}
             rx={1.5}
             fill="currentColor"
-            opacity={0.85}
           >
             <title>{`${row.m}: ${row.kwh.toFixed(1)} kWh`}</title>
           </rect>
         )
       })}
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         {years.map((row) => (
           <text key={row.year} x={PAD.l + row.i * band + band / 2} y={H - 12} textAnchor="middle">
             {row.year}
@@ -146,7 +145,7 @@ function Residuals() {
         x2={W - PAD.r}
         y1={y(0, min, max)}
         y2={y(0, min, max)}
-        className="text-body/40"
+        className="text-series-1"
         stroke="currentColor"
         strokeWidth={1.5}
       />
@@ -158,14 +157,13 @@ function Residuals() {
             cy={y(row.r, min, max)}
             r={2.1}
             fill="currentColor"
-            opacity={0.8}
-            className={row.r < 0 ? 'text-secondary' : 'text-accent'}
+            className={row.r < 0 ? 'text-series-2' : 'text-series-1'}
           >
             <title>{`${row.d}: ${row.r.toFixed(3)}`}</title>
           </circle>
         ))}
       </g>
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         {years.map((row) => (
           <text key={row.year} x={x(row.i, rows.length)} y={H - 12} textAnchor="middle">
             {row.year}
@@ -188,9 +186,9 @@ function Curve() {
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`Production on ${charts.curve.date}`}>
       <title>{`Fifteen-minute production on ${charts.curve.date}`}</title>
       <Grid min={0} max={max} ticks={ticks} />
-      <path d={area} fill="currentColor" opacity={0.18} />
+      <path d={area} className="text-wash" fill="currentColor" />
       <path d={path(line)} fill="none" stroke="currentColor" strokeWidth={2} />
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         {[0, 6, 12, 18, 24].map((hour) => (
           <text key={hour} x={px(hour)} y={H - 12} textAnchor="middle">
             {String(hour).padStart(2, '0')}:00
@@ -215,7 +213,7 @@ function SelfConsumption() {
         x2={W - PAD.r}
         y1={y(0.5, 0, 1)}
         y2={y(0.5, 0, 1)}
-        className="text-body/30"
+        className="text-series-1"
         stroke="currentColor"
         strokeDasharray="5 5"
         strokeWidth={1}
@@ -232,7 +230,7 @@ function SelfConsumption() {
           <title>{`${row.d}: ${(row.ratio * 100).toFixed(1)}% self-consumed`}</title>
         </circle>
       ))}
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         <text x={PAD.l} y={H - 12}>
           {rows[0]?.d}
         </text>
@@ -267,7 +265,6 @@ function Yearly() {
               height={PAD.t + IH - top}
               rx={2}
               fill="currentColor"
-              opacity={0.85}
             >
               <title>{`${row.year}: ${row.mwh.toFixed(2)} MWh`}</title>
             </rect>
@@ -282,7 +279,7 @@ function Yearly() {
           </g>
         )
       })}
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         {rows.map((row, i) => (
           <text key={row.year} x={PAD.l + i * band + band / 2} y={H - 12} textAnchor="middle">
             {row.year}
@@ -305,10 +302,10 @@ function Diurnal() {
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Mean production by hour, summer and winter">
       <title>Mean output by clock hour, summer versus winter</title>
       <Grid min={0} max={max} ticks={ticks} />
-      <path d={path(summer)} className="text-accent" fill="none" stroke="currentColor" strokeWidth={2} />
+      <path d={path(summer)} className="text-series-1" fill="none" stroke="currentColor" strokeWidth={2} />
       <path
         d={path(winter)}
-        className="text-secondary"
+        className="text-series-2"
         fill="none"
         stroke="currentColor"
         strokeDasharray="6 4"
@@ -322,7 +319,7 @@ function Diurnal() {
           winter ({days.winter} d)
         </text>
       </g>
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         {[0, 6, 12, 18].map((hour) => (
           <text key={hour} x={px(hour)} y={H - 12} textAnchor="middle">
             {String(hour).padStart(2, '0')}:00
@@ -367,9 +364,8 @@ function Balance() {
               y={split}
               width={bar}
               height={PAD.t + IH - split}
-              className="text-accent"
+              className="text-series-1"
               fill="currentColor"
-              opacity={0.9}
             >
               <title>{`${row.m}: ${(row.self ?? 0).toFixed(0)} kWh self-consumed`}</title>
             </rect>
@@ -378,19 +374,28 @@ function Balance() {
               y={top}
               width={bar}
               height={Math.max(0, split - top)}
-              className="text-secondary"
+              className="text-series-2"
               fill="currentColor"
-              opacity={0.9}
             >
               <title>{`${row.m}: ${(row.export ?? 0).toFixed(0)} kWh exported`}</title>
             </rect>
-            <circle cx={left + bar / 2} cy={y(row.consumption ?? 0, 0, max)} r={2.4} className="text-muted" fill="currentColor">
+            {/* Two greys is all white will give, so the series that is not a
+                bar is separated by shape: a hollow ring, not a third grey. */}
+            <circle
+              cx={left + bar / 2}
+              cy={y(row.consumption ?? 0, 0, max)}
+              r={3}
+              className="text-series-1"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.6}
+            >
               <title>{`${row.m}: ${(row.consumption ?? 0).toFixed(0)} kWh drawn from the grid`}</title>
             </circle>
           </g>
         )
       })}
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         {years.map((entry) => (
           <text key={entry.row.m} x={PAD.l + entry.at * band + band / 2} y={H - 12} textAnchor="middle">
             {entry.row.m.slice(0, 4)}
@@ -426,7 +431,7 @@ function Histogram() {
         x2={W - PAD.r}
         y1={y(0, 0, peak)}
         y2={y(0, 0, peak)}
-        className="text-body/40"
+        className="text-series-1"
         stroke="currentColor"
         strokeWidth={1.5}
       />
@@ -440,15 +445,14 @@ function Histogram() {
             width={band * 0.76}
             height={PAD.t + IH - top}
             rx={1}
-            className={bin.from < 0 ? 'text-secondary' : 'text-accent'}
+            className={bin.from < 0 ? 'text-series-2' : 'text-series-1'}
             fill="currentColor"
-            opacity={0.85}
           >
             <title>{`${bin.from.toFixed(2)} to ${(bin.from + step).toFixed(2)}: ${bin.n} day(s)`}</title>
           </rect>
         )
       })}
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         <text x={PAD.l} y={H - 12}>
           {lo.toFixed(2)}
         </text>
@@ -502,9 +506,8 @@ function Recent() {
             y={PAD.t}
             width={Math.max(band, (toIndex - from + 1) * band)}
             height={IH}
-            className="text-secondary"
+            className="text-wash"
             fill="currentColor"
-            opacity={0.12}
           >
             <title>{`${event.start} to ${event.end}: ${event.kind}`}</title>
           </rect>
@@ -520,9 +523,9 @@ function Recent() {
             width={bar}
             height={PAD.t + IH - top}
             rx={1}
-            className={row.clear ? 'text-accent' : 'text-accent/40'}
+            className={row.clear ? 'text-series-1' : 'text-series-2'}
             fill="currentColor"
-            opacity={row.clear ? 0.9 : 0.55}
+            
           >
             <title>{`${row.d}: ${row.kwh.toFixed(1)} kWh${row.clear ? ', clear' : ''}${row.residual !== null ? `, residual ${row.residual.toFixed(3)}` : ''}`}</title>
           </rect>
@@ -536,16 +539,11 @@ function Recent() {
           const cx = center(index)
           return (
             <g key={entry.id}>
-              <line
-                x1={cx}
-                x2={cx}
-                y1={PAD.t}
-                y2={PAD.t + IH}
-                className="text-accent-deep"
-                stroke="currentColor"
-                strokeWidth={1.5}
+              <polygon
+                points={`${cx},${PAD.t + IH + 6} ${cx - 4},${PAD.t + IH + 14} ${cx + 4},${PAD.t + IH + 14}`}
+                className="text-series-1"
+                fill="currentColor"
               />
-              <circle cx={cx} cy={PAD.t + 4} r={2.6} className="text-accent-deep" fill="currentColor" />
               <title>{`${entry.at}: ${entry.action} ${entry.circuit}`}</title>
             </g>
           )
@@ -558,11 +556,11 @@ function Recent() {
         x2={PAD.l + boundary * band}
         y1={PAD.t}
         y2={PAD.t + IH}
-        className="text-body/40"
+        className="text-series-1"
         stroke="currentColor"
         strokeWidth={1}
       />
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         <text x={PAD.l + 4} y={PAD.t + 10}>
           previous 30
         </text>
@@ -591,8 +589,8 @@ function Changes() {
   return (
     <svg viewBox={`0 0 ${W} ${height}`} className="w-full" role="img" aria-label="Clear-day residual before and after each recorded change">
       <title>Clear-day residual before and after each recorded change</title>
-      <line x1={mid} x2={mid} y1={22} y2={height - 14} className="text-body/40" stroke="currentColor" strokeWidth={1} />
-      <g className="fill-current text-[10px] text-muted/70">
+      <line x1={mid} x2={mid} y1={22} y2={height - 14} className="text-series-1" stroke="currentColor" strokeWidth={1} />
+      <g className="fill-current text-[10px] text-muted">
         {[-0.6, -0.3, 0.3, 0.6].map((value) => (
           <g key={value}>
             <line
@@ -600,7 +598,7 @@ function Changes() {
               x2={mid + value * scale}
               y1={22}
               y2={height - 14}
-              className="text-line/60"
+              className="text-line"
               stroke="currentColor"
               strokeDasharray="3 5"
             />
@@ -626,10 +624,10 @@ function Changes() {
             <text x={left - 8} y={top + 8} textAnchor="end" className="fill-current text-[10px] text-muted">
               {`${change.start.slice(5)} ${change.kind}`}
             </text>
-            <rect {...a} height={8} rx={1} className="text-secondary" fill="currentColor" opacity={0.9}>
+            <rect {...a} height={8} rx={1} className="text-series-2" fill="currentColor">
               <title>{`before ${change.start}: ${before.toFixed(3)}`}</title>
             </rect>
-            <rect {...b} height={8} rx={1} className="text-accent" fill="currentColor" opacity={0.9}>
+            <rect {...b} height={8} rx={1} className="text-series-1" fill="currentColor">
               <title>{`after ${change.end}: ${after.toFixed(3)}`}</title>
             </rect>
           </g>
@@ -712,7 +710,7 @@ function Interventions() {
           measured at the time. The record cannot see one on its own; it has to be declared, and then it
           becomes a keyframe and a marker here.
         </p>
-        <pre className="overflow-x-auto rounded-xl border border-line-soft bg-surface-2 p-4 font-mono text-[13px] leading-6 text-body/90">
+        <pre className="overflow-x-auto rounded-xl border border-line-soft bg-surface-2 p-4 font-mono text-[13px] leading-6 text-body">
           <code>{`npm run intervention -- add --circuit garage --action unplug \\
   --load "chest freezer" --minutes 90 --volts 120.1 --amps 1.35 --pf 0.92 \\
   --source "clamp meter, panel A"`}</code>
@@ -764,7 +762,7 @@ function Interventions() {
           ))}
         </tbody>
       </table>
-      <p className="mt-3 text-sm text-muted/80">
+      <p className="mt-3 text-sm text-muted">
         {`${rows.length} intervention(s). Each row compares the seven days either side of the action; the residual column is the weather-normalized one, which is the only one that can be compared across seasons.`}
       </p>
     </div>
@@ -791,9 +789,8 @@ function Tou() {
             y={PAD.t}
             width={Math.min(W - PAD.r, px(peak.to) + (px(1) - px(0)) / 2) - Math.max(PAD.l, px(peak.from) - (px(1) - px(0)) / 2)}
             height={IH}
-            className="text-muted"
+            className="text-wash"
             fill="currentColor"
-            opacity={0.1}
           />
           <text
             x={px(peak.from) - (px(1) - px(0)) / 2 + 4}
@@ -802,11 +799,11 @@ function Tou() {
           >{`on-peak ${String(peak.from).padStart(2, '0')}:00–${String(peak.to + 1).padStart(2, '0')}:00 Mon–Fri`}</text>
         </>
       )}
-      <path d={area} fill="currentColor" opacity={0.18} />
+      <path d={area} className="text-wash" fill="currentColor" />
       <path d={path(generated)} fill="none" stroke="currentColor" strokeWidth={2} />
       <path
         d={path(imported)}
-        className="text-secondary"
+        className="text-series-2"
         fill="none"
         stroke="currentColor"
         strokeDasharray="6 4"
@@ -820,7 +817,7 @@ function Tou() {
           grid import
         </text>
       </g>
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         {[0, 6, 12, 18].map((hour) => (
           <text key={hour} x={px(hour)} y={H - 12} textAnchor="middle">
             {String(hour).padStart(2, '0')}:00
@@ -854,16 +851,16 @@ function TouDays() {
         const totalTop = y(row.off + row.on, 0, max)
         return (
           <g key={row.d}>
-            <rect x={left} y={offTop} width={bar} height={PAD.t + IH - offTop} rx={1} className="text-secondary" fill="currentColor" opacity={0.85}>
+            <rect x={left} y={offTop} width={bar} height={PAD.t + IH - offTop} rx={1} className="text-series-2" fill="currentColor">
               <title>{`${row.d}: ${row.off.toFixed(2)} kWh off-peak`}</title>
             </rect>
-            <rect x={left} y={totalTop} width={bar} height={Math.max(0, offTop - totalTop)} rx={1} className="text-accent" fill="currentColor" opacity={0.95}>
+            <rect x={left} y={totalTop} width={bar} height={Math.max(0, offTop - totalTop)} rx={1} className="text-series-1" fill="currentColor">
               <title>{`${row.d}: ${row.on.toFixed(2)} kWh on-peak`}</title>
             </rect>
           </g>
         )
       })}
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         {months.map((entry) => (
           <text key={entry.month} x={PAD.l + entry.i * band + band / 2} y={H - 12} textAnchor="middle">
             {entry.month.slice(5)}
@@ -916,9 +913,8 @@ function Pricing() {
               width={bar}
               height={PAD.t + IH - flatTop}
               rx={2}
-              className="text-secondary"
+              className="text-series-2"
               fill="currentColor"
-              opacity={0.85}
             >
               <title>{`${group.label}: flat $${group.flat.toFixed(2)}`}</title>
             </rect>
@@ -928,9 +924,8 @@ function Pricing() {
               width={bar}
               height={PAD.t + IH - touTop}
               rx={2}
-              className="text-accent"
+              className="text-series-1"
               fill="currentColor"
-              opacity={0.9}
             >
               <title>{`${group.label}: time of use $${group.tou.toFixed(2)}`}</title>
             </rect>
@@ -940,13 +935,13 @@ function Pricing() {
               textAnchor="middle"
               className="fill-current text-[10px] text-muted"
             >{`${delta > 0 ? '+' : ''}${delta.toFixed(2)}`}</text>
-            <text x={left} y={H - 12} textAnchor="middle" className="fill-current text-[10px] text-muted/70">
+            <text x={left} y={H - 12} textAnchor="middle" className="fill-current text-[10px] text-muted">
               {group.label}
             </text>
           </g>
         )
       })}
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         <text x={PAD.l - 9} y={PAD.t + 10} textAnchor="end">{`$${max}`}</text>
         <text x={PAD.l + 4} y={PAD.t + 10} className="fill-current text-secondary">
           flat
@@ -955,10 +950,10 @@ function Pricing() {
           time of use
         </text>
       </g>
-      <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted/70">
+      <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted">
         {`usage only · no $${charts.pricing.excluded.service_facility_month_usd.toFixed(2)} service charge, no riders`}
       </text>
-      <text x={W - PAD.r} y={PAD.t + 24} textAnchor="end" className="fill-current text-[10px] text-muted/70">
+      <text x={W - PAD.r} y={PAD.t + 24} textAnchor="end" className="fill-current text-[10px] text-muted">
         {`summer on-peak ${cents(charts.pricing.rates.tou.summer.on_peak)} · weekends off-peak`}
       </text>
     </svg>
@@ -979,7 +974,7 @@ function Spread() {
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Value of shifting a peak kilowatt hour to off-peak">
       <title>Value of moving one kilowatt hour from off-peak to on-peak, by reading</title>
-      <line x1={PAD.l} x2={W - PAD.r} y1={mid} y2={mid} className="text-body/40" stroke="currentColor" strokeWidth={1} />
+      <line x1={PAD.l} x2={W - PAD.r} y1={mid} y2={mid} className="text-series-1" stroke="currentColor" strokeWidth={1} />
       {[-limit, -limit / 2, limit / 2, limit].map((tick) => (
         <g key={tick}>
           <line
@@ -987,7 +982,7 @@ function Spread() {
             x2={PAD.l + IW / 2 + tick * scale}
             y1={PAD.t}
             y2={PAD.t + IH}
-            className="text-line/60"
+            className="text-line"
             stroke="currentColor"
             strokeDasharray="3 5"
           />
@@ -995,7 +990,7 @@ function Spread() {
             x={PAD.l + IW / 2 + tick * scale}
             y={PAD.t + IH + 14}
             textAnchor="middle"
-            className="fill-current text-[10px] text-muted/70"
+            className="fill-current text-[10px] text-muted"
           >
             {`${tick > 0 ? '+' : ''}${tick}¢`}
           </text>
@@ -1015,9 +1010,8 @@ function Spread() {
               width={width}
               height={14}
               rx={2}
-              className={value >= 0 ? 'text-accent' : 'text-secondary'}
+              className={value >= 0 ? 'text-series-1' : 'text-series-2'}
               fill="currentColor"
-              opacity={0.9}
             >
               <title>{`${row.label}: ${value.toFixed(2)}¢ per kWh moved (${row.kwh.toFixed(1)} kWh observed)`}</title>
             </rect>
@@ -1063,9 +1057,8 @@ function NetBill() {
               width={bar}
               height={PAD.t + IH - flatTop}
               rx={2}
-              className="text-secondary"
+              className="text-series-2"
               fill="currentColor"
-              opacity={0.85}
             >
               <title>{`${row.season}: flat $${row.net_flat.toFixed(2)} net, after $${row.credit_flat.toFixed(2)} of credit`}</title>
             </rect>
@@ -1075,22 +1068,21 @@ function NetBill() {
               width={bar}
               height={PAD.t + IH - touTop}
               rx={2}
-              className="text-accent"
+              className="text-series-1"
               fill="currentColor"
-              opacity={0.9}
             >
               <title>{`${row.season}: time of use $${row.net_tou.toFixed(2)} net, after $${row.credit_tou.toFixed(2)} of credit`}</title>
             </rect>
             <text x={left} y={Math.min(flatTop, touTop) - 8} textAnchor="middle" className="fill-current text-[10px] text-muted">
               {`${delta > 0 ? '+' : ''}${delta.toFixed(2)}`}
             </text>
-            <text x={left} y={H - 12} textAnchor="middle" className="fill-current text-[10px] text-muted/70">
+            <text x={left} y={H - 12} textAnchor="middle" className="fill-current text-[10px] text-muted">
               {`${row.season} · on-peak ${((row.on_peak_share ?? 0) * 100).toFixed(0)}% of export`}
             </text>
           </g>
         )
       })}
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         <text x={PAD.l - 9} y={PAD.t + 10} textAnchor="end">{`$${max}`}</text>
         <text x={PAD.l + 4} y={PAD.t + 10} className="fill-current text-secondary">
           flat
@@ -1099,7 +1091,7 @@ function NetBill() {
           time of use
         </text>
       </g>
-      <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted/70">
+      <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted">
         import minus credit, metered windows
       </text>
     </svg>
@@ -1124,46 +1116,55 @@ function UsedExported() {
       <title>Electricity used (self-consumed plus imported) against exported, day by day</title>
       {[maxUp, maxUp / 2].map((tick) => (
         <g key={`up-${tick}`}>
-          <line x1={PAD.l} x2={W - PAD.r} y1={up(tick)} y2={up(tick)} className="text-line/60" stroke="currentColor" strokeDasharray="3 5" />
-          <text x={PAD.l - 9} y={up(tick)} textAnchor="end" dominantBaseline="middle" className="fill-current text-[10px] text-muted/70">
+          <line x1={PAD.l} x2={W - PAD.r} y1={up(tick)} y2={up(tick)} className="text-line" stroke="currentColor" strokeDasharray="3 5" />
+          <text x={PAD.l - 9} y={up(tick)} textAnchor="end" dominantBaseline="middle" className="fill-current text-[10px] text-muted">
             {tick}
           </text>
         </g>
       ))}
       {[maxDown / 2, maxDown].map((tick) => (
         <g key={`down-${tick}`}>
-          <line x1={PAD.l} x2={W - PAD.r} y1={down(tick)} y2={down(tick)} className="text-line/60" stroke="currentColor" strokeDasharray="3 5" />
-          <text x={PAD.l - 9} y={down(tick)} textAnchor="end" dominantBaseline="middle" className="fill-current text-[10px] text-muted/70">
+          <line x1={PAD.l} x2={W - PAD.r} y1={down(tick)} y2={down(tick)} className="text-line" stroke="currentColor" strokeDasharray="3 5" />
+          <text x={PAD.l - 9} y={down(tick)} textAnchor="end" dominantBaseline="middle" className="fill-current text-[10px] text-muted">
             {tick}
           </text>
         </g>
       ))}
-      <line x1={PAD.l} x2={W - PAD.r} y1={zero} y2={zero} className="text-body/40" stroke="currentColor" strokeWidth={1} />
+      <line x1={PAD.l} x2={W - PAD.r} y1={zero} y2={zero} className="text-series-1" stroke="currentColor" strokeWidth={1} />
       {series.map((row, i) => {
         const left = PAD.l + i * band + (band - bar) / 2
         return (
           <g key={row.d}>
-            <rect x={left} y={up(row.self)} width={bar} height={Math.max(0.5, zero - up(row.self))} className="text-accent" fill="currentColor" opacity={0.9}>
+            <rect x={left} y={up(row.self)} width={bar} height={Math.max(0.5, zero - up(row.self))} className="text-series-1" fill="currentColor">
               <title>{`${row.d}: ${row.self.toFixed(1)} kWh self-consumed of ${row.used.toFixed(1)} used`}</title>
             </rect>
-            <rect x={left} y={up(row.used)} width={bar} height={Math.max(0, up(row.self) - up(row.used))} className="text-secondary" fill="currentColor" opacity={0.8}>
+            <rect x={left} y={up(row.used)} width={bar} height={Math.max(0, up(row.self) - up(row.used))} className="text-series-2" fill="currentColor">
               <title>{`${row.d}: ${row.imported.toFixed(1)} kWh imported`}</title>
             </rect>
-            <rect x={left} y={zero} width={bar} height={Math.max(0.5, down(row.exported) - zero)} className="text-muted" fill="currentColor" opacity={0.75}>
+            <rect
+              x={left}
+              y={zero}
+              width={bar}
+              height={Math.max(0.5, down(row.exported) - zero)}
+              className="text-series-1"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.2}
+            >
               <title>{`${row.d}: ${row.exported.toFixed(1)} kWh exported of ${row.produced.toFixed(1)} produced`}</title>
             </rect>
           </g>
         )
       })}
       <g className="fill-current text-[10px]">
-        <text x={PAD.l + 4} y={PAD.t + 10} className="fill-current text-accent">self-consumed</text>
-        <text x={PAD.l + 4} y={PAD.t + 24} className="fill-current text-secondary">imported</text>
-        <text x={PAD.l + 4} y={zero + 14} className="fill-current text-muted">exported</text>
-        <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted/70">
+        <text x={PAD.l + 4} y={PAD.t + 10} className="fill-current text-series-1">■ self-consumed</text>
+        <text x={PAD.l + 4} y={PAD.t + 24} className="fill-current text-series-2">■ imported</text>
+        <text x={PAD.l + 4} y={zero + 14} className="fill-current text-series-1">▢ exported</text>
+        <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted">
           {`${totals.used.toLocaleString(undefined, { maximumFractionDigits: 0 })} kWh used · ${totals.exported.toFixed(0)} exported · ${totals.produced.toFixed(0)} produced`}
         </text>
       </g>
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         {months.map((entry) => (
           <text key={entry.month} x={PAD.l + entry.i * band + band / 2} y={H - 4} textAnchor="middle">
             {entry.month.slice(2)}
@@ -1194,22 +1195,19 @@ function Breakeven() {
             <text x={left - 10} y={top + 10} textAnchor="end" className="fill-current text-[10px] text-muted">
               {row.window}
             </text>
-            <rect x={left} y={top} width={x(row.share) - left} height={16} rx={2} className={behind ? 'text-secondary' : 'text-accent'} fill="currentColor" opacity={0.85}>
+            <rect x={left} y={top} width={x(row.share) - left} height={16} rx={2} className={behind ? 'text-series-2' : 'text-series-1'} fill="currentColor">
               <title>{`${row.window}: on-peak ${(row.share * 100).toFixed(1)}% of ${row.total.toFixed(0)} kWh`}</title>
             </rect>
             <line x1={x(row.threshold)} x2={x(row.threshold)} y1={top - 3} y2={top + 19} className="text-body" stroke="currentColor" strokeWidth={1.5} />
             <text x={x(row.threshold)} y={top - 5} textAnchor="middle" className="fill-current text-[9px] text-muted">
               {`${(row.threshold * 100).toFixed(1)}%`}
             </text>
-            <text x={left + 8} y={top + 11} className="fill-current text-[10px] text-body">
-              {`${(row.share * 100).toFixed(1)}%`}
-            </text>
-            <text x={x(Math.max(row.share, row.threshold)) + 10} y={top + 11} className="fill-current text-[10px] text-muted">
+            <text x={x(Math.max(row.share, row.threshold)) + 10} y={top + 11} className="fill-current text-[10px] text-body">
               {row.move_kwh > 0
-                ? `move ${row.move_kwh.toFixed(1)} kWh · ${row.move_per_day.toFixed(2)}/day`
-                : 'already under the line'}
+                ? `${(row.share * 100).toFixed(1)}% · move ${row.move_kwh.toFixed(1)} kWh · ${row.move_per_day.toFixed(2)}/day`
+                : `${(row.share * 100).toFixed(1)}% · already under the line`}
             </text>
-            <text x={left} y={top + 32} className="fill-current text-[9px] text-muted/70">
+            <text x={left} y={top + 32} className="fill-current text-[9px] text-muted">
               {`${row.on.toFixed(1)} kWh on-peak of ${row.total.toFixed(0)} over ${row.days} days${row.credit_included ? ', credit included' : ', import only'}`}
             </text>
           </g>
@@ -1246,7 +1244,7 @@ function Payback() {
             x2={W - PAD.r}
             y1={zero - tick * scale}
             y2={zero - tick * scale}
-            className="text-line/60"
+            className="text-line"
             stroke="currentColor"
             strokeDasharray="3 5"
           />
@@ -1255,13 +1253,13 @@ function Payback() {
             y={zero - tick * scale}
             textAnchor="end"
             dominantBaseline="middle"
-            className="fill-current text-[10px] text-muted/70"
+            className="fill-current text-[10px] text-muted"
           >
             {`${tick > 0 ? '+' : ''}${tick.toFixed(1)}`}
           </text>
         </g>
       ))}
-      <line x1={PAD.l} x2={W - PAD.r} y1={zero} y2={zero} className="text-body/50" stroke="currentColor" strokeWidth={1.2} />
+      <line x1={PAD.l} x2={W - PAD.r} y1={zero} y2={zero} className="text-series-1" stroke="currentColor" strokeWidth={1.2} />
       {rows.map((row, i) => {
         const left = PAD.l + i * band + (band - bar) / 2
         const positive = row.delta > 0
@@ -1275,9 +1273,8 @@ function Payback() {
             width={bar}
             height={height}
             rx={1}
-            className={positive ? 'text-secondary' : 'text-accent'}
+            className={positive ? 'text-series-2' : 'text-series-1'}
             fill="currentColor"
-            opacity={0.9}
           >
             <title>{`week of ${row.w}: on-peak ${((row.share ?? 0) * 100).toFixed(1)}% of ${(row.on + row.off).toFixed(0)} kWh, TOU ${row.delta > 0 ? '+' : ''}$${row.delta.toFixed(2)} against flat (${row.source})`}</title>
           </rect>
@@ -1289,8 +1286,11 @@ function Payback() {
         const cx = PAD.l + index * band + band / 2
         return (
           <g key={`mark-${entry.id}`}>
-            <line x1={cx} x2={cx} y1={PAD.t} y2={PAD.t + IH} className="text-accent-deep" stroke="currentColor" strokeWidth={1.5} />
-            <circle cx={cx} cy={PAD.t + 4} r={2.4} className="text-accent-deep" fill="currentColor" />
+            <polygon
+              points={`${cx},${PAD.t + IH + 6} ${cx - 4},${PAD.t + IH + 14} ${cx + 4},${PAD.t + IH + 14}`}
+              className="text-series-1"
+              fill="currentColor"
+            />
             <title>{`${entry.at}: ${entry.action} ${entry.circuit}`}</title>
           </g>
         )
@@ -1298,11 +1298,11 @@ function Payback() {
       <g className="fill-current text-[10px]">
         <text x={PAD.l + 4} y={PAD.t + 10} className="fill-current text-secondary">above the line: time of use costs more</text>
         <text x={PAD.l + 4} y={PAD.t + IH - 2} className="fill-current text-accent">below: it pays</text>
-        <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted/70">
+        <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted">
           {`${charts.paybackSummary.above} above · ${charts.paybackSummary.below} below · net ${charts.paybackSummary.sum > 0 ? '+' : ''}$${charts.paybackSummary.sum.toFixed(2)}`}
         </text>
       </g>
-      <g className="fill-current text-[10px] text-muted/70">
+      <g className="fill-current text-[10px] text-muted">
         {months.map((entry) => (
           <text key={entry.month} x={PAD.l + entry.i * band + band / 2} y={H - 4} textAnchor="middle">
             {entry.month.slice(2)}

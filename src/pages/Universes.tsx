@@ -41,8 +41,8 @@ function Timeline() {
               width={Math.max(2, x1 - x0 - 3)}
               height={30}
               rx={4}
+              className={index % 2 === 0 ? 'text-series-1' : 'text-series-2'}
               fill="currentColor"
-              opacity={index % 2 === 0 ? 0.85 : 0.55}
             >
               <title>{`${segment.id}: ${segment.description ?? ''}`}</title>
             </rect>
@@ -50,7 +50,7 @@ function Timeline() {
               x={(x0 + x1) / 2}
               y={118}
               textAnchor="middle"
-              className="fill-current text-[11px] text-muted/70"
+              className="fill-current text-[11px] text-muted"
             >
               {segment.id.replace('year-', '')}
             </text>
@@ -64,8 +64,7 @@ function Timeline() {
           cy={42}
           r={2.6}
           fill="currentColor"
-          opacity={0.85}
-          className={keyframe.tags.includes('analysis-event') ? 'text-secondary' : 'text-accent'}
+          className={keyframe.tags.includes('analysis-event') ? 'text-series-2' : 'text-series-1'}
         >
           <title>{`${day(keyframe.timestamp)} · ${keyframe.id}`}</title>
         </circle>
@@ -75,14 +74,14 @@ function Timeline() {
         x2={W - PAD}
         y1={42}
         y2={42}
-        className="text-line/60"
+        className="text-line"
         stroke="currentColor"
         strokeDasharray="3 6"
       />
-      <text x={PAD} y={158} className="fill-current text-[10px] text-muted/70">
+      <text x={PAD} y={158} className="fill-current text-[10px] text-muted">
         {day(segments[0].start)}
       </text>
-      <text x={W - PAD} y={158} textAnchor="end" className="fill-current text-[10px] text-muted/70">
+      <text x={W - PAD} y={158} textAnchor="end" className="fill-current text-[10px] text-muted">
         {day(segments[segments.length - 1].end)}
       </text>
     </svg>
@@ -253,7 +252,7 @@ export function Universes() {
 
       <section className="mt-8 rounded-2xl border border-line bg-surface p-5 sm:p-6">
         <h2 className="text-lg font-semibold tracking-tight text-body">Use it</h2>
-        <pre className="mt-3 overflow-x-auto rounded-xl border border-line-soft bg-surface-2 p-4 font-mono text-[13px] leading-6 text-body/90">
+        <pre className="mt-3 overflow-x-auto rounded-xl border border-line-soft bg-surface-2 p-4 font-mono text-[13px] leading-6 text-body">
           <code>{`import { energyRecordUniverse } from './src/universes/energy'
 
 energyRecordUniverse.temporalStructure.keyframes

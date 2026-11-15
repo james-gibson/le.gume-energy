@@ -67,13 +67,17 @@ timestamp; with them, a reader can regenerate it and a reviewer can diff it.
 The renderer is plain SVG, coloured by the page:
 
 ```jsx
-<rect x={x} y={y} width={bar} height={height} fill="currentColor" opacity={0.85}>
+<rect x={x} y={y} width={bar} height={height} className="text-series-1" fill="currentColor">
   <title>{`${row.m}: ${row.kwh.toFixed(1)} kWh`}</title>
 </rect>
 ```
 
 `currentColor` is not decoration. It lets the chart inherit the site's palette instead of shipping a
-second colour system that drifts the first time the theme changes.
+second colour system that drifts the first time the theme changes — and it is also what makes the
+ink auditable, because the build can read the class and say which token reached the screen. An
+`opacity` on the same element would undo that: 85% of a declared ink is an undeclared one, and the
+ladder has a token for the case where a shape really is meant to be quieter.
+
 
 ## Why a summary, and not the CSV
 

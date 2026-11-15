@@ -26,8 +26,8 @@ export function DocPage({ page }: { page: Page }) {
           <Link to={`/${page.section}`} className="hover:text-body">
             {meta.label}
           </Link>
-          <span className="text-muted/40">/</span>
-          <span className="text-body/80">{page.title}</span>
+          <span className="text-muted">/</span>
+          <span className="text-body">{page.title}</span>
         </nav>
 
         <header className="mt-5 border-b border-line-soft pb-8">
@@ -37,7 +37,7 @@ export function DocPage({ page }: { page: Page }) {
           {page.description && (
             <p className="mt-3 max-w-2xl text-lg leading-8 text-muted">{page.description}</p>
           )}
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted/70">
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted">
             {page.updated && <span className="font-mono">updated {page.updated}</span>}
             {page.tags.map((tag) => (
               <span key={tag} className="rounded-full border border-line px-2 py-0.5">

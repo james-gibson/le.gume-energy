@@ -91,7 +91,7 @@ export function SeedPanel({ seedId }: { seedId: string }) {
                   to={`/${page.section}/${page.slug}`}
                   className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-2.5 transition-colors hover:bg-surface-2"
                 >
-                  <span className="font-mono text-[11px] text-muted/60">
+                  <span className="font-mono text-[11px] text-muted">
                     {sectionMeta(page.section).label}
                   </span>
                   <span className="text-sm text-body">{page.title}</span>

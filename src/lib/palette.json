@@ -1,27 +1,181 @@
 {
   "tokens": [
-    { "name": "page", "hex": "#ffffff", "role": "page background" },
-    { "name": "surface", "hex": "#ffffff", "role": "raised surface" },
-    { "name": "surface-2", "hex": "#f7f7f7", "role": "second surface" },
-    { "name": "line", "hex": "#ededed", "role": "border" },
-    { "name": "line-soft", "hex": "#f5f5f5", "role": "quiet border" },
-    { "name": "body", "hex": "#1d1d1d", "role": "body text" },
-    { "name": "muted", "hex": "#6b6b6b", "role": "secondary text" },
-    { "name": "accent", "hex": "#4b4b4b", "role": "interaction" },
-    { "name": "accent-deep", "hex": "#333333", "role": "interaction, pressed" },
-    { "name": "secondary", "hex": "#333333", "role": "second voice" }
+    {
+      "name": "page",
+      "hex": "#ffffff",
+      "role": "page background"
+    },
+    {
+      "name": "surface",
+      "hex": "#ffffff",
+      "role": "raised surface"
+    },
+    {
+      "name": "surface-2",
+      "hex": "#f7f7f7",
+      "role": "second surface",
+      "decorative": true
+    },
+    {
+      "name": "line",
+      "hex": "#ededed",
+      "role": "border",
+      "decorative": true
+    },
+    {
+      "name": "line-soft",
+      "hex": "#f5f5f5",
+      "role": "quiet border",
+      "decorative": true
+    },
+    {
+      "name": "body",
+      "hex": "#1d1d1d",
+      "role": "body text"
+    },
+    {
+      "name": "muted",
+      "hex": "#6b6b6b",
+      "role": "secondary text"
+    },
+    {
+      "name": "accent",
+      "hex": "#4b4b4b",
+      "role": "interaction"
+    },
+    {
+      "name": "accent-deep",
+      "hex": "#333333",
+      "role": "interaction, pressed"
+    },
+    {
+      "name": "secondary",
+      "hex": "#333333",
+      "role": "second voice"
+    },
+    {
+      "name": "series-1",
+      "hex": "#1d1d1d",
+      "role": "the primary measured series"
+    },
+    {
+      "name": "series-2",
+      "hex": "#6b6b6b",
+      "role": "the second measured series; the lightest fill that still clears 3:1 against series-1"
+    },
+    {
+      "name": "wash",
+      "hex": "#ededed",
+      "role": "a wash beneath a line, or a band behind bars; carries no value",
+      "decorative": true
+    }
   ],
   "pairs": [
-    { "fg": "body", "bg": "page", "min": 7, "note": "body text on the page" },
-    { "fg": "body", "bg": "surface", "min": 7, "note": "body text on a card" },
-    { "fg": "body", "bg": "surface-2", "min": 7, "note": "body text on the second surface" },
-    { "fg": "muted", "bg": "page", "min": 4.5, "note": "secondary text" },
-    { "fg": "muted", "bg": "surface", "min": 4.5, "note": "secondary text on a card" },
-    { "fg": "accent", "bg": "page", "min": 4.5, "note": "links, focus rings" },
-    { "fg": "accent", "bg": "surface", "min": 4.5, "note": "links on a card" },
-    { "fg": "secondary", "bg": "page", "min": 7, "note": "second voice" },
-    { "fg": "secondary", "bg": "surface", "min": 7, "note": "second voice on a card" },
-    { "fg": "page", "bg": "accent", "min": 4.5, "note": "text on the primary button" },
-    { "fg": "page", "bg": "secondary", "min": 7, "note": "text on the dark fill" }
+    {
+      "fg": "body",
+      "bg": "page",
+      "min": 7,
+      "note": "body text on the page"
+    },
+    {
+      "fg": "body",
+      "bg": "surface",
+      "min": 7,
+      "note": "body text on a card"
+    },
+    {
+      "fg": "body",
+      "bg": "surface-2",
+      "min": 7,
+      "note": "body text on the second surface"
+    },
+    {
+      "fg": "muted",
+      "bg": "page",
+      "min": 4.5,
+      "note": "secondary text"
+    },
+    {
+      "fg": "muted",
+      "bg": "surface",
+      "min": 4.5,
+      "note": "secondary text on a card"
+    },
+    {
+      "fg": "accent",
+      "bg": "page",
+      "min": 4.5,
+      "note": "links, focus rings"
+    },
+    {
+      "fg": "accent",
+      "bg": "surface",
+      "min": 4.5,
+      "note": "links on a card"
+    },
+    {
+      "fg": "secondary",
+      "bg": "page",
+      "min": 7,
+      "note": "second voice"
+    },
+    {
+      "fg": "secondary",
+      "bg": "surface",
+      "min": 7,
+      "note": "second voice on a card"
+    },
+    {
+      "fg": "page",
+      "bg": "accent",
+      "min": 4.5,
+      "note": "text on the primary button"
+    },
+    {
+      "fg": "page",
+      "bg": "secondary",
+      "min": 7,
+      "note": "text on the dark fill"
+    },
+    {
+      "fg": "series-1",
+      "bg": "page",
+      "min": 3,
+      "note": "a chart mark (WCAG 1.4.11)"
+    },
+    {
+      "fg": "series-1",
+      "bg": "surface",
+      "min": 3,
+      "note": "a chart mark on a card"
+    },
+    {
+      "fg": "series-2",
+      "bg": "page",
+      "min": 3,
+      "note": "a chart mark, and legible as text at 4.83:1"
+    },
+    {
+      "fg": "series-2",
+      "bg": "surface",
+      "min": 3,
+      "note": "a chart mark on a card"
+    },
+    {
+      "fg": "wash",
+      "bg": "page",
+      "min": 1,
+      "note": "decorative only; it encodes nothing"
+    },
+    {
+      "fg": "line",
+      "bg": "page",
+      "min": 1,
+      "note": "a hairline; the tick label carries the value, not the rule"
+    }
+  ],
+  "series": [
+    "series-1",
+    "series-2"
   ]
 }

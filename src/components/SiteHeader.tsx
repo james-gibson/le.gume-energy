@@ -22,7 +22,7 @@ export function SiteHeader() {
           </span>
           <span className="text-sm font-semibold tracking-tight text-body">
             le<span className="text-accent">.</span>gume
-            <span className="ml-1 font-normal text-muted/70">energy</span>
+            <span className="ml-1 font-normal text-muted">energy</span>
           </span>
         </NavLink>
 

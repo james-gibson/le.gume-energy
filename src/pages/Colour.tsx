@@ -3,9 +3,10 @@ import { usePageMeta } from '../lib/usePageMeta'
 import { contrast, grade } from '../lib/contrast'
 import palette from '../lib/palette.json'
 
-const { tokens, pairs } = palette as {
-  tokens: { name: string; hex: string; role: string }[]
+const { tokens, pairs, series } = palette as {
+  tokens: { name: string; hex: string; role: string; decorative?: boolean }[]
   pairs: { fg: string; bg: string; min: number; note: string }[]
+  series: string[]
 }
 
 const byName = new Map(tokens.map((token) => [token.name, token]))
@@ -53,7 +54,7 @@ export function Colour() {
               />
               <p className="mt-2 font-mono text-xs text-body">{token.name}</p>
               <p className="font-mono text-[11px] text-muted">{token.hex}</p>
-              <p className="mt-1 text-[11px] leading-4 text-muted/80">{token.role}</p>
+              <p className="mt-1 text-[11px] leading-4 text-muted">{token.role}</p>
             </li>
           ))}
         </ul>
@@ -105,7 +106,7 @@ export function Colour() {
             </tbody>
           </table>
         </div>
-        <p className="mt-2 text-xs text-muted/70">
+        <p className="mt-2 text-xs text-muted">
           Grade is from the ratio: 7.0+ AAA, 4.5+ AA, 3.0+ AA for large text only, below that a
           failure. The colour of the number is the grade, not the text colour being measured.
         </p>
@@ -134,15 +135,57 @@ export function Colour() {
                   {pair.fg} on {pair.bg}
                 </span>
                 <span className="font-mono text-xs text-muted">{ratio.toFixed(1)}:1</span>
-                <span className="font-mono text-[11px] text-muted/70">min {pair.min}</span>
+                <span className="font-mono text-[11px] text-muted">min {pair.min}</span>
                 <span className={`font-mono text-[11px] ${passes ? 'text-secondary' : 'text-accent'}`}>
                   {passes ? mark : 'BELOW FLOOR'}
                 </span>
-                <span className="ml-auto text-xs text-muted/70">{pair.note}</span>
+                <span className="ml-auto text-xs text-muted">{pair.note}</span>
               </li>
             )
           })}
         </ul>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="text-xs tracking-[0.18em] text-muted uppercase">The series ladder</h2>
+        <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">
+          A chart is not two inks on a page; it is two inks beside each other. Every ink above was
+          measured against the ground, which says nothing about whether one series can be told from
+          another — two greys can each be perfectly legible on white and still be one shape to the
+          eye. This is the measurement that decides: the ladder is ordered, and each step must clear
+          3:1 against the step before it, which is the non-text floor in WCAG 1.4.11.
+        </p>
+        <ul className="mt-4 divide-y divide-line-soft rounded-xl border border-line bg-surface">
+          {series.map((name, i) => {
+            const previous = i === 0 ? null : series[i - 1]
+            const ratio = previous ? contrast(hexOf(previous), hexOf(name)) : null
+            return (
+              <li key={name} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
+                <span
+                  className="block h-8 w-16 shrink-0 rounded border border-line-soft"
+                  style={{ backgroundColor: hexOf(name) }}
+                />
+                <span className="font-mono text-xs text-body">{name}</span>
+                <span className="font-mono text-xs text-muted">{hexOf(name)}</span>
+                <span className="text-xs text-muted">{byName.get(name)?.role}</span>
+                {ratio !== null && (
+                  <span
+                    className={`ml-auto font-mono text-[11px] ${ratio >= 3 ? 'text-secondary' : 'text-accent'}`}
+                  >
+                    {ratio.toFixed(2)}:1 from {previous}
+                  </span>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+        <p className="mt-2 max-w-2xl text-xs leading-6 text-muted">
+          Two greys is the most this ground will give: a third series cannot be a third step, because
+          the lightest fill that still clears 3:1 against white is already series-2. A third series
+          has to be a shape — an outline, a ring, a dash — which is how the charts draw export and
+          grid draw. The build's ink audit checks what ships, not what was declared, so a bar painted
+          at 70% opacity is measured at 70%.
+        </p>
       </section>
 
       <section className="mt-12">

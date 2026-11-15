@@ -20,7 +20,7 @@ export function MotionToggle() {
 
   if (reduced) {
     return (
-      <span className="font-mono text-[10px] text-muted/70" aria-live="polite">
+      <span className="font-mono text-[10px] text-muted" aria-live="polite">
         os: reduced motion
       </span>
     )
@@ -35,7 +35,7 @@ export function MotionToggle() {
         onValueChange={(next) => setMode(next as MotionMode)}
         options={OPTIONS}
       />
-      <span className="hidden font-mono text-[10px] text-muted/60 2xl:inline" aria-live="polite">
+      <span className="hidden font-mono text-[10px] text-muted 2xl:inline" aria-live="polite">
         ladder: {auto}
       </span>
     </div>

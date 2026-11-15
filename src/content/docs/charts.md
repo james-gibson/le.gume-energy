@@ -113,3 +113,36 @@ things stay separate: the hourly shape is drawn from the summer window
 The 15-minute series contains production intervals, not a full day of zeros. The day curve is a
 shape, not an energy total; the daily table is the authority. If you integrate the curve, you will
 be a few percent low.
+
+## Two inks, and a shape for the rest
+
+A chart is not two colours on a page; it is two colours beside each other. Every ink here is
+measured against the page, and *also* against the ink it touches, because two greys can each be
+perfectly legible on white and still be one shape to the eye.
+
+The ladder is `series-1` (`#1d1d1d`) and `series-2` (`#6b6b6b`), 3.16:1 apart. That is the widest
+a monochrome palette can be: the lightest fill that still clears 3:1 against white *is* series-2, so
+a third grey would either vanish into the page or into its neighbour. A third series is therefore a
+shape, not a shade:
+
+- **export** is drawn as an outline below the zero line, because the two halves of that chart meet at
+  zero and cannot differ by ink there;
+- **grid draw** is a hollow ring over the monthly bars;
+- **an intervention** is a flag in the bottom margin, clear of every bar;
+- **an area under a line** is `wash`, an ink declared decorative and priced at 1:1, so a wash never
+  masquerades as a measurement.
+
+## What the ink audit checks
+
+`npm run contrast` reads the built HTML, not the source. For every element painted with
+`currentColor` it resolves the class that reached the DOM to a palette token, applies the alpha
+that class and that element actually carry, and then fails the build when:
+
+1. a painted element names no declared ink, including one inherited from a wrapper;
+2. an ink and its ground fall below the token's floor **after** alpha — the rule that caught
+   `text-muted/70` at 2.92:1 on every chart axis;
+3. two marks that touch are closer than 3:1, or text sits on a mark below 4.5:1.
+
+`opacity` is how ink escapes a palette. The rule is not "never use it" — it is that a diluted ink is
+a *different* colour, and one the palette never measured, so it has to be declared as its own token
+(`wash`) rather than implied by a percentage.

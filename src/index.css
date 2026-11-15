@@ -25,6 +25,18 @@
   --color-accent: var(--accent);
   --color-accent-deep: var(--accent-strong);
   --color-secondary: var(--accent-strong);
+
+  /*
+   * The chart ladder. Two measured series, as far apart as white will allow:
+   * series-2 is the lightest fill that still clears 3:1 against series-1 and
+   * 4.5:1 against the page, so a bar is visible and a difference between bars
+   * is visible too. A third series cannot be a third grey — it has to be a
+   * texture or a position. `wash` is the one ink that carries no value, and it
+   * is declared so, rather than smuggled in as 18% opacity.
+   */
+  --color-series-1: var(--foreground);
+  --color-series-2: var(--text-secondary);
+  --color-wash: var(--surface-pressed);
 }
 
 /*

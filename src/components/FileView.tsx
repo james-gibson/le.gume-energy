@@ -29,7 +29,7 @@ export function FileView({ page }: { page: Page }) {
         </button>
       </div>
 
-      <pre className="mt-4 overflow-x-auto rounded-xl border border-line bg-surface-2 p-4 font-mono text-[12px] leading-6 whitespace-pre-wrap text-body/85">
+      <pre className="mt-4 overflow-x-auto rounded-xl border border-line bg-surface-2 p-4 font-mono text-[12px] leading-6 whitespace-pre-wrap text-body">
         {page.raw}
       </pre>
 
@@ -47,10 +47,10 @@ export function FileView({ page }: { page: Page }) {
           <div className="mt-4 space-y-3">
             {NON_HOSTED_FILES.map((file) => (
               <details key={file.path} className="rounded-xl border border-line bg-surface/60">
-                <summary className="cursor-pointer px-4 py-2.5 font-mono text-xs text-body/80">
+                <summary className="cursor-pointer px-4 py-2.5 font-mono text-xs text-body">
                   {file.path} · {file.text.length} bytes
                 </summary>
-                <pre className="max-h-[26rem] overflow-auto border-t border-line-soft p-4 font-mono text-[12px] leading-6 text-wrap text-body/80">
+                <pre className="max-h-[26rem] overflow-auto border-t border-line-soft p-4 font-mono text-[12px] leading-6 text-wrap text-body">
                   {file.text}
                 </pre>
               </details>

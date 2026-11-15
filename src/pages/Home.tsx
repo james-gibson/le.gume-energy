@@ -64,7 +64,7 @@ export function Home() {
               </div>
             </MotionReveal>
 
-            <p className="mt-6 text-xs text-muted/70">
+            <p className="mt-6 text-xs text-muted">
               Pseudonymous, not anonymous. The manifest says what was removed and what still
               narrows the population.
             </p>
@@ -76,7 +76,7 @@ export function Home() {
                 <p className="text-xs tracking-[0.16em] text-muted uppercase">One file</p>
                 <CopyButton value={DOWNLOAD} label="Copy" />
               </div>
-              <pre className="mt-4 overflow-x-auto rounded-xl border border-line-soft bg-surface-2 p-4 font-mono text-[13px] leading-6 text-body/90">
+              <pre className="mt-4 overflow-x-auto rounded-xl border border-line-soft bg-surface-2 p-4 font-mono text-[13px] leading-6 text-body">
                 <code>{DOWNLOAD}</code>
               </pre>
               <ul className="mt-5 space-y-3 text-sm text-muted">
@@ -147,7 +147,7 @@ export function Home() {
                       {section.blurb}
                     </span>
                   </span>
-                  <span className="font-mono text-xs text-muted/70">
+                  <span className="font-mono text-xs text-muted">
                     {pagesIn(section.id).length} pages →
                   </span>
                 </Link>
@@ -160,7 +160,7 @@ export function Home() {
       <section className="overflow-hidden border-y border-line/70 bg-surface/40 py-6">
         <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
           {['local noon', 'clear day', 'dry spell', 'self-consumption'].map((phrase) => (
-            <span key={phrase} className="text-xs tracking-[0.24em] text-muted/70 uppercase">
+            <span key={phrase} className="text-xs tracking-[0.24em] text-muted uppercase">
               {phrase}
             </span>
           ))}

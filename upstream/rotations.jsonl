@@ -16,3 +16,5 @@
 {"event":"rotation","rotation":"r000008","isotope":"tariff","subject":"2026-11-15 credit","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T20:09:29.458Z"}
 {"event":"open","isotope":"tariff","note":"used vs exported, and the on-peak share that decides the plan","at":"2026-11-15T20:16:54.917Z"}
 {"event":"rotation","rotation":"r000009","isotope":"tariff","subject":"2026-11-15 breakeven","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T20:16:54.963Z"}
+{"event":"open","isotope":"tariff","note":"weekly payback tracker: signed TOU minus flat, intervention-marked","at":"2026-11-15T20:22:55.862Z"}
+{"event":"rotation","rotation":"r000010","isotope":"tariff","subject":"2026-11-15 payback","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T20:22:55.904Z"}

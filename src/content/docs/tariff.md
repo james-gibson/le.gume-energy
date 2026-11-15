@@ -118,6 +118,17 @@ so the site solves the exact net-equality per window rather than quoting the clo
 So the adjustment is a rounding error in winter and roughly 1.4 kWh a day in summer — a load the size
 of a dishwasher, moved out of the evening.
 
+### Tracking it: the weekly payback
+
+One bar per week, signed: above the zero line time of use cost more than the flat rate, below it
+less. Zero is break-even, so the sign is the answer and the height is its size. Across the 23 weeks
+that carry a split, 16 are above and 7 below — a net cost of $15.70, driven by the summer weeks; the
+five autumn weeks hover within a few cents of the line either way.
+
+Billed weeks use the utility's own on/off split; metered weeks derive it from hourly import with the
+sheet's weekday rule. A declared intervention is a vertical rule on the same chart, so an adjustment
+and the weeks that follow it are one picture rather than two.
+
 ### What the ratio does *not* know
 
 - **A repair or a parasitic draw removed at night moves the ratio the wrong way.** It lowers the

@@ -72,6 +72,9 @@ on the figure.
 - What has to move for time of use to pay back: the on-peak share of import
   against the break-even share, and the kWh per day that has to leave the
   evening.
+- The payback, week by week: what time of use cost above the flat rate or under
+  it, as signed bars around a break-even zero line, with declared interventions
+  marked as vertical rules.
 - One clear day at 15-minute resolution: the highest-energy day in the record.
 - The self-consumption ratio over the utility window.
 - Where monthly production goes: self-consumed and exported stacked, with the

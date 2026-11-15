@@ -1219,6 +1219,100 @@ function Breakeven() {
   )
 }
 
+function Payback() {
+  const rows = charts.payback
+  const limit = Math.max(0.5, Math.ceil(Math.max(...rows.map((row) => Math.abs(row.delta))) * 4) / 4)
+  const zero = PAD.t + IH / 2
+  const scale = IH / 2 / limit
+  const band = IW / rows.length
+  const bar = Math.max(2, band * 0.62)
+  const months = rows
+    .map((row, i) => ({ i, month: row.w.slice(0, 7) }))
+    .filter((entry, i, all) => i === 0 || entry.month !== all[i - 1].month)
+
+  const weekOf = (date: string) => {
+    const d = new Date(`${date}T12:00:00Z`)
+    d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7))
+    return d.toISOString().slice(0, 10)
+  }
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Time of use cost minus flat rate, week by week">
+      <title>What time of use cost above the flat rate, or under it, week by week</title>
+      {[limit, limit / 2, -limit / 2, -limit].map((tick) => (
+        <g key={tick}>
+          <line
+            x1={PAD.l}
+            x2={W - PAD.r}
+            y1={zero - tick * scale}
+            y2={zero - tick * scale}
+            className="text-line/60"
+            stroke="currentColor"
+            strokeDasharray="3 5"
+          />
+          <text
+            x={PAD.l - 9}
+            y={zero - tick * scale}
+            textAnchor="end"
+            dominantBaseline="middle"
+            className="fill-current text-[10px] text-muted/70"
+          >
+            {`${tick > 0 ? '+' : ''}${tick.toFixed(1)}`}
+          </text>
+        </g>
+      ))}
+      <line x1={PAD.l} x2={W - PAD.r} y1={zero} y2={zero} className="text-body/50" stroke="currentColor" strokeWidth={1.2} />
+      {rows.map((row, i) => {
+        const left = PAD.l + i * band + (band - bar) / 2
+        const positive = row.delta > 0
+        const top = positive ? zero - row.delta * scale : zero
+        const height = Math.max(0.8, Math.abs(row.delta) * scale)
+        return (
+          <rect
+            key={row.w}
+            x={left}
+            y={top}
+            width={bar}
+            height={height}
+            rx={1}
+            className={positive ? 'text-secondary' : 'text-accent'}
+            fill="currentColor"
+            opacity={0.9}
+          >
+            <title>{`week of ${row.w}: on-peak ${((row.share ?? 0) * 100).toFixed(1)}% of ${(row.on + row.off).toFixed(0)} kWh, TOU ${row.delta > 0 ? '+' : ''}$${row.delta.toFixed(2)} against flat (${row.source})`}</title>
+          </rect>
+        )
+      })}
+      {interventions.map((entry) => {
+        const index = rows.findIndex((row) => row.w === weekOf(entry.day))
+        if (index === -1) return null
+        const cx = PAD.l + index * band + band / 2
+        return (
+          <g key={`mark-${entry.id}`}>
+            <line x1={cx} x2={cx} y1={PAD.t} y2={PAD.t + IH} className="text-accent-deep" stroke="currentColor" strokeWidth={1.5} />
+            <circle cx={cx} cy={PAD.t + 4} r={2.4} className="text-accent-deep" fill="currentColor" />
+            <title>{`${entry.at}: ${entry.action} ${entry.circuit}`}</title>
+          </g>
+        )
+      })}
+      <g className="fill-current text-[10px]">
+        <text x={PAD.l + 4} y={PAD.t + 10} className="fill-current text-secondary">above the line: time of use costs more</text>
+        <text x={PAD.l + 4} y={PAD.t + IH - 2} className="fill-current text-accent">below: it pays</text>
+        <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted/70">
+          {`${charts.paybackSummary.above} above · ${charts.paybackSummary.below} below · net ${charts.paybackSummary.sum > 0 ? '+' : ''}$${charts.paybackSummary.sum.toFixed(2)}`}
+        </text>
+      </g>
+      <g className="fill-current text-[10px] text-muted/70">
+        {months.map((entry) => (
+          <text key={entry.month} x={PAD.l + entry.i * band + band / 2} y={H - 4} textAnchor="middle">
+            {entry.month.slice(2)}
+          </text>
+        ))}
+      </g>
+    </svg>
+  )
+}
+
 export function Charts() {
   usePageMeta(
     'Charts',
@@ -1396,6 +1490,13 @@ export function Charts() {
           note="The plan turns on one ratio: the share of imported energy that lands in the 5–9 p.m. window. Above the line, time of use costs more; below it, it costs less. The line is the share at which the two plans price the same energy — with the solar credit included where the window has hourly export. The text is how much on-peak energy has to move, and how much that is per day."
         >
           <Breakeven />
+        </Figure>
+
+        <Figure
+          title="The payback, week by week"
+          note={`What time of use cost above the flat rate (above the line) or under it (below), one bar per week across the ${charts.payback.length} weeks with a split. Signed bars are the point: the zero line is break-even, so the sign is the answer and the height is its size. ${charts.paybackSummary.above} weeks are above and ${charts.paybackSummary.below} below, a net ${charts.paybackSummary.sum > 0 ? `cost of $${charts.paybackSummary.sum.toFixed(2)}` : `gain of $${Math.abs(charts.paybackSummary.sum).toFixed(2)}`} over the whole record. A declared intervention is a vertical rule, so an adjustment and the weeks that follow it sit in one picture.`}
+        >
+          <Payback />
         </Figure>
       </div>
 

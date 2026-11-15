@@ -506,6 +506,59 @@ const breakeven = [
   ...seasonal.map((row) => ({ window: `metered ${row.season}, ${row.days} d`, ...breakevenFor(row, row.season, true) })),
 ]
 
+// --- the payback, week by week --------------------------------------------
+// One bar per week: what time of use cost above the flat rate (positive) or
+// under it (negative). The zero line IS the break-even, so the sign is the
+// answer and the height is the size of the answer. Billed weeks use the
+// utility's own on/off split; metered weeks derive it from hourly import with
+// the sheet's weekday rule.
+const weekStartOf = (date) => {
+  const d = new Date(Date.UTC(+date.slice(0, 4), +date.slice(5, 7) - 1, +date.slice(8, 10)))
+  d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7))
+  return d.toISOString().slice(0, 10)
+}
+const paybackWeeks = new Map()
+const addToWeek = (date, on, off, source) => {
+  const week = weekStartOf(date)
+  const entry = paybackWeeks.get(week) ?? { w: week, on: 0, off: 0, days: 0, sources: new Set() }
+  entry.on += on
+  entry.off += off
+  entry.days += 1
+  entry.sources.add(source)
+  paybackWeeks.set(week, entry)
+}
+for (const row of touRows) {
+  addToWeek(row.date_local, Number(row.grid_on_peak_kwh) || 0, Number(row.grid_off_peak_kwh) || 0, 'billed')
+}
+for (const [date, entry] of hourlyBuckets) {
+  addToWeek(date, entry.on, entry.off, 'metered')
+}
+const payback = [...paybackWeeks.values()]
+  .sort((a, b) => (a.w < b.w ? -1 : 1))
+  .map((entry) => {
+    const season = rateSeason(entry.w)
+    const total = entry.on + entry.off
+    const tou = cost(entry.on, entry.off, season)
+    const flat = flatCost(total, season)
+    return {
+      w: entry.w,
+      days: entry.days,
+      on: round(entry.on, 1),
+      off: round(entry.off, 1),
+      share: total ? round(entry.on / total, 4) : null,
+      tou,
+      flat,
+      delta: Number((tou - flat).toFixed(2)),
+      source: [...entry.sources].sort().join('+'),
+    }
+  })
+const paybackSummary = {
+  weeks: payback.length,
+  above: payback.filter((row) => row.delta > 0).length,
+  below: payback.filter((row) => row.delta < 0).length,
+  sum: round(payback.reduce((sum, row) => sum + row.delta, 0), 2),
+}
+
 const payload = {
   generated_from: {
     manifest: 'public/data/manifest.json',
@@ -535,6 +588,8 @@ const payload = {
   pricing,
   usedVsExported,
   breakeven,
+  payback,
+  paybackSummary,
   changes,
   windows,
 }
@@ -548,5 +603,6 @@ console.log(
     `${payload.recent.series.length} recent days, ${payload.recent.events.length} recent event(s), ` +
     `${payload.interventions.length} intervention(s), ${payload.touDays.days.length} TOU day(s), ` +
     `pricing ${payload.pricing.observed.tou} vs ${payload.pricing.observed.flat} (TOU vs flat), ` +
-    `${payload.usedVsExported.totals.used} used / ${payload.usedVsExported.totals.exported} exported`,
+    `${payload.usedVsExported.totals.used} used / ${payload.usedVsExported.totals.exported} exported, ` +
+    `${payload.paybackSummary.weeks} payback week(s)`,
 )

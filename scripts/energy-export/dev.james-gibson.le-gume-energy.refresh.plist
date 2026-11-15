@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>dev.james-gibson.le-gume-energy.refresh</string>
+
+	<!-- zsh -lc so the login PATH exists; refresh.sh re-adds nvm for node. -->
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/zsh</string>
+		<string>-lc</string>
+		<string>/Users/dev/projects/personal/le.gume-energy/scripts/energy-export/refresh.sh</string>
+	</array>
+
+	<key>WorkingDirectory</key>
+	<string>/Users/dev/projects/personal/le.gume-energy</string>
+
+	<!-- 06:20 local, every day. The collectors write overnight; this is after. -->
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Hour</key>
+		<integer>6</integer>
+		<key>Minute</key>
+		<integer>20</integer>
+	</dict>
+
+	<!-- Not at load: a login is not a reason to publish. -->
+	<key>RunAtLoad</key>
+	<false/>
+
+	<key>StandardOutPath</key>
+	<string>/Users/dev/projects/personal/le.gume-energy/scripts/energy-export/logs/launchd.out.log</string>
+	<key>StandardErrorPath</key>
+	<string>/Users/dev/projects/personal/le.gume-energy/scripts/energy-export/logs/launchd.err.log</string>
+
+	<key>ProcessType</key>
+	<string>Background</string>
+	<key>LowPriorityIO</key>
+	<true/>
+</dict>
+</plist>

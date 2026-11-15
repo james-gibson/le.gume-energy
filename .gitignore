@@ -5,3 +5,7 @@ dist/
 .DS_Store
 *.local
 .vite/
+
+# machine-local collector paths and the job log
+scripts/energy-export/collector.env
+scripts/energy-export/logs/

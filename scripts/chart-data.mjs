@@ -559,6 +559,28 @@ const paybackSummary = {
   sum: round(payback.reduce((sum, row) => sum + row.delta, 0), 2),
 }
 
+// --- how old the record is -------------------------------------------------
+// The export is a manual run on the machine that holds the collector
+// databases, so the site can never assume it is current. It states the age it
+// was built from, at build time, so a stale deploy says so instead of looking
+// like today.
+const manifest = JSON.parse(await readFile(join(DATA, 'manifest.json'), 'utf8'))
+const recordLastDay =
+  daily.filter((row) => row.production_kwh !== '').at(-1)?.date_local ?? null
+const exportedAt = manifest.generated_at_utc ?? null
+const ageDays = exportedAt
+  ? Math.floor(((Date.now() - Date.parse(exportedAt)) / 86_400_000) * 10) / 10
+  : null
+const record = {
+  exported_at_utc: exportedAt,
+  exported_at_local: manifest.generated_at_local ?? null,
+  last_day: recordLastDay,
+  age_days: ageDays,
+  // One day of lag is the normal shape of a nightly export; a week of silence
+  // is a collector that has stopped and a record that should not read as live.
+  state: ageDays === null ? 'unknown' : ageDays > 7 ? 'stale' : ageDays > 1.5 ? 'aging' : 'current',
+}
+
 const payload = {
   generated_from: {
     manifest: 'public/data/manifest.json',
@@ -567,6 +589,7 @@ const payload = {
     intervals: 'public/data/solar-production-15min.csv',
     joined: 'public/data/energy-daily-joined.csv',
   },
+  record,
   summary,
   monthly: monthly.map((row) => ({
     m: row.month_local,
@@ -604,5 +627,5 @@ console.log(
     `${payload.interventions.length} intervention(s), ${payload.touDays.days.length} TOU day(s), ` +
     `pricing ${payload.pricing.observed.tou} vs ${payload.pricing.observed.flat} (TOU vs flat), ` +
     `${payload.usedVsExported.totals.used} used / ${payload.usedVsExported.totals.exported} exported, ` +
-    `${payload.paybackSummary.weeks} payback week(s)`,
+    `${payload.paybackSummary.weeks} payback week(s)`, `record ${record.age_days}d old (${record.state})`,
 )

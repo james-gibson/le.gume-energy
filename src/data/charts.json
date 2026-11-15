@@ -6,6 +6,13 @@
     "intervals": "public/data/solar-production-15min.csv",
     "joined": "public/data/energy-daily-joined.csv"
   },
+  "record": {
+    "exported_at_utc": "2026-11-13T21:58:41Z",
+    "exported_at_local": "2026-11-13T14:58:41-07:00",
+    "last_day": "2026-11-13",
+    "age_days": 1.9,
+    "state": "aging"
+  },
   "summary": {
     "days": 1188,
     "clear_days": 374,

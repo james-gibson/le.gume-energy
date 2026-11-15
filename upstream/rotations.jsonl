@@ -22,3 +22,5 @@
 {"event":"rotation","rotation":"r000011","isotope":"charts","subject":"2026-11-15 ink","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T20:48:19.738Z"}
 {"event":"open","isotope":"rules","note":"catch up to RULES-09: an ink is measured as it lands","at":"2026-11-15T20:53:04.097Z"}
 {"event":"rotation","rotation":"r000012","isotope":"rules","subject":"2026-11-15 RULES-09","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T20:53:04.140Z"}
+{"event":"open","isotope":"charts","note":"the record now states its age, and a daily alarm notices when the import stops","at":"2026-11-15T21:26:47.151Z"}
+{"event":"rotation","rotation":"r000013","isotope":"charts","subject":"2026-11-15 freshness","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T21:26:47.195Z"}

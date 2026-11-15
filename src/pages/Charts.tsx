@@ -1333,6 +1333,26 @@ export function Charts() {
         run.
       </p>
 
+      {/*
+        The record is an export, not a live feed. Saying how old it was when this
+        page was built is the difference between a dated record and a cached page
+        pretending to be today.
+      */}
+      <p className="mt-3 font-mono text-xs text-muted">
+        {`Data through ${charts.record.last_day} · exported `}
+        {charts.record.exported_at_local?.slice(0, 16).replace('T', ' ')}
+        {charts.record.age_days === null
+          ? ' · age unknown: the manifest has no export time'
+          : ` · ${charts.record.age_days} day${charts.record.age_days === 1 ? '' : 's'} old when this page was built`}
+      </p>
+      {charts.record.state !== 'current' && (
+        <p className="mt-4 max-w-2xl rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm leading-6 text-body">
+          {charts.record.state === 'stale'
+            ? `The import has not run for ${charts.record.age_days} days. Everything below is the ${charts.record.last_day} export, not today's reading — treat the recent figures as history, not as current.`
+            : `The import last ran on ${charts.record.last_day}. That is the normal shape of a nightly export a day behind, but nothing here is live: these are the numbers in that export.`}
+        </p>
+      )}
+
       <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
         {[
           { k: 'Days', v: summary.days.toLocaleString() },

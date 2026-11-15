@@ -146,3 +146,26 @@ that class and that element actually carry, and then fails the build when:
 `opacity` is how ink escapes a palette. The rule is not "never use it" — it is that a diluted ink is
 a *different* colour, and one the palette never measured, so it has to be declared as its own token
 (`wash`) rather than implied by a percentage.
+
+## How old this is
+
+The record is an export, not a feed. `scripts/energy-export/export_local.py` reads three SQLite
+databases — SolarEdge production, Xcel usage, the analysis store — and writes the eleven CSVs. Those
+databases live on the machine that collects them and are deliberately unpublished, so **no CI runner
+can import**: a scheduled job here would have nothing to read.
+
+So the site does the one thing it can honestly do, and the pipeline does the other:
+
+- **The page states its age.** Every build writes the export time and the last day of data into the
+  charts page — `Data through 2026-11-13 · exported 2026-11-13 14:58 · 1.9 days old when this page
+  was built` — and says plainly when the import last ran. A cached page that looks current is the
+  defect; a dated one cannot be.
+- **The build refuses to publish without it.** `npm run freshness --require-stamp dist` fails when
+  the charts page stops saying how old the record is.
+- **A daily alarm runs on the age.** `.github/workflows/freshness.yml` runs
+  `npm run freshness --max-age 2` every day at 15:00 UTC. It cannot import, but it can go red when
+  the export stops moving, which is the part of a stuck import visible from a runner.
+
+The import itself is `npm run import` (or the `export_local.py` invocation in the README), run where
+the databases are, then committed. Until it is on a schedule on that machine, the age on the page is
+the honest description of what this site is: a record, two days behind when nothing refreshed it.

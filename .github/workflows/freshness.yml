@@ -1,0 +1,24 @@
+name: freshness
+
+# The import cannot run here: the collector databases are machine-local and
+# deliberately unpublished. What this can do is notice that the committed
+# export stopped moving, which is the only part of a stuck import that is
+# visible from a runner.
+on:
+  schedule:
+    - cron: '0 15 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # No npm ci: the check is zero-dependency and reads one committed file.
+      - run: node scripts/freshness.mjs --max-age 2

@@ -138,7 +138,8 @@ export function Universes() {
       <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <section className="rounded-2xl border border-line bg-surface p-5 sm:p-6">
           <h2 className="text-lg font-semibold tracking-tight text-body">Segments</h2>
-          <table className="mt-4 w-full border-collapse text-left text-sm">
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full border-collapse text-left text-sm">
             <thead className="text-xs tracking-[0.12em] text-muted uppercase">
               <tr>
                 <th className="border-b border-line py-2 font-medium">Year</th>
@@ -158,6 +159,7 @@ export function Universes() {
               ))}
             </tbody>
           </table>
+          </div>
           <p className="mt-3 text-xs text-muted">
             Segment boundaries are calendar years in UTC; the daily rows they contain are local
             calendar days. End dates are exclusive: a year ends at the next year's first midnight.

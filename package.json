@@ -8,7 +8,7 @@
   "license": "AGPL-3.0-only",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/universe-data.mjs && node scripts/chart-data.mjs && tsc --noEmit && vite build && node scripts/deck.mjs && vite build --ssr scripts/prerender.tsx --outDir .prerender --emptyOutDir && node .prerender/prerender.js && node scripts/postbuild.mjs && node scripts/doomlint.mjs dist --fail-on high && node scripts/a11y.mjs dist --fail-on high && node scripts/contrast.mjs && node scripts/verify-publish.mjs",
+    "build": "node scripts/universe-data.mjs && node scripts/chart-data.mjs && tsc --noEmit && vite build && node scripts/deck.mjs && vite build --ssr scripts/prerender.tsx --outDir .prerender --emptyOutDir && node .prerender/prerender.js && node scripts/postbuild.mjs && node scripts/doomlint.mjs dist --fail-on high && node scripts/a11y.mjs dist --fail-on high && node scripts/contrast.mjs && node scripts/overflow.mjs && node scripts/verify-publish.mjs",
     "preview": "vite preview",
     "smoke": "vite build --ssr scripts/smoke.tsx --outDir .smoke --emptyOutDir && node .smoke/smoke.js",
     "guard": "node scripts/verify-publish.mjs",
@@ -17,7 +17,10 @@
     "contrast": "node scripts/contrast.mjs",
     "check": "tsc --noEmit",
     "charts": "node scripts/chart-data.mjs",
-    "universes": "node scripts/universe-data.mjs"
+    "universes": "node scripts/universe-data.mjs",
+    "rules": "node scripts/sync-upstream.mjs --check",
+    "rotation": "node scripts/rotation.mjs",
+    "overflow": "node scripts/overflow.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.72.0",

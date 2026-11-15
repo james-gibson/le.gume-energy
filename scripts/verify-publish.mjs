@@ -16,6 +16,8 @@ import { readFileSync } from 'node:fs'
 import { access, readFile, readdir, stat } from 'node:fs/promises'
 import { join, relative } from 'node:path'
 
+import { readState } from './rotation-state.mjs'
+
 const DIST = 'dist'
 const failures = []
 const notes = []
@@ -467,7 +469,29 @@ if (!rulesFile) {
   if (!/^version: \S+/m.test(rulesFile)) fail('rules', 'dist/rules.md has no version line')
 }
 
-// --- 17. size sanity ------------------------------------------------------
+// --- 18. the rotation record is served, and it is the ledger's state --------
+// The seed decides its updates from `upstream/rotations.jsonl`. Publishing that
+// decision is what makes "this seed manages its own updates" checkable rather
+// than asserted, and comparing it here means the page and the ledger cannot
+// disagree about the rung.
+const ledger = readState()
+const publishedRotation = JSON.parse((await readText(join(DIST, 'rotations.json'))) || 'null')
+if (!publishedRotation) {
+  fail('rotation', 'dist/rotations.json is not published — the build did not copy the record')
+} else {
+  if (publishedRotation.state !== ledger.state) {
+    fail('rotation', `the site publishes ${publishedRotation.state} while the ledger derives ${ledger.state}`)
+  }
+  if ((publishedRotation.head ?? null) !== (ledger.head ?? null)) {
+    fail('rotation', `the site publishes head ${publishedRotation.head ?? 'none'} while the ledger is at ${ledger.head ?? 'none'}`)
+  }
+  if (publishedRotation.rotations !== ledger.rotations) {
+    fail('rotation', `the site publishes ${publishedRotation.rotations} rotation(s) while the ledger holds ${ledger.rotations}`)
+  }
+  if (ledger.gaps.length) fail('rotation', `the id sequence has a gap: ${ledger.gaps.join(', ')}`)
+}
+
+// --- 19. size sanity ------------------------------------------------------
 const total = (await Promise.all(files.map(async (f) => (await stat(f)).size))).reduce(
   (a, b) => a + b,
   0,

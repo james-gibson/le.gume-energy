@@ -16,6 +16,8 @@ import { execFileSync } from 'node:child_process'
 import { writeFile, mkdir, readdir, readFile, access, rm } from 'node:fs/promises'
 import { join, relative } from 'node:path'
 
+import { readState } from './rotation-state.mjs'
+
 const SITE = 'https://james-gibson.github.io/le.gume-energy'
 const built = new Date().toISOString().slice(0, 10)
 const commit = (() => {
@@ -169,37 +171,28 @@ await mkdir(join(DIST, '.well-known'), { recursive: true })
 await writeFile(join(DIST, '.well-known', 'ai-catalog.json'), `${JSON.stringify(catalog, null, 2)}\n`, 'utf8')
 
 
-// --- rules.md -------------------------------------------------------------
-// The rules a child seed defers to. Stable ids, one line each, so a child can
-// fetch this file, diff it, and record an override rather than re-derive the
-// rule from prose. Generated here so it cannot drift from the site's own guard.
-const RULES = [
-  ['RULES-01', 'The path is the URL. A rename is a breaking public change.'],
-  ['RULES-02', 'Navigation is derived from the content tree; there is no nav array.'],
-  ['RULES-03', 'Content is Markdown, never MDX. A live widget is a route in src/pages/.'],
-  ['RULES-04', 'llms.txt is generated; never hand-edit it.'],
-  ['RULES-05', 'The guard is the gate. Weakening a check invalidates every other claim.'],
-  ['RULES-06', 'A claim that the site does X must be checkable at the URL or in the repository.'],
-  ['RULES-07', 'Child seeds ship back: package a new capability as an isotope and propose it upstream.'],
-  ['RULES-08', 'A child seed defers to these rules until it records a local override, with a reason.'],
-]
-const rulesVersion = commit ?? built
-await writeFile(
-  join(DIST, 'rules.md'),
-  [
-    '# le.gume energy rules',
-    '',
-    `version: ${rulesVersion}`,
-    `source: ${SITE}/rules.md`,
-    '',
-    'A child seed defers to this list until it records a local override.',
-    'An override names a rule id, gives a reason, and is published by the child.',
-    '',
-    ...RULES.map(([id, text]) => `- ${id}: ${text}`),
-    '',
-  ].join('\n'),
-  'utf8',
-)
+// --- rules.md: inherited, with this child's override on the record --------
+// This seed used to keep a private copy of the list. A private copy is the one
+// thing a tightened parent rule cannot reach, so the file it publishes is now
+// the parent's, vendored by `scripts/sync-upstream.mjs`, plus the overrides
+// this seed records.
+const upstreamRules = await readFile('upstream/rules.md', 'utf8').catch(() => '')
+const overrides = await readFile('upstream/overrides.md', 'utf8').catch(() => '')
+if (upstreamRules) {
+  await writeFile(
+    join(DIST, 'rules.md'),
+    `${upstreamRules}\n## Local overrides\n\n${overrides.replace(/^# Local overrides\n+/, '')}`,
+    'utf8',
+  )
+} else {
+  throw new Error('postbuild: upstream/rules.md is missing — run node scripts/sync-upstream.mjs')
+}
+
+// --- rotations.json: the seed's own record, published so it is checkable ----
+// RULES-06: a claim that the site does X must be checkable at the URL. "This
+// seed follows its own rotation record" is a claim, so the record is served.
+const rotationState = readState()
+await writeFile(join(DIST, 'rotations.json'), `${JSON.stringify(rotationState, null, 2)}\n`, 'utf8')
 
 await rm(PRERENDER, { recursive: true, force: true })
 
@@ -273,6 +266,11 @@ const lines = [
   'The guard refuses placeholders, absolute local paths, credentials, a base path',
   'that disagrees with package.json homepage, a route without its shell, or a page',
   'that never reached the bundle. A failure means nothing is published.',
+  '',
+  '## Machine files',
+  '',
+  `- [rules.md](${SITE}/rules.md): the rules this child follows, and its override`,
+  `- [rotations.json](${SITE}/rotations.json): this seed's own rotation record — state, head, distance`,
   '',
   '## Invariants',
   '',

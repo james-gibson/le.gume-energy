@@ -444,10 +444,223 @@ function Histogram() {
   )
 }
 
+function Recent() {
+  const { series, to, events } = charts.recent
+  const max = Math.ceil(Math.max(...series.map((row) => row.kwh)) / 5) * 5
+  const ticks = Array.from({ length: 5 }, (_, i) => (max / 4) * i)
+  const band = IW / series.length
+  const bar = Math.max(2, band * 0.7)
+  const center = (index: number) => PAD.l + index * band + band / 2
+  const at = (date: string, fromEnd = false) => {
+    const index = fromEnd
+      ? series.map((row) => row.d).lastIndexOf(date)
+      : series.findIndex((row) => row.d >= date)
+    return index === -1 ? null : index
+  }
+  const draw = series
+    .map((row, i) => (row.draw === null ? null : ([center(i), y(row.draw, 0, max)] as [number, number])))
+    .filter((point): point is [number, number] => point !== null)
+  const months = series
+    .map((row, i) => ({ i, month: row.d.slice(0, 7), label: row.d.slice(5, 7) }))
+    .filter((entry, i, all) => i === 0 || entry.month !== all[i - 1].month)
+  const boundary = series.length - 30
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`Daily production, last ${series.length} days to ${to}`}>
+      <title>{`Daily production for the ${series.length} days to ${to}`}</title>
+      <Grid min={0} max={max} ticks={ticks} />
+      {events.map((event) => {
+        const from = at(event.start)
+        const toIndex = at(event.end, true)
+        if (from === null || toIndex === null) return null
+        return (
+          <rect
+            key={`${event.start}-${event.kind}`}
+            x={PAD.l + from * band}
+            y={PAD.t}
+            width={Math.max(band, (toIndex - from + 1) * band)}
+            height={IH}
+            className="text-secondary"
+            fill="currentColor"
+            opacity={0.12}
+          >
+            <title>{`${event.start} to ${event.end}: ${event.kind}`}</title>
+          </rect>
+        )
+      })}
+      {series.map((row, i) => {
+        const top = y(row.kwh, 0, max)
+        return (
+          <rect
+            key={row.d}
+            x={PAD.l + i * band + (band - bar) / 2}
+            y={top}
+            width={bar}
+            height={PAD.t + IH - top}
+            rx={1}
+            className={row.clear ? 'text-accent' : 'text-accent/40'}
+            fill="currentColor"
+            opacity={row.clear ? 0.9 : 0.55}
+          >
+            <title>{`${row.d}: ${row.kwh.toFixed(1)} kWh${row.clear ? ', clear' : ''}${row.residual !== null ? `, residual ${row.residual.toFixed(3)}` : ''}`}</title>
+          </rect>
+        )
+      })}
+      {draw.length > 1 && (
+        <path d={path(draw)} className="text-muted" fill="none" stroke="currentColor" strokeDasharray="4 3" strokeWidth={1.5} />
+      )}
+      <line
+        x1={PAD.l + boundary * band}
+        x2={PAD.l + boundary * band}
+        y1={PAD.t}
+        y2={PAD.t + IH}
+        className="text-body/40"
+        stroke="currentColor"
+        strokeWidth={1}
+      />
+      <g className="fill-current text-[10px] text-muted/70">
+        <text x={PAD.l + 4} y={PAD.t + 10}>
+          previous 30
+        </text>
+        <text x={PAD.l + boundary * band + 4} y={PAD.t + 10}>
+          last 30
+        </text>
+        {months.map((entry) => (
+          <text key={entry.month} x={center(entry.i)} y={H - 12} textAnchor="middle">
+            {entry.label}
+          </text>
+        ))}
+      </g>
+    </svg>
+  )
+}
+
+function Changes() {
+  const pairs = charts.changes.filter((change) => change.before !== null && change.after !== null)
+  const left = 104
+  const width = W - left - 20
+  const mid = left + width / 2
+  const scale = width / 2 / 0.8
+  const rowHeight = 30
+  const height = 34 + pairs.length * rowHeight
+
+  return (
+    <svg viewBox={`0 0 ${W} ${height}`} className="w-full" role="img" aria-label="Clear-day residual before and after each recorded change">
+      <title>Clear-day residual before and after each recorded change</title>
+      <line x1={mid} x2={mid} y1={22} y2={height - 14} className="text-body/40" stroke="currentColor" strokeWidth={1} />
+      <g className="fill-current text-[10px] text-muted/70">
+        {[-0.6, -0.3, 0.3, 0.6].map((value) => (
+          <g key={value}>
+            <line
+              x1={mid + value * scale}
+              x2={mid + value * scale}
+              y1={22}
+              y2={height - 14}
+              className="text-line/60"
+              stroke="currentColor"
+              strokeDasharray="3 5"
+            />
+            <text x={mid + value * scale} y={height - 2} textAnchor="middle">
+              {value.toFixed(1)}
+            </text>
+          </g>
+        ))}
+      </g>
+      {pairs.map((change, i) => {
+        const top = 24 + i * rowHeight
+        const before = change.before as number
+        const after = change.after as number
+        const barFrom = (value: number, yTop: number) => ({
+          x: value >= 0 ? mid : mid + value * scale,
+          width: Math.max(1.5, Math.abs(value) * scale),
+          y: yTop,
+        })
+        const a = barFrom(before, top)
+        const b = barFrom(after, top + 11)
+        return (
+          <g key={`${change.start}-${change.kind}`}>
+            <text x={left - 8} y={top + 8} textAnchor="end" className="fill-current text-[10px] text-muted">
+              {`${change.start.slice(5)} ${change.kind}`}
+            </text>
+            <rect {...a} height={8} rx={1} className="text-secondary" fill="currentColor" opacity={0.9}>
+              <title>{`before ${change.start}: ${before.toFixed(3)}`}</title>
+            </rect>
+            <rect {...b} height={8} rx={1} className="text-accent" fill="currentColor" opacity={0.9}>
+              <title>{`after ${change.end}: ${after.toFixed(3)}`}</title>
+            </rect>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
+function Windows() {
+  const { last, previous, last_year } = charts.windows
+  const percent = (value: number | null) => (value === null ? '—' : `${(value * 100).toFixed(0)}%`)
+  const decimal = (value: number | null) => (value === null ? '—' : value.toFixed(3))
+  const delta = (value: number | null, against: number | null) =>
+    value === null || against === null ? '' : `${value - against >= 0 ? '+' : ''}${(value - against).toFixed(2)}`
+
+  const rows = [
+    { k: 'days in the window', cells: [String(last.days), String(previous.days), String(last_year.days)], note: '' },
+    { k: 'clear days', cells: [String(last.clear), String(previous.clear), String(last_year.clear)], note: '' },
+    {
+      k: 'mean production, kWh/day',
+      cells: [last.mean_kwh.toFixed(1), previous.mean_kwh.toFixed(1), last_year.mean_kwh.toFixed(1)],
+      note: delta(last.mean_kwh, previous.mean_kwh),
+    },
+    {
+      k: 'clear-day residual',
+      cells: [decimal(last.residual), decimal(previous.residual), decimal(last_year.residual)],
+      note: delta(last.residual, previous.residual),
+    },
+    {
+      k: 'self-consumed',
+      cells: [percent(last.self_ratio), percent(previous.self_ratio), percent(last_year.self_ratio)],
+      note: 'utility window only',
+    },
+    {
+      k: 'exported share',
+      cells: [percent(last.export_share), percent(previous.export_share), percent(last_year.export_share)],
+      note: 'utility window only',
+    },
+  ]
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-left text-muted">
+            <th className="pb-2 font-medium">metric</th>
+            <th className="pb-2 text-right font-medium">{`last 30 · ${last.from} → ${last.to}`}</th>
+            <th className="pb-2 text-right font-medium">{`previous 30 · ${previous.from} → ${previous.to}`}</th>
+            <th className="pb-2 text-right font-medium">{`same 30 last year · ${last_year.from} → ${last_year.to}`}</th>
+            <th className="pb-2 text-right font-medium">Δ vs previous</th>
+          </tr>
+        </thead>
+        <tbody className="font-mono text-body">
+          {rows.map((row) => (
+            <tr key={row.k} className="border-t border-line">
+              <td className="py-2 font-sans text-muted">{row.k}</td>
+              {row.cells.map((cell, i) => (
+                <td key={i} className="py-2 text-right">
+                  {cell}
+                </td>
+              ))}
+              <td className="py-2 text-right text-muted">{row.note}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 export function Charts() {
   usePageMeta(
     'Charts',
-    'Eight views of the published record: year, month, hour, one clear day, self-consumption, the grid balance, clear-day residuals and their distribution.',
+    'Eleven views: the last sixty days, the clear-day residual before and after each recorded change, three comparable thirty-day windows, then the whole record by year, month, hour and distribution.',
   )
 
   const summary = charts.summary
@@ -456,7 +669,7 @@ export function Charts() {
     <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
       <p className="text-xs tracking-[0.18em] text-accent uppercase">Charts</p>
       <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-body sm:text-5xl">
-        The record, eight ways.
+        The record, recently, and what changed.
       </h1>
       <p className="mt-5 max-w-2xl text-lg leading-8 text-muted">
         Every chart is drawn from the published CSVs at build time and rendered as static SVG. No
@@ -478,7 +691,39 @@ export function Charts() {
         ))}
       </div>
 
-      <div className="mt-10 grid gap-6">
+      <section className="mt-12">
+        <h2 className="text-xl font-semibold tracking-tight text-body">Recently — and what changed</h2>
+        <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">
+          A/B here is observational, not controlled: the windows do not see the same weather, and the residual
+          normalizes for the sun, not for a change you made. What it can show is whether a level held or stepped
+          when nothing else did. The window ends on the last published day, not on today.
+        </p>
+        <div className="mt-6 grid gap-6">
+          <Figure
+            title={`The last ${charts.recent.days} days, to ${charts.recent.to}`}
+            note="Bars are daily production, solid for clear days and faded for the rest; the dashed line is the house's draw from the grid where the utility join reaches. The shaded band is a recorded event, and the rule at thirty days separates the two windows compared below."
+          >
+            <Recent />
+          </Figure>
+
+          <Figure
+            title="Before and after each recorded change"
+            note={`Clear-day residual either side of the last eight recorded events, of which ${charts.changes.filter((change) => change.before !== null && change.after !== null).length} have a clear day on both sides and are drawn. Secondary is before, accent is after; a pair that crosses zero recovered its expected output. The rest are left out rather than faked.`}
+          >
+            <Changes />
+          </Figure>
+
+          <Figure
+            title="Thirty days, three ways"
+            note="The last thirty days, the thirty before them, and the same thirty days a year earlier. Production is the raw mean; the residual is the weather-normalized one and is the only column that compares across seasons. Self-consumption and export need the utility join, which does not reach every window."
+          >
+            <Windows />
+          </Figure>
+        </div>
+      </section>
+
+      <h2 className="mt-14 text-xl font-semibold tracking-tight text-body">The whole record</h2>
+      <div className="mt-6 grid gap-6">
         <Figure
           title="Monthly production"
           note="Forty months of metered energy. The seasonal shape is the sun, not the panels; compare the residual below for condition."

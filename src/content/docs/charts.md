@@ -39,6 +39,14 @@ on the figure.
 
 ## What is plotted
 
+- The last sixty days of daily production, with clear days solid and the rest
+  faded, a recorded-event band, and the house's grid draw where the utility join
+  reaches. The window ends on the last published day, never on today.
+- The clear-day residual before and after each of the last eight recorded
+  events — the closest thing the record has to an A/B pair.
+- Three thirty-day windows side by side: the last, the one before, and the same
+  dates a year earlier. Production, clear-day count, weather-normalized residual
+  and, where the utility join reaches, self-consumption and export share.
 - Monthly production, all 40 months.
 - Calendar years, with the first and last marked as partial by the note.
 - Mean output at each clock hour, summer against winter. The denominator is the
@@ -56,6 +64,17 @@ Two of these are derived in `scripts/chart-data.mjs` beyond the raw sums:
 `diurnal` (mean kW per clock hour per season, over the distinct days) and
 `balance` (monthly self-consumed / exported / drawn, over rows the utility series
 covers). Both are committed in `src/data/charts.json` with the rest.
+
+## What A/B can and cannot mean here
+
+The record is observational. Two thirty-day windows do not see the same weather,
+the same loads or the same daylight, and the residual normalizes for the sun
+only — it says the array produced what a clear day of that season should, not
+that a change caused it. So the comparison is a way to ask whether a level held
+or stepped when nothing else did, and the paired before/after bars are a
+screening flag, not a controlled result. A single change in one window and not
+the other is the only thing this can isolate; two changes at once cannot be
+separated by any window.
 
 ## The sparse-interval trap
 

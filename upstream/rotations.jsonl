@@ -2,3 +2,5 @@
 {"event":"rotation","rotation":"r000001","isotope":"rules","subject":"29d863e","gates":["build","doom","a11y","contrast","guard"],"at":"2026-11-15T09:07:22.044Z"}
 {"event":"open","isotope":"charts","note":"four more charts: calendar years, day shape, grid balance, residual distribution","at":"2026-11-15T09:33:24.461Z"}
 {"event":"rotation","rotation":"r000002","isotope":"charts","subject":"2026-11-15","gates":["build","doom","a11y","contrast","overflow","guard"],"at":"2026-11-15T09:33:24.501Z"}
+{"event":"open","isotope":"charts","note":"recent: 60-day view, before/after pairs, three-window A/B","at":"2026-11-15T09:45:56.760Z"}
+{"event":"rotation","rotation":"r000003","isotope":"charts","subject":"2026-11-15 recent","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T09:45:56.798Z"}

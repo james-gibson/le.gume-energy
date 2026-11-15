@@ -3399,6 +3399,35 @@
       ],
       "note": "On-peak is 5 p.m. to 9 p.m., Monday to Friday. The end hour is exclusive: 21:00 is off-peak again. Weekends are off-peak all day."
     },
+    "export_credit": {
+      "mode": "retail-at-time",
+      "note": "Inferred from the utility's TOU advisory: energy generated during on-peak hours earns on-peak credits. The site therefore values an exported kWh at the price in force when it was exported — on-peak for weekday 5-9 p.m., off-peak at all other times under TOU, and the flat rate under the flat plan. Confirm with the utility: if credits are paid at a separate export rate, every net figure here changes.",
+      "applies_to": "both plans"
+    },
+    "credit": [
+      {
+        "season": "winter",
+        "on": 3.95,
+        "off": 11.84,
+        "total": 15.8,
+        "on_peak_share": 0.25,
+        "credit_tou": 1.53,
+        "credit_flat": 1.35,
+        "net_tou": 23.68,
+        "net_flat": 22.9
+      },
+      {
+        "season": "summer",
+        "on": 41.72,
+        "off": 282.2,
+        "total": 323.92,
+        "on_peak_share": 0.129,
+        "credit_tou": 31.13,
+        "credit_flat": 33.62,
+        "net_tou": 213.01,
+        "net_flat": 196.02
+      }
+    ],
     "storage": {
       "winter_on_peak_kwh": 49.7,
       "winter_saved_usd": 5.73,

@@ -384,6 +384,36 @@ const seasonal = ['winter', 'summer'].map((season) => {
 // Per kWh, what moving an hour from off-peak to on-peak is worth. As supplied,
 // summer is negative: the sheet puts on-peak below off-peak.
 const spread = (season) => Number((price(season, 'on') - price(season, 'off')).toFixed(5))
+// --- the solar credit, and the net bill ------------------------------------
+// The utility's advisory says on-peak generation earns on-peak credits, so an
+// exported kWh is priced at the rate in force when it was exported. That is an
+// assumption about net metering, recorded in rates.json as such.
+const exportBySeason = { summer: { on: 0, off: 0 }, winter: { on: 0, off: 0 } }
+for (const row of gridHourly) {
+  if (row.series !== 'Generated') continue
+  const season = rateSeason(row.date_local)
+  const bucket = isPeakHour(row.date_local, hourOf(row)) ? 'on' : 'off'
+  exportBySeason[season][bucket] += Number(row.value) || 0
+}
+const credit = ['winter', 'summer'].map((season) => {
+  const bucket = exportBySeason[season]
+  const total = bucket.on + bucket.off
+  const importedRow = seasonal.find((row) => row.season === season)
+  const creditTou = bucket.on * price(season, 'on') + bucket.off * price(season, 'off')
+  const creditFlat = total * price(season, 'flat')
+  return {
+    season,
+    on: round(bucket.on, 2),
+    off: round(bucket.off, 2),
+    total: round(total, 2),
+    on_peak_share: total ? round(bucket.on / total, 3) : null,
+    credit_tou: round(creditTou, 2),
+    credit_flat: round(creditFlat, 2),
+    net_tou: round(importedRow.tou - creditTou, 2),
+    net_flat: round(importedRow.flat - creditFlat, 2),
+  }
+})
+
 const storage = {
   winter_on_peak_kwh: observed.on,
   winter_saved_usd: Number((observed.on * spread('winter')).toFixed(2)),
@@ -403,6 +433,8 @@ const pricing = {
   seasonal,
   spread: { winter: spread('winter'), summer: spread('summer') },
   peak_window: RATES.peak_window,
+  export_credit: RATES.export_credit,
+  credit,
   storage,
 }
 

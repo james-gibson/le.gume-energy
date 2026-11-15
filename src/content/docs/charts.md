@@ -64,6 +64,9 @@ on the figure.
 - Time of use against the flat rate, in dollars, by window — and the value of
   moving a peak kWh from off-peak, in cents. The rates are supplied, the kWh are
   measured; see [what the tariff costs](/docs/tariff).
+- The solar credit and the net bill: import cost minus the credit earned on
+  export, priced at the rate in force when it was exported, for the two metered
+  windows.
 - One clear day at 15-minute resolution: the highest-energy day in the record.
 - The self-consumption ratio over the utility window.
 - Where monthly production goes: self-consumed and exported stacked, with the

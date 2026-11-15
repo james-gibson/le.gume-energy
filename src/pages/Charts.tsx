@@ -1039,6 +1039,73 @@ function Spread() {
   )
 }
 
+function NetBill() {
+  const rows = charts.pricing.credit
+  const max = Math.ceil(Math.max(...rows.map((row) => Math.max(row.net_flat, row.net_tou))) / 50) * 50
+  const ticks = Array.from({ length: 5 }, (_, i) => (max / 4) * i)
+  const band = IW / rows.length
+  const bar = Math.min(56, band * 0.26)
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Net cost after the solar credit, by plan">
+      <title>Import cost minus solar credit, flat against time of use</title>
+      <Grid min={0} max={max} ticks={ticks} />
+      {rows.map((row, i) => {
+        const left = PAD.l + i * band + band / 2
+        const flatTop = y(row.net_flat, 0, max)
+        const touTop = y(row.net_tou, 0, max)
+        const delta = row.net_tou - row.net_flat
+        return (
+          <g key={row.season}>
+            <rect
+              x={left - bar - 2}
+              y={flatTop}
+              width={bar}
+              height={PAD.t + IH - flatTop}
+              rx={2}
+              className="text-secondary"
+              fill="currentColor"
+              opacity={0.85}
+            >
+              <title>{`${row.season}: flat $${row.net_flat.toFixed(2)} net, after $${row.credit_flat.toFixed(2)} of credit`}</title>
+            </rect>
+            <rect
+              x={left + 2}
+              y={touTop}
+              width={bar}
+              height={PAD.t + IH - touTop}
+              rx={2}
+              className="text-accent"
+              fill="currentColor"
+              opacity={0.9}
+            >
+              <title>{`${row.season}: time of use $${row.net_tou.toFixed(2)} net, after $${row.credit_tou.toFixed(2)} of credit`}</title>
+            </rect>
+            <text x={left} y={Math.min(flatTop, touTop) - 8} textAnchor="middle" className="fill-current text-[10px] text-muted">
+              {`${delta > 0 ? '+' : ''}${delta.toFixed(2)}`}
+            </text>
+            <text x={left} y={H - 12} textAnchor="middle" className="fill-current text-[10px] text-muted/70">
+              {`${row.season} · on-peak ${((row.on_peak_share ?? 0) * 100).toFixed(0)}% of export`}
+            </text>
+          </g>
+        )
+      })}
+      <g className="fill-current text-[10px] text-muted/70">
+        <text x={PAD.l - 9} y={PAD.t + 10} textAnchor="end">{`$${max}`}</text>
+        <text x={PAD.l + 4} y={PAD.t + 10} className="fill-current text-secondary">
+          flat
+        </text>
+        <text x={PAD.l + 4} y={PAD.t + 24} className="fill-current text-accent">
+          time of use
+        </text>
+      </g>
+      <text x={W - PAD.r} y={PAD.t + 10} textAnchor="end" className="fill-current text-[10px] text-muted/70">
+        import minus credit, metered windows
+      </text>
+    </svg>
+  )
+}
+
 export function Charts() {
   usePageMeta(
     'Charts',
@@ -1195,6 +1262,13 @@ export function Charts() {
           note={`What one kWh is worth when it moves from off-peak to on-peak: ${(charts.pricing.spread.winter * 100).toFixed(2)}¢ in winter, ${(charts.pricing.spread.summer * 100).toFixed(2)}¢ in summer. Against this household's own peak energy that is $${charts.pricing.storage.winter_saved_usd.toFixed(2)} over the billed 30 days and $${charts.pricing.storage.summer_saved_usd.toFixed(2)} across the metered summer — a ceiling on arbitrage, not a battery's return: no round-trip loss, no power limit, no days already full.`}
         >
           <Spread />
+        </Figure>
+
+        <Figure
+          title="The solar credit, and the net bill"
+          note={`Import cost minus the credit earned on export, priced at the rate in force when the energy was sent back. Winter sends ${charts.pricing.credit.find((row) => row.season === 'winter')?.total.toFixed(1)} kWh and summer ${charts.pricing.credit.find((row) => row.season === 'summer')?.total.toFixed(1)} kWh; only ${((charts.pricing.credit.find((row) => row.season === 'summer')?.on_peak_share ?? 0) * 100).toFixed(0)}% of the summer export lands in the 5–9 p.m. window, which is the utility's point: under time of use your own generation earns the higher credit only when it is produced in the evening. Net of that, flat wins both seasons — by more in summer than import alone, because the flat plan also credits 10.38¢ for the off-peak export that TOU credits at 7.88¢.`}
+        >
+          <NetBill />
         </Figure>
       </div>
 

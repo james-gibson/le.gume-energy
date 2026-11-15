@@ -63,6 +63,38 @@ this house does use the evening: 520.6 kWh of the summer import lands in the 5�
 That is a **ceiling** on arbitrage, not a battery's return. Round-trip losses, power limits, and the
 days a battery is already full are not in it, and neither is the cost of the battery.
 
+## The solar credit
+
+The utility's advisory is that on-peak generation earns on-peak credits, so the site prices an
+exported kWh at the rate in force when it was exported: on-peak for weekday 5–9 p.m., off-peak at all
+other times under TOU, and the flat rate under the flat plan. **That is an assumption about net
+metering**, recorded in `rates.json` as one. If credits are paid at a separate export rate, every net
+figure below moves.
+
+| season | export | on-peak share | credit under TOU | credit under flat |
+| --- | --- | --- | --- | --- |
+| winter (May 2025) | 15.8 kWh | 25% | $1.53 | $1.35 |
+| summer (Jun–Aug 2025) | 323.9 kWh | 13% | $31.13 | $33.62 |
+
+The flat plan earns a **larger** credit in summer, which is not the intuition the TOU pitch suggests:
+87% of the export happens outside the peak window, where TOU pays 7.88¢ against the flat plan's
+10.38¢. TOU pays more only for the 41.7 kWh produced in the evening.
+
+Net of the credit:
+
+| window | net, flat | net, time of use | TOU costs |
+| --- | --- | --- | --- |
+| metered winter, 31 days | $22.90 | $23.68 | **+$0.78** |
+| metered summer, 92 days | $196.02 | $213.01 | **+$16.99** |
+
+Flat wins both, and by more in summer than the import-only comparison (+$14.50) — the credit widens
+the gap rather than closing it. A TOU plan only pays here if the evening load moves or the array's
+best hours do.
+
+The credit is computed for the two **metered** windows only. The 30 billed days carry a daily export
+total and no hourly export to bucket, so they are priced on import alone; that table is in the
+comparison above and is not mixed into a net figure.
+
 ## How a window is priced
 
 1. **Billed days.** The 30 days that carry the utility's own on/off-peak split, priced directly.
@@ -78,8 +110,9 @@ split from thirty autumn days in 2026. They are never averaged together.
 
 ## What the record cannot price
 
-- **Export credit.** The record knows kWh sent back (`grid_export_kwh`, and the utility's `Generated`
-  series) but not the rate it earned. Every dollar here is about *import*.
+- **The export rate.** The utility's sheet did not print one; the retail-at-time model above is
+  inferred from its TOU advisory. A separate export rate, a monthly netting rule or a cap on credited
+  kWh would each change the net figures.
 - **Demand charges.** None are in these rates; if one appears, it needs a peak-kW series the site
   does not keep.
 - **Riders and taxes.** They are percentages of a bill the site cannot construct.

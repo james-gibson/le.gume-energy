@@ -12,3 +12,5 @@
 {"event":"rotation","rotation":"r000006","isotope":"tariff","subject":"2026-11-15 rates","gates":["build","doom","a11y","contrast","overflow","guard"],"at":"2026-11-15T20:00:33.631Z"}
 {"event":"open","isotope":"tariff","note":"corrected sheet: 21.28c summer peak, 5-9pm Mon-Fri, weekday-aware split","at":"2026-11-15T20:04:50.568Z"}
 {"event":"rotation","rotation":"r000007","isotope":"tariff","subject":"2026-11-15 rate sheet v2","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T20:04:50.609Z"}
+{"event":"open","isotope":"tariff","note":"solar credit at the export-time rate: flat wins net in both metered windows","at":"2026-11-15T20:09:29.412Z"}
+{"event":"rotation","rotation":"r000008","isotope":"tariff","subject":"2026-11-15 credit","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T20:09:29.458Z"}

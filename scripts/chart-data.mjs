@@ -28,6 +28,7 @@ const monthly = await read('solar-production-monthly.csv')
 const intervals = await read('solar-production-15min.csv')
 const hourly = await read('solar-production-hourly.csv')
 const yearly = await read('solar-production-yearly.csv')
+const gridHourly = await read('grid-usage-hourly.csv')
 const joined = await read('energy-daily-joined.csv')
 const events = await read('analysis-events.csv')
 
@@ -248,6 +249,73 @@ const interventions = (await loadInterventions()).interventions.map((entry) => {
   }
 })
 
+// --- generation against import, by hour of day, and the tariff window ------
+// The utility's hourly file carries two series: `Generated` (its own record of
+// what the meter sent back) and `Interval` (what it delivered). An absent
+// `Interval` row is not a missing measurement — it is an hour the meter ran
+// backwards, so the mean treats absence as zero and the caption says so.
+// Only the days that carry the two series we compare. The TOU rows live in a
+// later window and would otherwise stretch the average across two years.
+const utilityDays = [
+  ...new Set(gridHourly.filter((row) => row.series === 'Generated' || row.series === 'Interval').map((row) => row.date_local)),
+].sort()
+const utilityFrom = utilityDays[0]
+const utilityTo = utilityDays[utilityDays.length - 1]
+const dayCount = utilityDays.length
+const hourOf = (row) => Number(row.interval_start_local.slice(11, 13))
+
+const solarHourlyWindow = hourly.filter((row) => row.date_local >= utilityFrom && row.date_local <= utilityTo)
+const generatedByHour = Array.from({ length: 24 }, () => 0)
+for (const row of solarHourlyWindow) generatedByHour[hourOf(row)] += Number(row.production_kw) || 0
+const importedByHour = Array.from({ length: 24 }, () => 0)
+for (const row of gridHourly) {
+  if (row.series !== 'Interval') continue
+  importedByHour[hourOf(row)] += Number(row.value) || 0
+}
+
+// The tariff boundary the utility reports: the hours its `On Peak` series marks
+// with a non-zero value. Taken from the rows themselves, not from a guess about
+// how a utility prices an afternoon.
+const onPeakHours = [
+  ...new Set(
+    gridHourly
+      .filter((row) => row.series === 'On Peak' && Number(row.value) > 0)
+      .map((row) => hourOf(row)),
+  ),
+].sort((a, b) => a - b)
+const peak = onPeakHours.length
+  ? { from: onPeakHours[0], to: onPeakHours[onPeakHours.length - 1], hours: onPeakHours }
+  : null
+
+const tou = {
+  window: { from: utilityFrom, to: utilityTo, days: dayCount },
+  hours: Array.from({ length: 24 }, (_, h) => ({
+    h,
+    generated: round(generatedByHour[h] / dayCount, 3),
+    imported: round(importedByHour[h] / dayCount, 3),
+  })),
+  peak,
+}
+
+// The days that carry an on/off-peak split: a different, later window from the
+// hourly file, and labelled as such rather than averaged into it.
+const touRows = joined.filter(
+  (row) => Number(row.grid_on_peak_kwh) + Number(row.grid_off_peak_kwh) > 0 && row.grid_on_peak_kwh !== '',
+)
+const touDays = {
+  from: touRows[0]?.date_local ?? null,
+  to: touRows[touRows.length - 1]?.date_local ?? null,
+  days: touRows.map((row) => ({
+    d: row.date_local,
+    on: round(Number(row.grid_on_peak_kwh), 2),
+    off: round(Number(row.grid_off_peak_kwh), 2),
+  })),
+  totals: {
+    on: round(touRows.reduce((sum, row) => sum + Number(row.grid_on_peak_kwh), 0), 1),
+    off: round(touRows.reduce((sum, row) => sum + Number(row.grid_off_peak_kwh), 0), 1),
+  },
+}
+
 const payload = {
   generated_from: {
     manifest: 'public/data/manifest.json',
@@ -272,6 +340,8 @@ const payload = {
   })),
   recent: { to: lastDay, days: recentWindowDays, series: recent, events: recentEvents },
   interventions,
+  tou,
+  touDays,
   changes,
   windows,
 }
@@ -283,5 +353,5 @@ console.log(
     `${payload.curve.points.length} intervals on ${curveDate}, ${payload.self.length} utility days, ` +
     `${payload.balance.length} balance months, ${payload.yearly.length} years, ` +
     `${payload.recent.series.length} recent days, ${payload.recent.events.length} recent event(s), ` +
-    `${payload.interventions.length} intervention(s)`,
+    `${payload.interventions.length} intervention(s), ${payload.touDays.days.length} TOU day(s)`,
 )

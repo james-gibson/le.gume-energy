@@ -55,6 +55,12 @@ on the figure.
 - Mean output at each clock hour, summer against winter. The denominator is the
   number of *days* in the season, not rows: the intervals are sparse, so a row
   count would reward a sunny month with more intervals.
+- Generation against grid import, by clock hour, over the 123 summer days the
+  utility's hourly file covers, with the tariff window shaded. Import is absent
+  through the middle of the day because the meter is running backwards, which is
+  a reading of zero import rather than a hole in the data.
+- Peak and off-peak, day by day: the 30 recent days that carry an on/off-peak
+  split, drawn on their own because they are a different and later window.
 - One clear day at 15-minute resolution: the highest-energy day in the record.
 - The self-consumption ratio over the utility window.
 - Where monthly production goes: self-consumed and exported stacked, with the
@@ -78,6 +84,15 @@ or stepped when nothing else did, and the paired before/after bars are a
 screening flag, not a controlled result. A single change in one window and not
 the other is the only thing this can isolate; two changes at once cannot be
 separated by any window.
+
+## The tariff boundary is read, not assumed
+
+The shaded on-peak window comes from the utility's own `On Peak` series: the
+hours whose value is non-zero. It is not a guess about how an afternoon is
+priced, and if the utility changes the boundary the chart moves with it. Two
+things stay separate: the hourly shape is drawn from the summer window
+(2025-05-01 → 2025-08-31) and the on/off-peak totals from thirty autumn days in
+2026. Mixing them would average two different questions into one number.
 
 ## The sparse-interval trap
 

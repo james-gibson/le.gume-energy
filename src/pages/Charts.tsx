@@ -771,6 +771,117 @@ function Interventions() {
   )
 }
 
+function Tou() {
+  const { hours, peak, window } = charts.tou
+  const max = Math.ceil(Math.max(...hours.map((row) => Math.max(row.generated, row.imported))))
+  const ticks = Array.from({ length: max + 1 }, (_, i) => i)
+  const px = (hour: number) => PAD.l + (hour / 23) * IW
+  const generated = hours.map<[number, number]>((row) => [px(row.h), y(row.generated, 0, max)])
+  const imported = hours.map<[number, number]>((row) => [px(row.h), y(row.imported, 0, max)])
+  const area = `M${generated[0][0]},${PAD.t + IH} ${path(generated).slice(1)} L${generated[generated.length - 1][0]},${PAD.t + IH} Z`
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Generation and grid import by hour of day">
+      <title>Mean generation and mean grid import at each clock hour</title>
+      <Grid min={0} max={max} ticks={ticks} />
+      {peak && (
+        <>
+          <rect
+            x={Math.max(PAD.l, px(peak.from) - (px(1) - px(0)) / 2)}
+            y={PAD.t}
+            width={Math.min(W - PAD.r, px(peak.to) + (px(1) - px(0)) / 2) - Math.max(PAD.l, px(peak.from) - (px(1) - px(0)) / 2)}
+            height={IH}
+            className="text-muted"
+            fill="currentColor"
+            opacity={0.1}
+          />
+          <text
+            x={px(peak.from) - (px(1) - px(0)) / 2 + 4}
+            y={PAD.t + 10}
+            className="fill-current text-[10px] text-muted"
+          >{`on-peak ${String(peak.from).padStart(2, '0')}:00–${String(peak.to + 1).padStart(2, '0')}:00`}</text>
+        </>
+      )}
+      <path d={area} fill="currentColor" opacity={0.18} />
+      <path d={path(generated)} fill="none" stroke="currentColor" strokeWidth={2} />
+      <path
+        d={path(imported)}
+        className="text-secondary"
+        fill="none"
+        stroke="currentColor"
+        strokeDasharray="6 4"
+        strokeWidth={2}
+      />
+      <g className="fill-current text-[10px]">
+        <text x={PAD.l + 4} y={PAD.t + 10} className="fill-current text-accent">
+          generation
+        </text>
+        <text x={PAD.l + 4} y={PAD.t + 24} className="fill-current text-secondary">
+          grid import
+        </text>
+      </g>
+      <g className="fill-current text-[10px] text-muted/70">
+        {[0, 6, 12, 18].map((hour) => (
+          <text key={hour} x={px(hour)} y={H - 12} textAnchor="middle">
+            {String(hour).padStart(2, '0')}:00
+          </text>
+        ))}
+        <text x={W - PAD.r} y={H - 12} textAnchor="end">
+          {`${window.days} days, ${window.from} → ${window.to}`}
+        </text>
+      </g>
+    </svg>
+  )
+}
+
+function TouDays() {
+  const rows = charts.touDays.days
+  const max = Math.ceil(Math.max(...rows.map((row) => row.on + row.off)) / 2) * 2
+  const ticks = Array.from({ length: 5 }, (_, i) => (max / 4) * i)
+  const band = IW / rows.length
+  const bar = Math.max(3, Math.min(18, band * 0.62))
+  const months = rows
+    .map((row, i) => ({ i, month: row.d.slice(0, 7) }))
+    .filter((entry, i, all) => i === 0 || entry.month !== all[i - 1].month)
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Peak and off-peak import by day">
+      <title>Grid import per day, split into on-peak and off-peak</title>
+      <Grid min={0} max={max} ticks={ticks} />
+      {rows.map((row, i) => {
+        const left = PAD.l + i * band + (band - bar) / 2
+        const offTop = y(row.off, 0, max)
+        const totalTop = y(row.off + row.on, 0, max)
+        return (
+          <g key={row.d}>
+            <rect x={left} y={offTop} width={bar} height={PAD.t + IH - offTop} rx={1} className="text-secondary" fill="currentColor" opacity={0.85}>
+              <title>{`${row.d}: ${row.off.toFixed(2)} kWh off-peak`}</title>
+            </rect>
+            <rect x={left} y={totalTop} width={bar} height={Math.max(0, offTop - totalTop)} rx={1} className="text-accent" fill="currentColor" opacity={0.95}>
+              <title>{`${row.d}: ${row.on.toFixed(2)} kWh on-peak`}</title>
+            </rect>
+          </g>
+        )
+      })}
+      <g className="fill-current text-[10px] text-muted/70">
+        {months.map((entry) => (
+          <text key={entry.month} x={PAD.l + entry.i * band + band / 2} y={H - 12} textAnchor="middle">
+            {entry.month.slice(5)}
+          </text>
+        ))}
+      </g>
+      <g className="fill-current text-[10px]">
+        <text x={PAD.l + IW - 92} y={PAD.t + 10} className="fill-current text-accent">
+          on-peak
+        </text>
+        <text x={PAD.l + IW - 92} y={PAD.t + 24} className="fill-current text-secondary">
+          off-peak
+        </text>
+      </g>
+    </svg>
+  )
+}
+
 export function Charts() {
   usePageMeta(
     'Charts',
@@ -867,6 +978,13 @@ export function Charts() {
         </Figure>
 
         <Figure
+          title="Generation against grid import, by hour"
+          note={`Mean output and mean import at each clock hour over ${charts.tou.window.days} days (${charts.tou.window.from} → ${charts.tou.window.to}). Import is zero through the middle of the day because there is no import to record — the meter is running backwards, not missing. The shaded window is the tariff boundary the utility reports in its own on/off-peak series.`}
+        >
+          <Tou />
+        </Figure>
+
+        <Figure
           title="Clear-day residual"
           note="Each dot is a clear day's weather-normalized index minus its seasonal baseline. Negative runs with cold or wet context are snow; a decline across dry days is a soiling candidate."
         >
@@ -899,6 +1017,13 @@ export function Charts() {
           note={`Monthly production split into self-consumed and exported, with the house's grid draw as a dot, over the ${charts.balance.filter((row) => row.production !== null).length} months the utility join covers. They are not contiguous — four in 2025, two in 2026 — so the bars are placed by date and the gap is left empty rather than drawn as an even band.`}
         >
           <Balance />
+        </Figure>
+
+        <Figure
+          title="Peak and off-peak, day by day"
+          note={`The ${charts.touDays.days.length} days that carry an on/off-peak split, ${charts.touDays.from} → ${charts.touDays.to}: ${charts.touDays.totals.off.toFixed(0)} kWh off-peak against ${charts.touDays.totals.on.toFixed(0)} kWh on-peak. Those days are recent and autumn, so they are drawn on their own rather than mixed into the summer shape above — two windows, two questions.`}
+        >
+          <TouDays />
         </Figure>
       </div>
 

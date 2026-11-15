@@ -6,3 +6,5 @@
 {"event":"rotation","rotation":"r000003","isotope":"charts","subject":"2026-11-15 recent","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T09:45:56.798Z"}
 {"event":"open","isotope":"interventions","note":"declare actions against a circuit: VA/W/Wh, ±7d fence, MINUTE keyframes","at":"2026-11-15T09:56:07.872Z"}
 {"event":"rotation","rotation":"r000004","isotope":"interventions","subject":"2026-11-15 interventions","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-15T09:56:07.914Z"}
+{"event":"open","isotope":"charts","note":"hour-of-day generation vs import, with the utility's tariff window","at":"2026-11-15T10:08:40.434Z"}
+{"event":"rotation","rotation":"r000005","isotope":"charts","subject":"2026-11-15 tou","gates":["build","doom","a11y","contrast","overflow","guard"],"at":"2026-11-15T10:08:40.490Z"}

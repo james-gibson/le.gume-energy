@@ -28,3 +28,5 @@
 {"event":"rotation","rotation":"r000014","isotope":"ups","subject":"2026-11-16 ups collector","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-17T00:05:42.758Z"}
 {"event":"open","isotope":"ups","note":"a second unit is a label; an unreachable one is recorded, not fatal","at":"2026-11-17T00:14:07.245Z"}
 {"event":"rotation","rotation":"r000015","isotope":"ups","subject":"2026-11-16 multi-unit","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-17T00:14:07.444Z"}
+{"event":"open","isotope":"ups","note":"a bad answer is an error, and a newer store is refused","at":"2026-11-17T00:28:53.242Z"}
+{"event":"rotation","rotation":"r000016","isotope":"ups","subject":"2026-11-16 ups failures","gates":["build","doom","a11y","contrast","overflow","guard","smoke"],"at":"2026-11-17T00:28:53.491Z"}

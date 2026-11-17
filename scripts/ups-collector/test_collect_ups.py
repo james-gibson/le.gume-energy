@@ -12,6 +12,7 @@ import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location("collect_ups", HERE / "collect_ups.py")
@@ -186,6 +187,7 @@ class MultiDeviceTest(unittest.TestCase):
             self.conn, "desk", "127.0.0.1", "public", port=9, timeout=0.3
         )
         self.assertFalse(result["ok"])
+        self.assertEqual(result["status"], "unreachable")
         status = self.conn.execute(
             "SELECT status FROM runs WHERE device = 'desk'"
         ).fetchone()[0]
@@ -211,6 +213,45 @@ class MultiDeviceTest(unittest.TestCase):
             ).fetchone()[0],
             1,
         )
+
+    def test_a_device_error_is_not_an_unreachable_unit(self):
+        with mock.patch.object(
+            collect_ups, "read_device", side_effect=RuntimeError("SNMP error-status 5")
+        ):
+            result = collect_ups.collect_once(
+                self.conn, "rack", "host", "public", port=161, timeout=0.1
+            )
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["status"], "error")
+        self.assertEqual(
+            self.conn.execute(
+                "SELECT status FROM runs WHERE device = 'rack'"
+            ).fetchone()[0],
+            "error",
+        )
+
+    def test_a_newer_schema_is_refused_not_downgraded(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db = str(Path(tmp) / "newer.sqlite3")
+            conn = sqlite3.connect(db)
+            conn.execute(
+                "CREATE TABLE schema_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)"
+            )
+            conn.execute(
+                "INSERT INTO schema_meta VALUES ('schema', 'ups-readings/9')"
+            )
+            conn.commit()
+            conn.close()
+            with self.assertRaises(RuntimeError):
+                collect_ups.connect(db)
+            conn = sqlite3.connect(db)
+            self.assertEqual(
+                conn.execute(
+                    "SELECT value FROM schema_meta WHERE key = 'schema'"
+                ).fetchone()[0],
+                "ups-readings/9",
+            )
+            conn.close()
 
 
 class MigrationTest(unittest.TestCase):

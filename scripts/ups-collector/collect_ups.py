@@ -448,11 +448,19 @@ def connect(db_path: str) -> sqlite3.Connection:
     version = _schema_version(conn)
     if version == "ups-readings/1":
         _migrate_v1(conn)
-    elif version != SCHEMA:
+    elif version == SCHEMA:
+        pass
+    elif version is None:
         conn.executescript(DEVICE_SCHEMA)
         conn.execute(
             "INSERT OR REPLACE INTO schema_meta (key, value) VALUES ('schema', ?)",
             (SCHEMA,),
+        )
+    else:
+        conn.close()
+        raise RuntimeError(
+            f"store schema {version} is newer than this collector ({SCHEMA});"
+            " refusing to write, and refusing to downgrade the marker"
         )
     conn.commit()
     return conn
@@ -641,19 +649,23 @@ def collect_once(conn: sqlite3.Connection | None, device: str, host: str,
     utc, local = iso(instant)
     try:
         reading = read_device(host, community, port=port, timeout=timeout)
-    except (ConnectionError, RuntimeError, OSError) as error:
+    except (ConnectionError, RuntimeError, OSError, IndexError, ValueError) as error:
+        # A transport failure is `unreachable`; a response we could not parse or
+        # a device error-status is an `error`. Both write a run and no samples.
+        status = "unreachable" if isinstance(error, (ConnectionError, OSError)) else "error"
         result = {
             "device": device,
             "host": host,
             "sampled_at": utc,
             "ok": False,
+            "status": status,
             "error": str(error),
         }
         if not dry_run and conn is not None:
             run_id = conn.execute(
                 "INSERT INTO runs (device, started_at, started_at_local, status,"
-                " host, error) VALUES (?, ?, ?, 'unreachable', ?, ?)",
-                (device, utc, local, host, str(error)),
+                " host, error) VALUES (?, ?, ?, ?, ?, ?)",
+                (device, utc, local, status, host, str(error)),
             ).lastrowid
             conn.commit()
             result["run_id"] = run_id

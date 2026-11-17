@@ -94,9 +94,16 @@ UPS_HOSTS="rack=192.168.1.10,spare=192.168.1.11"
 
 A unit that does not answer is **not** a reason to stop, and not a reason to
 delete it: the run is recorded with `status = unreachable` and the error, and
-the other units are still polled. `--once` exits 0 if at least one unit was
-read, and 1 only if every unit failed — the store, not the exit code, is the
-record of which unit was missing.
+the other units are still polled. A unit that answers badly — an unparseable
+response or a device error-status — is `status = error`: the unit is there, the
+answer is not usable, and the difference matters when triaging.
+
+`--once` exits 0 if at least one unit was read, and 1 only if every unit failed
+— the store, not the exit code, is the record of which unit was missing.
+
+A store whose schema version is **newer** than the collector is refused before
+any write. The collector does not downgrade the marker and does not touch the
+tables; the failure is a human decision, not a silent migration.
 
 The label is the identity. If a card is re-addressed, change the address beside
 the same label and its history continues; if you rename the label, you start a

@@ -26,6 +26,7 @@ import argparse
 import fcntl
 import json
 import os
+import re
 import socket
 import sqlite3
 import sys
@@ -67,6 +68,7 @@ _load_env()
 TZ = ZoneInfo(os.environ.get("UPS_TZ", "America/Denver"))
 
 DEFAULT_HOST = os.environ.get("UPS_HOST", "")
+DEFAULT_HOSTS = os.environ.get("UPS_HOSTS", "")
 DEFAULT_COMMUNITY = os.environ.get("UPS_COMMUNITY", "public")
 DEFAULT_PORT = int(os.environ.get("UPS_PORT", "161"))
 DEFAULT_TIMEOUT = float(os.environ.get("UPS_TIMEOUT", "3"))
@@ -75,7 +77,7 @@ DEFAULT_DB = os.environ.get(
     "UPS_DB", str(Path.home() / "gpt" / "launchAgent" / "ups" / "ups.sqlite3")
 )
 
-SCHEMA = "ups-readings/1"
+SCHEMA = "ups-readings/2"
 
 # --- CPS-MIB (and RFC 1628 where the card implements it) -------------------
 # Scaling is exactly the MIB's: 0.1 V, 0.1 Hz, 0.1 A, hundredths of a second.
@@ -302,21 +304,91 @@ def read_device(host: str, community: str, *, port: int = DEFAULT_PORT,
 
 # --- store -----------------------------------------------------------------
 
+# v2: one store, many units. A unit is a name (the label in UPS_HOSTS); its
+# host, samples and events are keyed by that name, so an unreachable unit is a
+# recorded status rather than a reason the other units stop being polled.
+DEVICE_SCHEMA = """
+CREATE TABLE IF NOT EXISTS schema_meta (
+    key   TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS device (
+    name           TEXT PRIMARY KEY,
+    host           TEXT,
+    manufacturer   TEXT,
+    model          TEXT,
+    ups_firmware   TEXT,
+    agent_firmware TEXT,
+    first_seen_at  TEXT NOT NULL,
+    last_seen_at   TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS runs (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    device        TEXT NOT NULL,
+    started_at    TEXT NOT NULL,
+    started_at_local TEXT NOT NULL,
+    finished_at   TEXT,
+    status        TEXT NOT NULL,
+    host          TEXT NOT NULL,
+    samples       INTEGER NOT NULL DEFAULT 0,
+    events_opened INTEGER NOT NULL DEFAULT 0,
+    events_closed INTEGER NOT NULL DEFAULT 0,
+    error         TEXT
+);
+CREATE TABLE IF NOT EXISTS samples (
+    device          TEXT NOT NULL,
+    run_id          INTEGER NOT NULL,
+    sampled_at      TEXT NOT NULL,
+    sampled_at_local TEXT NOT NULL,
+    series          TEXT NOT NULL,
+    value           REAL,
+    unit            TEXT,
+    label           TEXT,
+    PRIMARY KEY (device, sampled_at, series),
+    FOREIGN KEY (run_id) REFERENCES runs(id)
+);
+CREATE INDEX IF NOT EXISTS samples_series_time
+    ON samples (device, series, sampled_at);
+CREATE TABLE IF NOT EXISTS events (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    device           TEXT NOT NULL,
+    kind             TEXT NOT NULL,
+    cause            TEXT,
+    basis            TEXT NOT NULL,
+    started_at       TEXT NOT NULL,
+    started_at_local TEXT NOT NULL,
+    ended_at         TEXT,
+    ended_at_local   TEXT,
+    opened_run_id    INTEGER,
+    closed_run_id    INTEGER,
+    evidence         TEXT,
+    FOREIGN KEY (opened_run_id) REFERENCES runs(id),
+    FOREIGN KEY (closed_run_id) REFERENCES runs(id)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS events_one_open
+    ON events (device, kind) WHERE ended_at IS NULL;
+"""
 
-def connect(db_path: str) -> sqlite3.Connection:
-    path = Path(db_path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(path), timeout=10)
-    conn.execute("PRAGMA journal_mode=WAL")
-    conn.execute("PRAGMA foreign_keys=ON")
+
+def _schema_version(conn: sqlite3.Connection) -> str | None:
+    try:
+        row = conn.execute(
+            "SELECT value FROM schema_meta WHERE key = 'schema'"
+        ).fetchone()
+    except sqlite3.OperationalError:
+        return None
+    return row[0] if row else None
+
+
+def _migrate_v1(conn: sqlite3.Connection) -> None:
+    """v1 had one unit: device_id = 1 and a single-column sample key."""
     conn.executescript(
         """
-        CREATE TABLE IF NOT EXISTS schema_meta (
-            key   TEXT PRIMARY KEY,
-            value TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS device (
-            device_id      INTEGER PRIMARY KEY CHECK (device_id = 1),
+        BEGIN;
+        ALTER TABLE device RENAME TO device_v1;
+        CREATE TABLE device (
+            name           TEXT PRIMARY KEY,
+            host           TEXT,
             manufacturer   TEXT,
             model          TEXT,
             ups_firmware   TEXT,
@@ -324,53 +396,64 @@ def connect(db_path: str) -> sqlite3.Connection:
             first_seen_at  TEXT NOT NULL,
             last_seen_at   TEXT NOT NULL
         );
-        CREATE TABLE IF NOT EXISTS runs (
-            id            INTEGER PRIMARY KEY AUTOINCREMENT,
-            started_at    TEXT NOT NULL,
-            started_at_local TEXT NOT NULL,
-            finished_at   TEXT,
-            status        TEXT NOT NULL,
-            host          TEXT NOT NULL,
-            samples       INTEGER NOT NULL DEFAULT 0,
-            events_opened INTEGER NOT NULL DEFAULT 0,
-            events_closed INTEGER NOT NULL DEFAULT 0,
-            error         TEXT
-        );
-        CREATE TABLE IF NOT EXISTS samples (
-            run_id          INTEGER NOT NULL,
-            sampled_at      TEXT NOT NULL,
+        INSERT INTO device (name, manufacturer, model, ups_firmware,
+                            agent_firmware, first_seen_at, last_seen_at)
+            SELECT 'ups', manufacturer, model, ups_firmware, agent_firmware,
+                   first_seen_at, last_seen_at
+            FROM device_v1;
+        DROP TABLE device_v1;
+
+        ALTER TABLE runs ADD COLUMN device TEXT NOT NULL DEFAULT 'ups';
+
+        CREATE TABLE samples_v2 (
+            device           TEXT NOT NULL,
+            run_id           INTEGER NOT NULL,
+            sampled_at       TEXT NOT NULL,
             sampled_at_local TEXT NOT NULL,
-            series          TEXT NOT NULL,
-            value           REAL,
-            unit            TEXT,
-            label           TEXT,
-            PRIMARY KEY (sampled_at, series),
+            series           TEXT NOT NULL,
+            value            REAL,
+            unit             TEXT,
+            label            TEXT,
+            PRIMARY KEY (device, sampled_at, series),
             FOREIGN KEY (run_id) REFERENCES runs(id)
         );
-        CREATE INDEX IF NOT EXISTS samples_series_time
-            ON samples (series, sampled_at);
-        CREATE TABLE IF NOT EXISTS events (
-            id               INTEGER PRIMARY KEY AUTOINCREMENT,
-            kind             TEXT NOT NULL,
-            cause            TEXT,
-            basis            TEXT NOT NULL,
-            started_at       TEXT NOT NULL,
-            started_at_local TEXT NOT NULL,
-            ended_at         TEXT,
-            ended_at_local   TEXT,
-            opened_run_id    INTEGER,
-            closed_run_id    INTEGER,
-            evidence         TEXT,
-            FOREIGN KEY (opened_run_id) REFERENCES runs(id),
-            FOREIGN KEY (closed_run_id) REFERENCES runs(id)
-        );
-        CREATE UNIQUE INDEX IF NOT EXISTS events_one_open
-            ON events (kind) WHERE ended_at IS NULL;
+        INSERT INTO samples_v2 (device, run_id, sampled_at, sampled_at_local,
+                                series, value, unit, label)
+            SELECT 'ups', run_id, sampled_at, sampled_at_local,
+                   series, value, unit, label
+            FROM samples;
+        DROP TABLE samples;
+        ALTER TABLE samples_v2 RENAME TO samples;
+        CREATE INDEX samples_series_time
+            ON samples (device, series, sampled_at);
+
+        ALTER TABLE events ADD COLUMN device TEXT NOT NULL DEFAULT 'ups';
+        DROP INDEX events_one_open;
+        CREATE UNIQUE INDEX events_one_open
+            ON events (device, kind) WHERE ended_at IS NULL;
+
+        UPDATE schema_meta SET value = 'ups-readings/2' WHERE key = 'schema';
+        COMMIT;
         """
     )
-    conn.execute(
-        "INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema', ?)", (SCHEMA,)
-    )
+
+
+def connect(db_path: str) -> sqlite3.Connection:
+    path = Path(db_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(str(path), timeout=10)
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA foreign_keys=ON")
+
+    version = _schema_version(conn)
+    if version == "ups-readings/1":
+        _migrate_v1(conn)
+    elif version != SCHEMA:
+        conn.executescript(DEVICE_SCHEMA)
+        conn.execute(
+            "INSERT OR REPLACE INTO schema_meta (key, value) VALUES ('schema', ?)",
+            (SCHEMA,),
+        )
     conn.commit()
     return conn
 
@@ -383,19 +466,50 @@ def iso(instant: datetime) -> tuple[str, str]:
     )
 
 
-def _last_label(conn: sqlite3.Connection, series: str) -> str | None:
+def parse_hosts(text: str) -> list[tuple[str, str]]:
+    """Parse `label=host,label=host`. A bare host gets a stable label.
+
+    A label is what the store keys on, so it must be stable across runs: the
+    address can move, the unit cannot. `rack=10.0.0.5` survives the card being
+    re-addressed; an unlabelled address does not.
+    """
+    entries: list[tuple[str, str]] = []
+    seen: set[str] = set()
+    for raw in text.replace("\n", ",").split(","):
+        raw = raw.strip()
+        if not raw or raw.startswith("#"):
+            continue
+        if "=" in raw:
+            label, host = raw.split("=", 1)
+            label, host = label.strip(), host.strip()
+        else:
+            host = raw
+            label = "ups" if not entries else f"ups-{len(entries) + 1}"
+        if not re.fullmatch(r"[a-z0-9_-]+", label):
+            raise ValueError(f"invalid device label {label!r}; use [a-z0-9_-]")
+        if not host:
+            raise ValueError(f"device {label!r} has no host")
+        if label in seen:
+            raise ValueError(f"duplicate device label {label!r}")
+        seen.add(label)
+        entries.append((label, host))
+    return entries
+
+
+def _last_label(conn: sqlite3.Connection, device: str, series: str) -> str | None:
     row = conn.execute(
-        "SELECT label FROM samples WHERE series = ? AND label IS NOT NULL"
+        "SELECT label FROM samples WHERE device = ? AND series = ? AND label IS NOT NULL"
         " ORDER BY sampled_at DESC LIMIT 1",
-        (series,),
+        (device, series),
     ).fetchone()
     return row[0] if row else None
 
 
-def _open_event(conn: sqlite3.Connection, kind: str):
+def _open_event(conn: sqlite3.Connection, device: str, kind: str):
     return conn.execute(
-        "SELECT id, started_at FROM events WHERE kind = ? AND ended_at IS NULL",
-        (kind,),
+        "SELECT id, started_at FROM events"
+        " WHERE device = ? AND kind = ? AND ended_at IS NULL",
+        (device, kind),
     ).fetchone()
 
 
@@ -423,9 +537,9 @@ def _event_should_close(states: dict) -> list[str]:
     return closed
 
 
-def record_reading(conn: sqlite3.Connection, run_id: int, instant: datetime,
-                   reading: dict) -> tuple[int, int]:
-    """Write one reading and reconcile the open/closed events.
+def record_reading(conn: sqlite3.Connection, device: str, run_id: int,
+                   instant: datetime, reading: dict) -> tuple[int, int]:
+    """Write one reading and reconcile the open/closed events for one unit.
 
     Returns (opened, closed). A state the collector did not witness change is
     opened with basis='observed' — the event began before we were watching;
@@ -433,22 +547,22 @@ def record_reading(conn: sqlite3.Connection, run_id: int, instant: datetime,
     """
     utc, local = iso(instant)
     previous = {
-        name: _last_label(conn, name)
+        name: _last_label(conn, device, name)
         for name in ("output_source", "input_status")
     }
     for sample in reading["samples"]:
         conn.execute(
             "INSERT OR REPLACE INTO samples"
-            " (run_id, sampled_at, sampled_at_local, series, value, unit, label)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (run_id, utc, local, sample["series"], sample["value"],
+            " (device, run_id, sampled_at, sampled_at_local, series, value, unit, label)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (device, run_id, utc, local, sample["series"], sample["value"],
              sample["unit"], sample.get("label")),
         )
 
     states = reading["states"]
     opened = closed = 0
     for kind in _event_should_close(states):
-        row = _open_event(conn, kind)
+        row = _open_event(conn, device, kind)
         if row:
             conn.execute(
                 "UPDATE events SET ended_at = ?, ended_at_local = ?, closed_run_id = ?"
@@ -458,7 +572,7 @@ def record_reading(conn: sqlite3.Connection, run_id: int, instant: datetime,
             closed += 1
 
     for kind in _event_should_open(states):
-        if _open_event(conn, kind):
+        if _open_event(conn, device, kind):
             continue
         # A change we saw happen is a transition; a state that was already
         # abnormal at the first sample began before we were watching.
@@ -478,23 +592,26 @@ def record_reading(conn: sqlite3.Connection, run_id: int, instant: datetime,
             ),
         }, sort_keys=True)
         conn.execute(
-            "INSERT INTO events (kind, cause, basis, started_at, started_at_local,"
-            " opened_run_id, evidence) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (kind, cause, basis, utc, local, run_id, evidence),
+            "INSERT INTO events (device, kind, cause, basis, started_at,"
+            " started_at_local, opened_run_id, evidence)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (device, kind, cause, basis, utc, local, run_id, evidence),
         )
         opened += 1
 
     return opened, closed
 
 
-def upsert_device(conn: sqlite3.Connection, reading: dict, utc: str) -> None:
+def upsert_device(conn: sqlite3.Connection, device: str, host: str,
+                  reading: dict, utc: str) -> None:
     identity = reading.get("identity") or {}
     conn.execute(
         """
-        INSERT INTO device (device_id, manufacturer, model, ups_firmware,
+        INSERT INTO device (name, host, manufacturer, model, ups_firmware,
                             agent_firmware, first_seen_at, last_seen_at)
-        VALUES (1, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT (device_id) DO UPDATE SET
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT (name) DO UPDATE SET
+            host           = excluded.host,
             manufacturer   = COALESCE(excluded.manufacturer, device.manufacturer),
             model          = COALESCE(excluded.model, device.model),
             ups_firmware   = COALESCE(excluded.ups_firmware, device.ups_firmware),
@@ -502,6 +619,8 @@ def upsert_device(conn: sqlite3.Connection, reading: dict, utc: str) -> None:
             last_seen_at   = excluded.last_seen_at
         """,
         (
+            device,
+            host,
             identity.get("manufacturer"),
             identity.get("model"),
             identity.get("ups_firmware"),
@@ -515,30 +634,52 @@ def upsert_device(conn: sqlite3.Connection, reading: dict, utc: str) -> None:
 # --- commands --------------------------------------------------------------
 
 
-def collect_once(conn: sqlite3.Connection, host: str, community: str, *,
-                 port: int, timeout: float, dry_run: bool = False) -> dict:
+def collect_once(conn: sqlite3.Connection | None, device: str, host: str,
+                 community: str, *, port: int, timeout: float,
+                 dry_run: bool = False) -> dict:
     instant = datetime.now(timezone.utc).replace(microsecond=0)
     utc, local = iso(instant)
-    reading = read_device(host, community, port=port, timeout=timeout)
+    try:
+        reading = read_device(host, community, port=port, timeout=timeout)
+    except (ConnectionError, RuntimeError, OSError) as error:
+        result = {
+            "device": device,
+            "host": host,
+            "sampled_at": utc,
+            "ok": False,
+            "error": str(error),
+        }
+        if not dry_run and conn is not None:
+            run_id = conn.execute(
+                "INSERT INTO runs (device, started_at, started_at_local, status,"
+                " host, error) VALUES (?, ?, ?, 'unreachable', ?, ?)",
+                (device, utc, local, host, str(error)),
+            ).lastrowid
+            conn.commit()
+            result["run_id"] = run_id
+        return result
 
     result = {
+        "device": device,
+        "host": host,
         "sampled_at": utc,
         "sampled_at_local": local,
+        "ok": True,
         "states": reading["states"],
         "samples": len(reading["samples"]),
     }
-    if dry_run:
+    if dry_run or conn is None:
         result["identity"] = reading["identity"]
         result["reading"] = reading["samples"]
         return result
 
     run_id = conn.execute(
-        "INSERT INTO runs (started_at, started_at_local, status, host)"
-        " VALUES (?, ?, 'running', ?)",
-        (utc, local, host),
+        "INSERT INTO runs (device, started_at, started_at_local, status, host)"
+        " VALUES (?, ?, ?, 'running', ?)",
+        (device, utc, local, host),
     ).lastrowid
-    upsert_device(conn, reading, utc)
-    opened, closed = record_reading(conn, run_id, instant, reading)
+    upsert_device(conn, device, host, reading, utc)
+    opened, closed = record_reading(conn, device, run_id, instant, reading)
     conn.execute(
         "UPDATE runs SET finished_at = ?, status = 'ok', samples = ?,"
         " events_opened = ?, events_closed = ? WHERE id = ?",
@@ -550,39 +691,56 @@ def collect_once(conn: sqlite3.Connection, host: str, community: str, *,
 
 
 def status(conn: sqlite3.Connection) -> dict:
-    device = conn.execute(
-        "SELECT manufacturer, model, ups_firmware, agent_firmware, first_seen_at,"
-        " last_seen_at FROM device WHERE device_id = 1"
-    ).fetchone()
-    last = conn.execute(
-        "SELECT sampled_at, sampled_at_local, series, value, unit, label"
-        " FROM samples ORDER BY sampled_at DESC LIMIT 12"
+    devices = conn.execute(
+        "SELECT name, host, manufacturer, model, ups_firmware, agent_firmware,"
+        " first_seen_at, last_seen_at FROM device ORDER BY name"
     ).fetchall()
-    open_events = conn.execute(
-        "SELECT id, kind, cause, basis, started_at, started_at_local"
-        " FROM events WHERE ended_at IS NULL ORDER BY started_at"
-    ).fetchall()
-    runs = conn.execute("SELECT COUNT(*) FROM runs").fetchone()[0]
+    out = []
+    for row in devices:
+        name = row[0]
+        last = conn.execute(
+            "SELECT sampled_at, sampled_at_local, series, value, unit, label"
+            " FROM samples WHERE device = ? ORDER BY sampled_at DESC LIMIT 12",
+            (name,),
+        ).fetchall()
+        open_events = conn.execute(
+            "SELECT id, kind, cause, basis, started_at, started_at_local"
+            " FROM events WHERE device = ? AND ended_at IS NULL ORDER BY started_at",
+            (name,),
+        ).fetchall()
+        last_run = conn.execute(
+            "SELECT started_at, status, error FROM runs WHERE device = ?"
+            " ORDER BY id DESC LIMIT 1",
+            (name,),
+        ).fetchone()
+        out.append({
+            "device": name,
+            "identity": dict(zip(
+                ["host", "manufacturer", "model", "ups_firmware", "agent_firmware",
+                 "first_seen_at", "last_seen_at"], row[1:])),
+            "last_run": (
+                {"at": last_run[0], "status": last_run[1], "error": last_run[2]}
+                if last_run else None
+            ),
+            "last_samples": [
+                {"at": s[0], "at_local": s[1], "series": s[2], "value": s[3],
+                 "unit": s[4], "label": s[5]}
+                for s in last
+            ],
+            "open_events": [
+                {"id": e[0], "kind": e[1], "cause": e[2], "basis": e[3],
+                 "started_at": e[4], "started_at_local": e[5]}
+                for e in open_events
+            ],
+        })
     return {
-        "device": dict(zip(
-            ["manufacturer", "model", "ups_firmware", "agent_firmware",
-             "first_seen_at", "last_seen_at"], device)) if device else None,
-        "runs": runs,
-        "last_samples": [
-            {"at": row[0], "at_local": row[1], "series": row[2], "value": row[3],
-             "unit": row[4], "label": row[5]}
-            for row in last
-        ],
-        "open_events": [
-            {"id": row[0], "kind": row[1], "cause": row[2], "basis": row[3],
-             "started_at": row[4], "started_at_local": row[5]}
-            for row in open_events
-        ],
+        "devices": out,
+        "runs": conn.execute("SELECT COUNT(*) FROM runs").fetchone()[0],
     }
 
 
 def _lock(db_path: str):
-    """One collector per store, so two launchd runs cannot interleave events."""
+    """One collector per store, so two schedule runs cannot interleave events."""
     lock_path = Path(db_path).with_suffix(".lock")
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     handle = open(lock_path, "w")
@@ -594,9 +752,26 @@ def _lock(db_path: str):
     return handle
 
 
+def _devices(args, parser) -> list[tuple[str, str]]:
+    if args.hosts:
+        return parse_hosts(args.hosts)
+    if args.host:
+        return [(args.device or "ups", args.host)]
+    if DEFAULT_HOSTS:
+        return parse_hosts(DEFAULT_HOSTS)
+    parser.error(
+        "set UPS_HOSTS (label=host,label=host) or UPS_HOST in collector.env,"
+        " or pass --hosts/--host; no address is baked in"
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Collect a CyberPower UPS over SNMP.")
+    parser = argparse.ArgumentParser(
+        description="Collect CyberPower UPSes over SNMP. Every unit is a label."
+    )
     parser.add_argument("--host", default=DEFAULT_HOST)
+    parser.add_argument("--device", help="label for --host (default: ups)")
+    parser.add_argument("--hosts", help="label=host,label=host")
     parser.add_argument("--community", default=DEFAULT_COMMUNITY)
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT)
@@ -616,9 +791,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.loop and args.dry_run:
         parser.error("--loop and --dry-run are mutually exclusive")
 
-    if not args.host:
-        parser.error("set UPS_HOST in collector.env (or pass --host); no address is baked in")
-
+    devices = _devices(args, parser)
     if not args.loop and not args.once:
         args.once = True
 
@@ -627,23 +800,26 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         while True:
-            try:
-                result = collect_once(
-                    conn, args.host, args.community, port=args.port,
+            results = [
+                collect_once(
+                    conn, device, host, args.community, port=args.port,
                     timeout=args.timeout, dry_run=args.dry_run,
                 )
-            except (ConnectionError, RuntimeError, OSError) as error:
-                message = f"{datetime.now(timezone.utc).isoformat(timespec='seconds')} " \
-                          f"{args.host}: {error}"
-                print(message, file=sys.stderr)
-                if not args.loop:
-                    return 1
-                time.sleep(args.interval)
-                continue
-
-            print(json.dumps(result, sort_keys=True))
+                for device, host in devices
+            ]
+            for result in results:
+                print(json.dumps(result, sort_keys=True))
+            failed = [r for r in results if not r["ok"]]
+            for result in failed:
+                print(
+                    f"{result['sampled_at']} {result['device']} "
+                    f"({result['host']}): {result['error']}",
+                    file=sys.stderr,
+                )
             if not args.loop:
-                return 0
+                # A partial failure is not a failed run: the other units were
+                # read and the store says which one was not.
+                return 1 if failed and len(failed) == len(results) else 0
             time.sleep(args.interval)
     finally:
         if conn is not None:

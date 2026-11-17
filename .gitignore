@@ -9,3 +9,5 @@ dist/
 # machine-local collector paths and the job log
 scripts/energy-export/collector.env
 scripts/energy-export/logs/
+scripts/ups-collector/collector.env
+scripts/ups-collector/logs/

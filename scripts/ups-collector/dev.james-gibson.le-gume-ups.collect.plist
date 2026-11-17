@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>dev.james-gibson.le-gume-ups.collect</string>
+
+	<!-- System python3: the collector is standard library only, and launchd
+	     starts with a bare PATH. -->
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/bin/python3</string>
+		<string>/Users/dev/projects/personal/le.gume-energy/scripts/ups-collector/collect_ups.py</string>
+		<string>--once</string>
+	</array>
+
+	<key>WorkingDirectory</key>
+	<string>/Users/dev/projects/personal/le.gume-energy/scripts/ups-collector</string>
+
+	<!-- One poll a minute. The card's min/max scalars are one-minute windows,
+	     so a slower poll loses the resolution the device itself offers. -->
+	<key>StartInterval</key>
+	<integer>60</integer>
+
+	<key>RunAtLoad</key>
+	<true/>
+
+	<key>StandardOutPath</key>
+	<string>/Users/dev/projects/personal/le.gume-energy/scripts/ups-collector/logs/ups.log</string>
+	<key>StandardErrorPath</key>
+	<string>/Users/dev/projects/personal/le.gume-energy/scripts/ups-collector/logs/ups.err.log</string>
+
+	<key>ProcessType</key>
+	<string>Background</string>
+	<key>LowPriorityIO</key>
+	<true/>
+</dict>
+</plist>

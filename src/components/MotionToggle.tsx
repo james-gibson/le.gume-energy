@@ -1,5 +1,5 @@
 import SegmentedControl from '../components/silicon-ui/segmented-control/segmented-control'
-import { useMotion, type MotionMode } from '../lib/motion'
+import { MODES, useMotion, type MotionMode } from '../lib/motion'
 
 const OPTIONS: { value: MotionMode; label: string }[] = [
   { value: 'still', label: 'Still' },

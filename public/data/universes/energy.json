@@ -119,7 +119,7 @@
         "end_ns": "1795392000000000000",
         "type": "phase",
         "status": "active",
-        "description": "326 days, 8040.7 kWh"
+        "description": "326 days, 8041.2 kWh"
       }
     ],
     "keyframes": [
@@ -672,9 +672,9 @@
     "coverage": {
       "solar_production": {
         "daily_rows": 1197,
-        "daily_with_analysis": 1197,
+        "daily_with_analysis": 1196,
         "analysis_production_mismatches": 0,
-        "analysis_latest_day_excluded": false,
+        "analysis_latest_day_excluded": true,
         "interval_files_are_sparse": "SolarEdge returns only intervals with production, so a day may hold far fewer than 96 fifteen-minute or 24 hourly rows.",
         "first_local": "2023-08-14",
         "last_local": "2026-11-22"

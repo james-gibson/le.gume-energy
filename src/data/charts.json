@@ -7,8 +7,8 @@
     "joined": "public/data/energy-daily-joined.csv"
   },
   "record": {
-    "exported_at_utc": "2026-11-22T21:31:20Z",
-    "exported_at_local": "2026-11-22T14:31:20-07:00",
+    "exported_at_utc": "2026-11-22T21:39:09Z",
+    "exported_at_local": "2026-11-22T14:39:09-07:00",
     "last_day": "2026-11-22",
     "age_days": 0,
     "state": "current"
@@ -182,7 +182,7 @@
     },
     {
       "m": "2026-11",
-      "kwh": 298.91
+      "kwh": 299.4
     }
   ],
   "residuals": [
@@ -2122,7 +2122,7 @@
     {
       "d": "2026-11-22",
       "ratio": 0.9986,
-      "production": 13.26,
+      "production": 13.75,
       "export": 0.02
     }
   ],
@@ -2530,8 +2530,8 @@
     },
     {
       "m": "2026-11",
-      "production": 298.9,
-      "self": 118.3,
+      "production": 299.4,
+      "self": 118.8,
       "export": 180.6,
       "consumption": 262
     }
@@ -3032,9 +3032,9 @@
       },
       {
         "d": "2026-11-22",
-        "kwh": 13.26,
+        "kwh": 13.75,
         "clear": false,
-        "residual": 0.0213,
+        "residual": null,
         "draw": 6.86,
         "export": 0.02
       }
@@ -4798,19 +4798,19 @@
       },
       {
         "d": "2026-11-22",
-        "self": 13.24,
+        "self": 13.73,
         "imported": 6.86,
-        "used": 20.11,
+        "used": 20.6,
         "exported": 0.02,
-        "produced": 13.26
+        "produced": 13.75
       }
     ],
     "totals": {
-      "used": 6782.3,
-      "self": 3843,
+      "used": 6782.8,
+      "self": 3843.5,
       "imported": 2939.3,
       "exported": 703.9,
-      "produced": 4546.9
+      "produced": 4547.4
     }
   },
   "breakeven": [
@@ -5200,10 +5200,10 @@
       "to": "2026-11-22",
       "days": 30,
       "clear": 12,
-      "mean_kwh": 13.95,
+      "mean_kwh": 13.97,
       "residual": 0.0131,
       "self_ratio": 0.404,
-      "export_share": 0.6191,
+      "export_share": 0.6184,
       "grid_days": 30
     },
     "previous": {

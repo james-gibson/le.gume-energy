@@ -67,7 +67,7 @@ export const energyRecordUniverse: LocalTimeUniverse = {
       { id: "year-2023", start: at("2023-08-14T00:00:00Z"), end: at("2024-01-01T00:00:00Z"), type: 'phase', status: 'active', description: "140 days, 2321.1 kWh" },
       { id: "year-2024", start: at("2024-01-01T00:00:00Z"), end: at("2025-01-01T00:00:00Z"), type: 'phase', status: 'active', description: "366 days, 8374.9 kWh" },
       { id: "year-2025", start: at("2025-01-01T00:00:00Z"), end: at("2026-01-01T00:00:00Z"), type: 'phase', status: 'active', description: "365 days, 8362.2 kWh" },
-      { id: "year-2026", start: at("2026-01-01T00:00:00Z"), end: at("2026-11-23T00:00:00Z"), type: 'phase', status: 'active', description: "326 days, 8040.7 kWh" },
+      { id: "year-2026", start: at("2026-01-01T00:00:00Z"), end: at("2026-11-23T00:00:00Z"), type: 'phase', status: 'active', description: "326 days, 8041.2 kWh" },
     ],
     keyframes: [
       { id: "record-start", timestamp: at("2023-08-14T12:00:00Z"), significance: 0.4, tags: ["coverage","start"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "First day in the record: 2023-08-14" },
@@ -121,9 +121,9 @@ export const energyRecordUniverse: LocalTimeUniverse = {
     coverage: {
       "solar_production": {
         "daily_rows": 1197,
-        "daily_with_analysis": 1197,
+        "daily_with_analysis": 1196,
         "analysis_production_mismatches": 0,
-        "analysis_latest_day_excluded": false,
+        "analysis_latest_day_excluded": true,
         "interval_files_are_sparse": "SolarEdge returns only intervals with production, so a day may hold far fewer than 96 fifteen-minute or 24 hourly rows.",
         "first_local": "2023-08-14",
         "last_local": "2026-11-22"

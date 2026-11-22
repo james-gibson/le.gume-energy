@@ -59,9 +59,9 @@
         "record": {
           "epochId": "record",
           "start": "2023-08-14T00:00:00Z",
-          "end": "2026-11-14T00:00:00Z",
+          "end": "2026-11-23T00:00:00Z",
           "start_ns": "1691971200000000000",
-          "end_ns": "1794614400000000000",
+          "end_ns": "1795392000000000000",
           "precision": 86400000000000,
           "description": "The published record, first to last day."
         }
@@ -72,9 +72,9 @@
     "record": {
       "epochId": "record",
       "start": "2023-08-14T00:00:00Z",
-      "end": "2026-11-14T00:00:00Z",
+      "end": "2026-11-23T00:00:00Z",
       "start_ns": "1691971200000000000",
-      "end_ns": "1794614400000000000",
+      "end_ns": "1795392000000000000",
       "precision": 86400000000000,
       "description": "The published record, first to last day."
     }
@@ -114,12 +114,12 @@
       {
         "id": "year-2026",
         "start": "2026-01-01T00:00:00Z",
-        "end": "2026-11-14T00:00:00Z",
+        "end": "2026-11-23T00:00:00Z",
         "start_ns": "1767225600000000000",
-        "end_ns": "1794614400000000000",
+        "end_ns": "1795392000000000000",
         "type": "phase",
         "status": "active",
-        "description": "317 days, 7924.2 kWh"
+        "description": "326 days, 8040.7 kWh"
       }
     ],
     "keyframes": [
@@ -177,7 +177,7 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "recovered on 2023-11-28 from -0.357 to -0.016 after 2 negative clear day(s)"
+        "description": "recovered on 2023-11-28 from -0.358 to -0.017 after 2 negative clear day(s)"
       },
       {
         "id": "event-2023-11-26-snow-or-coverage",
@@ -317,7 +317,7 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "recovered on 2024-11-15 from -0.559 to -0.046 after 3 negative clear day(s)"
+        "description": "recovered on 2024-11-15 from -0.559 to -0.050 after 3 negative clear day(s)"
       },
       {
         "id": "event-2024-11-10-snow-or-coverage",
@@ -345,7 +345,7 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "recovered on 2024-12-01 from -0.436 to 0.015 after 2 negative clear day(s)"
+        "description": "recovered on 2024-12-01 from -0.437 to 0.008 after 2 negative clear day(s)"
       },
       {
         "id": "event-2024-11-28-snow-or-coverage",
@@ -485,7 +485,7 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "recovered on 2025-12-15 from -0.340 to -0.002 after 2 negative clear day(s)"
+        "description": "recovered on 2025-12-15 from -0.344 to -0.002 after 2 negative clear day(s)"
       },
       {
         "id": "event-2025-12-04-snow-or-coverage",
@@ -499,7 +499,7 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "1 clear day(s); min residual -0.554; snow/precip/cold"
+        "description": "1 clear day(s); min residual -0.557; snow/precip/cold"
       },
       {
         "id": "event-2026-01-10-snow-melt",
@@ -629,8 +629,8 @@
       },
       {
         "id": "record-end",
-        "timestamp": "2026-11-13T12:00:00Z",
-        "timestamp_ns": "1794571200000000000",
+        "timestamp": "2026-11-22T12:00:00Z",
+        "timestamp_ns": "1795348800000000000",
         "significance": 0.4,
         "tags": [
           "coverage",
@@ -639,12 +639,12 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "Last day in the record: 2026-11-13"
+        "description": "Last day in the record: 2026-11-22"
       },
       {
         "id": "utility-window-end",
-        "timestamp": "2026-11-13T12:00:00Z",
-        "timestamp_ns": "1794571200000000000",
+        "timestamp": "2026-11-22T12:00:00Z",
+        "timestamp_ns": "1795348800000000000",
         "significance": 0.6,
         "tags": [
           "utility",
@@ -653,7 +653,7 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "Latest utility day: 2026-11-13"
+        "description": "Latest utility day: 2026-11-22"
       }
     ],
     "windows": {
@@ -671,20 +671,20 @@
     "granularity": "15 minutes, hourly, daily, monthly, yearly",
     "coverage": {
       "solar_production": {
-        "daily_rows": 1188,
-        "daily_with_analysis": 1188,
+        "daily_rows": 1197,
+        "daily_with_analysis": 1197,
         "analysis_production_mismatches": 0,
         "analysis_latest_day_excluded": false,
         "interval_files_are_sparse": "SolarEdge returns only intervals with production, so a day may hold far fewer than 96 fifteen-minute or 24 hourly rows.",
         "first_local": "2023-08-14",
-        "last_local": "2026-11-13"
+        "last_local": "2026-11-22"
       },
       "grid_usage": {
-        "daily_rows": 336,
+        "daily_rows": 363,
         "first_local": "2025-05-01",
-        "last_local": "2026-11-13"
+        "last_local": "2026-11-22"
       },
-      "joined_days": 1188
+      "joined_days": 1197
     },
     "system": {
       "peak_power_kwp": 7,

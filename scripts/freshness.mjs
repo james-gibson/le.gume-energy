@@ -11,11 +11,18 @@
  * Two separate checks, because they fail for different reasons:
  *
  *   --require-stamp dist   the built page says how old it is (a build gate)
- *   --max-age 2            the export is younger than N days (an alarm)
+ *   --max-age 2            the record's data is younger than N days (an alarm)
  *
  * The build runs the first: a page that cannot state its age must not publish.
  * The scheduled workflow runs the second: a stuck import is a red run, not a
  * quiet site.
+ *
+ * The alarm measures the DATA, not the exporter. `generated_at_utc` records when
+ * the pipeline last ran; re-running it over an unchanged collector database
+ * resets that timestamp and would silence the alarm while the page still shows a
+ * week-old reading. The record's age is the lag of its least-current series,
+ * read from `coverage.*.last_local` — a fresh solar export beside a week-old
+ * grid export is still a week-old record.
  */
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -39,9 +46,42 @@ if (!exportedAt) {
   process.exit(1)
 }
 
-const ageDays = Math.floor(((Date.now() - Date.parse(exportedAt)) / 86_400_000) * 10) / 10
+const timeZone = manifest.timezone ?? 'America/Denver'
+const localDate = (date) => {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(date)
+  const part = (type) => parts.find((entry) => entry.type === type)?.value
+  return `${part('year')}-${part('month')}-${part('day')}`
+}
+const daysBetween = (from, to) => {
+  const start = Date.parse(`${from}T00:00:00Z`)
+  const end = Date.parse(`${to}T00:00:00Z`)
+  return Math.round((end - start) / 86_400_000)
+}
+
+const coverage = manifest.coverage ?? {}
+const lastDays = ['solar_production', 'grid_usage']
+  .map((name) => coverage[name]?.last_local)
+  .filter((value) => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value))
+if (lastDays.length === 0) {
+  console.error(
+    'freshness: the manifest has no coverage.*.last_local — the age of the record is unknowable',
+  )
+  process.exit(1)
+}
+const lastDay = lastDays.sort()[0]
+const dataAgeDays = Math.max(0, daysBetween(lastDay, localDate(new Date())))
+
+const exportAgeDays = Math.floor(((Date.now() - Date.parse(exportedAt)) / 86_400_000) * 10) / 10
 const exportedLocal = manifest.generated_at_local ?? exportedAt
-console.log(`freshness: exported ${exportedLocal} (${ageDays} day${ageDays === 1 ? '' : 's'} old)`)
+console.log(
+  `freshness: data through ${lastDay} (${dataAgeDays} day${dataAgeDays === 1 ? '' : 's'} old); ` +
+    `exported ${exportedLocal} (${exportAgeDays} day${exportAgeDays === 1 ? '' : 's'} ago)`,
+)
 
 let failures = 0
 
@@ -72,9 +112,11 @@ if (maxAge !== null) {
     console.error(`freshness: --max-age needs a number of days, got "${maxAge}"`)
     process.exit(1)
   }
-  if (ageDays > limit) {
+  if (dataAgeDays > limit) {
     console.error(
-      `freshness: the export is ${ageDays} days old, past the ${limit}-day limit — the import has stopped, and this site is now publishing history as if it were current`,
+      `freshness: the record is ${dataAgeDays} days old (data through ${lastDay}), past the ${limit}-day limit — ` +
+        `the export ran ${exportAgeDays} days ago but the import has stopped, ` +
+        `and this site is now publishing history as if it were current`,
     )
     failures += 1
   }

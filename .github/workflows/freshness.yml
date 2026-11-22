@@ -1,9 +1,9 @@
 name: freshness
 
 # The import cannot run here: the collector databases are machine-local and
-# deliberately unpublished. What this can do is notice that the committed
-# export stopped moving, which is the only part of a stuck import that is
-# visible from a runner.
+# deliberately unpublished. What this can do is notice that the DATA in the
+# committed export stopped advancing — not that the exporter ran, which a
+# re-export over an unchanged collector database would falsely refresh.
 on:
   schedule:
     - cron: '0 15 * * *'

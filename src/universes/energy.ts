@@ -46,7 +46,7 @@ export const energyRecordUniverse: LocalTimeUniverse = {
         record: {
           epochId: 'record',
           start: at("2023-08-14T00:00:00Z"),
-          end: at("2026-11-14T00:00:00Z"),
+          end: at("2026-11-23T00:00:00Z"),
           precision: DAY_NS,
           description: 'The published record, first to last day.',
         },
@@ -57,7 +57,7 @@ export const energyRecordUniverse: LocalTimeUniverse = {
     record: {
       epochId: 'record',
       start: at("2023-08-14T00:00:00Z"),
-      end: at("2026-11-14T00:00:00Z"),
+      end: at("2026-11-23T00:00:00Z"),
       precision: DAY_NS,
       description: 'The published record, first to last day.',
     },
@@ -67,13 +67,13 @@ export const energyRecordUniverse: LocalTimeUniverse = {
       { id: "year-2023", start: at("2023-08-14T00:00:00Z"), end: at("2024-01-01T00:00:00Z"), type: 'phase', status: 'active', description: "140 days, 2321.1 kWh" },
       { id: "year-2024", start: at("2024-01-01T00:00:00Z"), end: at("2025-01-01T00:00:00Z"), type: 'phase', status: 'active', description: "366 days, 8374.9 kWh" },
       { id: "year-2025", start: at("2025-01-01T00:00:00Z"), end: at("2026-01-01T00:00:00Z"), type: 'phase', status: 'active', description: "365 days, 8362.2 kWh" },
-      { id: "year-2026", start: at("2026-01-01T00:00:00Z"), end: at("2026-11-14T00:00:00Z"), type: 'phase', status: 'active', description: "317 days, 7924.2 kWh" },
+      { id: "year-2026", start: at("2026-01-01T00:00:00Z"), end: at("2026-11-23T00:00:00Z"), type: 'phase', status: 'active', description: "326 days, 8040.7 kWh" },
     ],
     keyframes: [
       { id: "record-start", timestamp: at("2023-08-14T12:00:00Z"), significance: 0.4, tags: ["coverage","start"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "First day in the record: 2023-08-14" },
       { id: "event-2023-10-30-snow-melt", timestamp: at("2023-10-30T12:00:00Z"), significance: 0.95, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2023-11-07 from -0.577 to 0.007 after 2 negative clear day(s)" },
       { id: "event-2023-10-30-snow-or-coverage", timestamp: at("2023-10-30T12:00:00Z"), significance: 0.95, tags: ["snow_or_coverage","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "2 clear day(s); min residual -0.588; snow/precip/cold" },
-      { id: "event-2023-11-26-snow-melt", timestamp: at("2023-11-26T12:00:00Z"), significance: 0.84, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2023-11-28 from -0.357 to -0.016 after 2 negative clear day(s)" },
+      { id: "event-2023-11-26-snow-melt", timestamp: at("2023-11-26T12:00:00Z"), significance: 0.84, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2023-11-28 from -0.358 to -0.017 after 2 negative clear day(s)" },
       { id: "event-2023-11-26-snow-or-coverage", timestamp: at("2023-11-26T12:00:00Z"), significance: 0.95, tags: ["snow_or_coverage","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "2 clear day(s); min residual -0.509; snow/precip/cold" },
       { id: "event-2023-12-28-snow-melt", timestamp: at("2023-12-28T12:00:00Z"), significance: 0.74, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2023-12-30 from -0.324 to -0.079 after 2 negative clear day(s)" },
       { id: "event-2023-12-28-snow-or-coverage", timestamp: at("2023-12-28T12:00:00Z"), significance: 0.9, tags: ["snow_or_coverage","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "2 clear day(s); min residual -0.405; snow/precip/cold" },
@@ -83,9 +83,9 @@ export const energyRecordUniverse: LocalTimeUniverse = {
       { id: "event-2024-02-28-snow-melt", timestamp: at("2024-02-28T12:00:00Z"), significance: 0.68, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2024-02-29 from -0.200 to -0.020 after 1 negative clear day(s)" },
       { id: "event-2024-03-18-snow-melt", timestamp: at("2024-03-18T12:00:00Z"), significance: 0.63, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2024-03-19 from -0.155 to -0.026 after 1 negative clear day(s)" },
       { id: "best-production-day", timestamp: at("2024-05-08T12:00:00Z"), significance: 0.7, tags: ["production","peak"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "44.479 kWh, the highest daily production in the record" },
-      { id: "event-2024-11-10-snow-melt", timestamp: at("2024-11-10T12:00:00Z"), significance: 0.95, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2024-11-15 from -0.559 to -0.046 after 3 negative clear day(s)" },
+      { id: "event-2024-11-10-snow-melt", timestamp: at("2024-11-10T12:00:00Z"), significance: 0.95, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2024-11-15 from -0.559 to -0.050 after 3 negative clear day(s)" },
       { id: "event-2024-11-10-snow-or-coverage", timestamp: at("2024-11-10T12:00:00Z"), significance: 0.95, tags: ["snow_or_coverage","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "2 clear day(s); min residual -0.580; snow/precip/cold" },
-      { id: "event-2024-11-28-snow-melt", timestamp: at("2024-11-28T12:00:00Z"), significance: 0.95, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2024-12-01 from -0.436 to 0.015 after 2 negative clear day(s)" },
+      { id: "event-2024-11-28-snow-melt", timestamp: at("2024-11-28T12:00:00Z"), significance: 0.95, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2024-12-01 from -0.437 to 0.008 after 2 negative clear day(s)" },
       { id: "event-2024-11-28-snow-or-coverage", timestamp: at("2024-11-28T12:00:00Z"), significance: 0.95, tags: ["snow_or_coverage","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "2 clear day(s); min residual -0.538; snow/precip/cold" },
       { id: "event-2025-01-08-snow-melt", timestamp: at("2025-01-08T12:00:00Z"), significance: 0.93, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2025-01-10 from -0.520 to -0.087 after 1 negative clear day(s)" },
       { id: "event-2025-01-08-snow-or-coverage", timestamp: at("2025-01-08T12:00:00Z"), significance: 0.95, tags: ["snow_or_coverage","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "1 clear day(s); min residual -0.520; snow/precip/cold" },
@@ -95,8 +95,8 @@ export const energyRecordUniverse: LocalTimeUniverse = {
       { id: "event-2025-02-22-snow-or-coverage", timestamp: at("2025-02-22T12:00:00Z"), significance: 0.84, tags: ["snow_or_coverage","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "1 clear day(s); min residual -0.337; snow/precip/cold" },
       { id: "utility-window-start", timestamp: at("2025-05-01T12:00:00Z"), significance: 0.6, tags: ["utility","window"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "Utility window opens: 2025-05-01" },
       { id: "event-2025-10-15-possible-soiling", timestamp: at("2025-10-15T12:00:00Z"), significance: 0.5, tags: ["possible_soiling","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "16 dry clear day(s); slope -0.0012/day, drop -0.038" },
-      { id: "event-2025-12-01-snow-melt", timestamp: at("2025-12-01T12:00:00Z"), significance: 0.84, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2025-12-15 from -0.340 to -0.002 after 2 negative clear day(s)" },
-      { id: "event-2025-12-04-snow-or-coverage", timestamp: at("2025-12-04T12:00:00Z"), significance: 0.95, tags: ["snow_or_coverage","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "1 clear day(s); min residual -0.554; snow/precip/cold" },
+      { id: "event-2025-12-01-snow-melt", timestamp: at("2025-12-01T12:00:00Z"), significance: 0.84, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2025-12-15 from -0.344 to -0.002 after 2 negative clear day(s)" },
+      { id: "event-2025-12-04-snow-or-coverage", timestamp: at("2025-12-04T12:00:00Z"), significance: 0.95, tags: ["snow_or_coverage","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "1 clear day(s); min residual -0.557; snow/precip/cold" },
       { id: "event-2026-01-10-snow-melt", timestamp: at("2026-01-10T12:00:00Z"), significance: 0.95, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2026-01-12 from -0.483 to 0.077 after 1 negative clear day(s)" },
       { id: "event-2026-01-10-snow-or-coverage", timestamp: at("2026-01-10T12:00:00Z"), significance: 0.95, tags: ["snow_or_coverage","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "1 clear day(s); min residual -0.483; snow/precip/cold" },
       { id: "event-2026-01-26-snow-melt", timestamp: at("2026-01-26T12:00:00Z"), significance: 0.75, tags: ["snow_melt","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2026-01-30 from -0.178 to 0.075 after 1 negative clear day(s)" },
@@ -106,8 +106,8 @@ export const energyRecordUniverse: LocalTimeUniverse = {
       { id: "event-2026-08-08-system-offline", timestamp: at("2026-08-08T12:00:00Z"), significance: 0.55, tags: ["system_offline","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "1 day(s); 1.5 kWh actual vs 31.8 kWh expected" },
       { id: "event-2026-09-12-system-offline", timestamp: at("2026-09-12T12:00:00Z"), significance: 0.5, tags: ["system_offline","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "3 day(s); 10.4 kWh actual vs 76.0 kWh expected" },
       { id: "event-2026-10-20-rain-or-recovery", timestamp: at("2026-10-20T12:00:00Z"), significance: 0.75, tags: ["rain_or_recovery","analysis-event"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "recovered on 2026-10-27 from -0.161 to 0.092 after 1 negative clear day(s)" },
-      { id: "record-end", timestamp: at("2026-11-13T12:00:00Z"), significance: 0.4, tags: ["coverage","end"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "Last day in the record: 2026-11-13" },
-      { id: "utility-window-end", timestamp: at("2026-11-13T12:00:00Z"), significance: 0.6, tags: ["utility","window"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "Latest utility day: 2026-11-13" },
+      { id: "record-end", timestamp: at("2026-11-22T12:00:00Z"), significance: 0.4, tags: ["coverage","end"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "Last day in the record: 2026-11-22" },
+      { id: "utility-window-end", timestamp: at("2026-11-22T12:00:00Z"), significance: 0.6, tags: ["utility","window"], type: 'milestone', precision: DAY_NS, certainty: 1, description: "Latest utility day: 2026-11-22" },
     ],
     windows: { strategy: 'time_based', avgWindowSize: 900n },
   },
@@ -120,20 +120,20 @@ export const energyRecordUniverse: LocalTimeUniverse = {
     granularity: "15 minutes, hourly, daily, monthly, yearly",
     coverage: {
       "solar_production": {
-        "daily_rows": 1188,
-        "daily_with_analysis": 1188,
+        "daily_rows": 1197,
+        "daily_with_analysis": 1197,
         "analysis_production_mismatches": 0,
         "analysis_latest_day_excluded": false,
         "interval_files_are_sparse": "SolarEdge returns only intervals with production, so a day may hold far fewer than 96 fifteen-minute or 24 hourly rows.",
         "first_local": "2023-08-14",
-        "last_local": "2026-11-13"
+        "last_local": "2026-11-22"
       },
       "grid_usage": {
-        "daily_rows": 336,
+        "daily_rows": 363,
         "first_local": "2025-05-01",
-        "last_local": "2026-11-13"
+        "last_local": "2026-11-22"
       },
-      "joined_days": 1188
+      "joined_days": 1197
     },
     system: {
       "peak_power_kwp": 7,

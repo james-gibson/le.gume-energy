@@ -79,11 +79,11 @@ fi
 # failure here is the point: a record that fails its own gates does not ship.
 if ! npm run build >>"$LOG" 2>&1; then
 	say "build failed — nothing committed, the last good record stays published"
-	git checkout -- public/data src/data/charts.json 2>/dev/null || true
+	git checkout -- public/data src/data/charts.json src/universes/energy.ts 2>/dev/null || true
 	exit 1
 fi
 
-git add public/data src/data/charts.json
+git add public/data src/data/charts.json src/universes/energy.ts
 git commit -q -m "data: refresh the export $(date -u '+%Y-%m-%dT%H:%MZ')"
 say "committed $(git log -1 --format='%h %s')"
 

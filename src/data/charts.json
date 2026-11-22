@@ -5120,6 +5120,187 @@
     "below": 7,
     "sum": 15.8
   },
+  "eveningShift": {
+    "window": {
+      "from": "2025-05-01",
+      "to": "2026-11-22",
+      "days": 162,
+      "weekdays": 114
+    },
+    "assumptions": {
+      "round_trip": 0.9,
+      "cycles_per_weekday": 1,
+      "delivery_window": "17:00–21:00 weekdays",
+      "capture": "every exported kWh, treated as daytime surplus",
+      "export_credit": "retail-at-time (rates.json)"
+    },
+    "seasons": [
+      {
+        "season": "summer",
+        "weekdays": 65,
+        "capture_kwh": 252.3,
+        "delivered_kwh": 227.1,
+        "revenue_usd": 28.42,
+        "per_weekday": {
+          "mean": 3.88,
+          "median": 3.25,
+          "p90": 7.52,
+          "max": 9.77
+        },
+        "gain_per_capture": 0.1127,
+        "efficiency_break_even": 0.3705,
+        "uplift": 1.4289
+      },
+      {
+        "season": "winter",
+        "weekdays": 49,
+        "capture_kwh": 275.4,
+        "delivered_kwh": 247.9,
+        "revenue_usd": 26.73,
+        "per_weekday": {
+          "mean": 5.62,
+          "median": 6.68,
+          "p90": 13.06,
+          "max": 16.8
+        },
+        "gain_per_capture": 0.0971,
+        "efficiency_break_even": 0.3705,
+        "uplift": 1.429
+      }
+    ],
+    "capacity": [
+      {
+        "kwh": 2.5,
+        "delivered_kwh": 207.4,
+        "utilization": 0.728,
+        "revenue_usd": 24.65,
+        "marginal_usd": 24.65,
+        "capped_days": 65,
+        "weekdays": 114,
+        "annual_revenue_usd": 56.22,
+        "break_even_10y_usd_per_kwh": 224.87,
+        "break_even_15y_usd_per_kwh": 337.31,
+        "break_even_20y_usd_per_kwh": 449.74
+      },
+      {
+        "kwh": 5,
+        "delivered_kwh": 340.9,
+        "utilization": 0.598,
+        "revenue_usd": 40.24,
+        "marginal_usd": 15.59,
+        "capped_days": 43,
+        "weekdays": 114,
+        "annual_revenue_usd": 91.76,
+        "break_even_10y_usd_per_kwh": 183.53,
+        "break_even_15y_usd_per_kwh": 275.29,
+        "break_even_20y_usd_per_kwh": 367.06
+      },
+      {
+        "kwh": 7.5,
+        "delivered_kwh": 422.1,
+        "utilization": 0.494,
+        "revenue_usd": 49.4,
+        "marginal_usd": 9.17,
+        "capped_days": 24,
+        "weekdays": 114,
+        "annual_revenue_usd": 112.67,
+        "break_even_10y_usd_per_kwh": 150.23,
+        "break_even_15y_usd_per_kwh": 225.35,
+        "break_even_20y_usd_per_kwh": 300.46
+      },
+      {
+        "kwh": 10,
+        "delivered_kwh": 460.7,
+        "utilization": 0.404,
+        "revenue_usd": 53.62,
+        "marginal_usd": 4.21,
+        "capped_days": 6,
+        "weekdays": 114,
+        "annual_revenue_usd": 122.29,
+        "break_even_10y_usd_per_kwh": 122.29,
+        "break_even_15y_usd_per_kwh": 183.43,
+        "break_even_20y_usd_per_kwh": 244.57
+      },
+      {
+        "kwh": 15,
+        "delivered_kwh": 474.8,
+        "utilization": 0.278,
+        "revenue_usd": 55.14,
+        "marginal_usd": 1.52,
+        "capped_days": 1,
+        "weekdays": 114,
+        "annual_revenue_usd": 125.76,
+        "break_even_10y_usd_per_kwh": 83.84,
+        "break_even_15y_usd_per_kwh": 125.76,
+        "break_even_20y_usd_per_kwh": 167.68
+      },
+      {
+        "kwh": 20,
+        "delivered_kwh": 474.9,
+        "utilization": 0.208,
+        "revenue_usd": 55.15,
+        "marginal_usd": 0.01,
+        "capped_days": 0,
+        "weekdays": 114,
+        "annual_revenue_usd": 125.79,
+        "break_even_10y_usd_per_kwh": 62.89,
+        "break_even_15y_usd_per_kwh": 94.34,
+        "break_even_20y_usd_per_kwh": 125.79
+      }
+    ],
+    "sensitivity": [
+      {
+        "round_trip": 0.85,
+        "revenue_10kwh_usd": 48.89,
+        "gain_summer": 0.102,
+        "gain_winter": 0.0879
+      },
+      {
+        "round_trip": 0.9,
+        "revenue_10kwh_usd": 53.62,
+        "gain_summer": 0.1127,
+        "gain_winter": 0.0971
+      },
+      {
+        "round_trip": 0.95,
+        "revenue_10kwh_usd": 58.18,
+        "gain_summer": 0.1233,
+        "gain_winter": 0.1062
+      }
+    ],
+    "break_even": {
+      "efficiency": {
+        "summer": 0.3705,
+        "winter": 0.3705
+      },
+      "installed_cost_10kwh": {
+        "kwh": 10,
+        "delivered_kwh": 460.7,
+        "utilization": 0.404,
+        "revenue_usd": 53.62,
+        "marginal_usd": 4.21,
+        "capped_days": 6,
+        "weekdays": 114,
+        "annual_revenue_usd": 122.29,
+        "break_even_10y_usd_per_kwh": 122.29,
+        "break_even_15y_usd_per_kwh": 183.43,
+        "break_even_20y_usd_per_kwh": 244.57
+      },
+      "installed_cost_5kwh": {
+        "kwh": 5,
+        "delivered_kwh": 340.9,
+        "utilization": 0.598,
+        "revenue_usd": 40.24,
+        "marginal_usd": 15.59,
+        "capped_days": 43,
+        "weekdays": 114,
+        "annual_revenue_usd": 91.76,
+        "break_even_10y_usd_per_kwh": 183.53,
+        "break_even_15y_usd_per_kwh": 275.29,
+        "break_even_20y_usd_per_kwh": 367.06
+      }
+    }
+  },
   "changes": [
     {
       "start": "2026-01-10",

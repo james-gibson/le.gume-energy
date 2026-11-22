@@ -129,6 +129,46 @@ Billed weeks use the utility's own on/off split; metered weeks derive it from ho
 sheet's weekday rule. A declared intervention is a vertical rule on the same chart, so an adjustment
 and the weeks that follow it are one picture rather than two.
 
+### The other battery case: evening export
+
+The battery enters the tariff twice. The first case is import: discharge into
+the evening load and avoid the on-peak price, worth 11.54¢/kWh in winter and
+13.39¢/kWh in summer before losses. The second case is export: hold the day's
+surplus and send it back inside the 5–9 p.m. window, where the credit is the
+on-peak rate. That trade has a different cost — the off-peak credit forgone on
+the captured kWh — and a different break-even:
+
+```
+gain per captured kWh  = η × on-peak − off-peak
+break-even efficiency  = off-peak / on-peak = 37.05%
+```
+
+At a 90% round trip the gain is **11.27¢/kWh in summer and 9.71¢/kWh in
+winter** per captured kWh (12.52¢/10.78¢ per delivered kWh). The spread is wide
+enough that any battery clears the efficiency line; the constraints are the
+surplus and the capital.
+
+The observed daily export — 162 days with both series, 114 peak weekdays —
+has a median of 3.3 kWh in summer and 6.7 kWh in winter, and a p90 of 7.5 and
+13.1 kWh. The capacity table is the break-even in size. Revenue is over the
+observed 114 weekdays; the ten-year column assumes the same pattern on 260
+weekdays a year and one cycle each.
+
+| usable kWh | revenue | used | break-even installed, 10 y | marginal |
+| --- | --- | --- | --- | --- |
+| 2.5 | $24.65 | 73% | $225/kWh | $24.65 |
+| 5 | $40.24 | 60% | $184/kWh | +$15.59 |
+| 7.5 | $49.40 | 49% | $150/kWh | +$9.17 |
+| 10 | $53.62 | 40% | $122/kWh | +$4.21 |
+| 15 | $55.14 | 28% | $84/kWh | +$1.52 |
+| 20 | $55.15 | 21% | $63/kWh | +$0.01 |
+
+The knee is around 10 kWh: the next 5 kWh add $1.52 over the whole window. The
+ten-year break-even — about $122/kWh installed for the 10 kWh case — is well
+below current battery prices, so the export spread alone does not finance a
+battery. The first case (avoiding on-peak import) and backup value do the work;
+this shift is the bonus, not the case.
+
 ### What the ratio does *not* know
 
 - **A repair or a parasitic draw removed at night moves the ratio the wrong way.** It lowers the

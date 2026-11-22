@@ -1313,13 +1313,70 @@ function Payback() {
   )
 }
 
+function Shift() {
+  const shift = charts.eveningShift
+  const rows = shift.capacity
+  const max = Math.max(...rows.map((row) => row.revenue_usd))
+  const left = 92
+  const width = W - left - 300
+  const rowHeight = 44
+  const height = 26 + rows.length * rowHeight
+  const x = (value: number) => left + (value / max) * width
+  const [summer, winter] = shift.seasons
+
+  return (
+    <svg
+      viewBox={`0 0 ${W} ${height}`}
+      className="w-full"
+      role="img"
+      aria-label="Revenue from shifting export into the evening, by usable battery capacity"
+    >
+      <title>What a battery earns by moving daytime export into the 5–9 p.m. credit</title>
+      {rows.map((row, i) => {
+        const top = 22 + i * rowHeight
+        return (
+          <g key={row.kwh}>
+            <text x={left - 10} y={top + 10} textAnchor="end" className="fill-current text-[10px] text-muted">
+              {`${row.kwh} kWh`}
+            </text>
+            <rect
+              x={left}
+              y={top}
+              width={Math.max(1, x(row.revenue_usd) - left)}
+              height={16}
+              rx={2}
+              className="text-series-1"
+              fill="currentColor"
+            >
+              <title>{`${row.kwh} kWh usable: $${row.revenue_usd.toFixed(2)} over ${row.weekdays} weekdays, ${Math.round(row.utilization * 100)}% used`}</title>
+            </rect>
+            <text x={x(row.revenue_usd) + 8} y={top + 11} className="fill-current text-[10px] text-body">
+              {`$${row.revenue_usd.toFixed(2)} · ${Math.round(row.utilization * 100)}% used · +$${row.marginal_usd.toFixed(2)} marginal`}
+            </text>
+            <text x={left} y={top + 31} className="fill-current text-[9px] text-muted">
+              {`${row.capped_days} of ${row.weekdays} weekdays capped · break-even $${row.break_even_10y_usd_per_kwh.toFixed(0)}/kWh installed over 10 years`}
+            </text>
+          </g>
+        )
+      })}
+      <text x={left} y={height - 6} className="fill-current text-[10px] text-muted">
+        {`${(shift.assumptions.round_trip * 100).toFixed(0)}% round trip · ${(summer.gain_per_capture * 100).toFixed(2)}¢/kWh summer · ${(winter.gain_per_capture * 100).toFixed(2)}¢/kWh winter · break-even efficiency ${(summer.efficiency_break_even * 100).toFixed(1)}%`}
+      </text>
+    </svg>
+  )
+}
+
 export function Charts() {
   usePageMeta(
     'Charts',
-    'Eleven views: the last sixty days, the clear-day residual before and after each recorded change, three comparable thirty-day windows, then the whole record by year, month, hour and distribution.',
+    'Twelve views: the last sixty days, the clear-day residual before and after each recorded change, three comparable thirty-day windows, then the whole record by year, month, hour and distribution.',
   )
 
   const summary = charts.summary
+  const shift = charts.eveningShift
+  const [shiftSummer, shiftWinter] = shift.seasons
+  const shiftTen = shift.break_even.installed_cost_10kwh
+  const shiftNextFive = shift.capacity.find((row) => row.kwh === 15)?.marginal_usd ?? 0
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
@@ -1517,6 +1574,13 @@ export function Charts() {
           note={`What time of use cost above the flat rate (above the line) or under it (below), one bar per week across the ${charts.payback.length} weeks with a split. Signed bars are the point: the zero line is break-even, so the sign is the answer and the height is its size. ${charts.paybackSummary.above} weeks are above and ${charts.paybackSummary.below} below, a net ${charts.paybackSummary.sum > 0 ? `cost of $${charts.paybackSummary.sum.toFixed(2)}` : `gain of $${Math.abs(charts.paybackSummary.sum).toFixed(2)}`} over the whole record. A declared intervention is a vertical rule, so an adjustment and the weeks that follow it sit in one picture.`}
         >
           <Payback />
+        </Figure>
+
+        <Figure
+          title="What shifting export into the evening would pay"
+          note={`A battery does not make energy; it moves the credit. Every exported kWh in this record is daytime surplus, so the day's export is what a battery could hold. At ${(shift.assumptions.round_trip * 100).toFixed(0)}% round trip, one captured kWh earns ${(shiftSummer.gain_per_capture * 100).toFixed(2)}¢ in summer and ${(shiftWinter.gain_per_capture * 100).toFixed(2)}¢ in winter more than selling it at midday — the break-even round trip is only ${(shiftSummer.efficiency_break_even * 100).toFixed(1)}%, so the tariff spread is not the constraint. The p90 day exports ${shiftSummer.per_weekday.p90.toFixed(1)} kWh in summer and ${shiftWinter.per_weekday.p90.toFixed(1)} kWh in winter; the gain is near its ceiling at 10 kWh (the next 5 kWh add $${shiftNextFive.toFixed(2)}), and the export arbitrage alone supports about $${shiftTen.break_even_10y_usd_per_kwh.toFixed(0)}/kWh installed over 10 years — below current battery prices, so the case for storage rests on self-consumption and backup, not this spread.`}
+        >
+          <Shift />
         </Figure>
       </div>
 

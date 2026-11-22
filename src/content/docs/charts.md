@@ -75,6 +75,10 @@ on the figure.
 - The payback, week by week: what time of use cost above the flat rate or under
   it, as signed bars around a break-even zero line, with declared interventions
   marked as vertical rules.
+- What shifting export into the evening would pay: the day's export held and
+  delivered in the 5–9 p.m. window, priced at the on-peak credit against the
+  off-peak credit forgone, with the usable capacity at which the gain stops and
+  the installed $/kWh the export spread alone would support.
 - One clear day at 15-minute resolution: the highest-energy day in the record.
 - The self-consumption ratio over the utility window.
 - Where monthly production goes: self-consumed and exported stacked, with the

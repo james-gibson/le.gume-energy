@@ -559,6 +559,125 @@ const paybackSummary = {
   sum: round(payback.reduce((sum, row) => sum + row.delta, 0), 2),
 }
 
+// --- the evening shift: holding daytime export for the 5–9 p.m. credit -----
+// An exported kWh is credited at the rate in force when it is sent back. A
+// battery changes *when*: surplus that would earn the off-peak credit is held
+// and delivered in the peak window, where the credit is on-peak. One captured
+// kWh becomes `eta` kWh delivered, so the trade is
+//
+//   gain per captured kWh = eta * p_on - p_off
+//   break-even efficiency  = p_off / p_on
+//
+// The daily export is the capture: this record has no battery, and the evening
+// share of export is negligible, so every exported kWh is daytime surplus. The
+// capacity table asks where the gain stops — a battery is paid only for the
+// energy it can carry, and the marginal dollar collapses once it is larger than
+// the day's surplus. Cycles are one per weekday; weekends are all off-peak, so
+// moving energy from one off-peak hour to another is zero.
+const SHIFT_ETA = 0.9
+const SHIFT_CAPACITIES = [2.5, 5, 7.5, 10, 15, 20]
+const shiftDays = usedSeries.map((row) => {
+  const season = rateSeason(row.d)
+  return {
+    d: row.d,
+    season,
+    peakDay: RATES.peak_window.weekdays.includes(weekdayOf(row.d)),
+    capture: row.exported,
+  }
+})
+const shiftSeason = (season) => {
+  const rows = shiftDays.filter((row) => row.season === season && row.peakDay)
+  const captures = rows.map((row) => row.capture).sort((a, b) => a - b)
+  const pOn = price(season, 'on')
+  const pOff = price(season, 'off')
+  const capture = captures.reduce((sum, value) => sum + value, 0)
+  const revenue = captures.reduce((sum, value) => sum + value * (SHIFT_ETA * pOn - pOff), 0)
+  const p90 = captures.length ? captures[Math.min(captures.length - 1, Math.floor(captures.length * 0.9))] : 0
+  return {
+    season,
+    weekdays: rows.length,
+    capture_kwh: round(capture, 1),
+    delivered_kwh: round(capture * SHIFT_ETA, 1),
+    revenue_usd: round(revenue, 2),
+    per_weekday: {
+      mean: round(captures.length ? capture / captures.length : 0, 2),
+      median: round(captures.length ? captures[Math.floor(captures.length / 2)] : 0, 2),
+      p90: round(p90, 2),
+      max: round(captures[captures.length - 1] ?? 0, 2),
+    },
+    gain_per_capture: round(SHIFT_ETA * pOn - pOff, 4),
+    efficiency_break_even: round(pOff / pOn, 4),
+    uplift: round((SHIFT_ETA * pOn - pOff) / pOff, 4),
+  }
+}
+const shiftBySeason = ['summer', 'winter'].map(shiftSeason)
+const shiftWeekdays = shiftDays.filter((row) => row.peakDay)
+const shiftCapacity = []
+let shiftPriorRevenue = 0
+for (const capacity of SHIFT_CAPACITIES) {
+  const delivered = shiftWeekdays.reduce(
+    (sum, row) => sum + Math.min(row.capture, capacity / SHIFT_ETA) * SHIFT_ETA,
+    0,
+  )
+  const revenue = shiftWeekdays.reduce((sum, row) => {
+    const taken = Math.min(row.capture, capacity / SHIFT_ETA)
+    return sum + taken * SHIFT_ETA * price(row.season, 'on') - taken * price(row.season, 'off')
+  }, 0)
+  const weekdays = Math.max(1, shiftWeekdays.length)
+  const annual = (revenue / weekdays) * 260
+  shiftCapacity.push({
+    kwh: capacity,
+    delivered_kwh: round(delivered, 1),
+    utilization: round(delivered / (capacity * weekdays), 3),
+    revenue_usd: round(revenue, 2),
+    marginal_usd: round(revenue - shiftPriorRevenue, 2),
+    capped_days: shiftWeekdays.filter((row) => row.capture * SHIFT_ETA > capacity).length,
+    weekdays: shiftWeekdays.length,
+    annual_revenue_usd: round(annual, 2),
+    break_even_10y_usd_per_kwh: round((annual * 10) / capacity, 2),
+    break_even_15y_usd_per_kwh: round((annual * 15) / capacity, 2),
+    break_even_20y_usd_per_kwh: round((annual * 20) / capacity, 2),
+  })
+  shiftPriorRevenue = revenue
+}
+const shiftSensitivity = [0.85, 0.9, 0.95].map((eta) => {
+  const revenue = shiftWeekdays.reduce((sum, row) => {
+    const taken = Math.min(row.capture, 10 / eta)
+    return sum + taken * eta * price(row.season, 'on') - taken * price(row.season, 'off')
+  }, 0)
+  return {
+    round_trip: eta,
+    revenue_10kwh_usd: round(revenue, 2),
+    gain_summer: round(eta * price('summer', 'on') - price('summer', 'off'), 4),
+    gain_winter: round(eta * price('winter', 'on') - price('winter', 'off'), 4),
+  }
+})
+const eveningShift = {
+  window: {
+    from: usedSeries[0]?.d ?? null,
+    to: usedSeries[usedSeries.length - 1]?.d ?? null,
+    days: usedSeries.length,
+    weekdays: shiftWeekdays.length,
+  },
+  assumptions: {
+    round_trip: SHIFT_ETA,
+    cycles_per_weekday: 1,
+    delivery_window: '17:00–21:00 weekdays',
+    capture: 'every exported kWh, treated as daytime surplus',
+    export_credit: 'retail-at-time (rates.json)',
+  },
+  seasons: shiftBySeason,
+  capacity: shiftCapacity,
+  sensitivity: shiftSensitivity,
+  break_even: {
+    efficiency: Object.fromEntries(
+      shiftBySeason.map((row) => [row.season, row.efficiency_break_even]),
+    ),
+    installed_cost_10kwh: shiftCapacity.find((row) => row.kwh === 10),
+    installed_cost_5kwh: shiftCapacity.find((row) => row.kwh === 5),
+  },
+}
+
 // --- how old the record is -------------------------------------------------
 // The export is a manual run on the machine that holds the collector
 // databases, so the site can never assume it is current. It states the age it
@@ -613,6 +732,7 @@ const payload = {
   breakeven,
   payback,
   paybackSummary,
+  eveningShift,
   changes,
   windows,
 }

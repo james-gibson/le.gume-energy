@@ -7,21 +7,21 @@
     "joined": "public/data/energy-daily-joined.csv"
   },
   "record": {
-    "exported_at_utc": "2026-11-22T21:39:09Z",
-    "exported_at_local": "2026-11-22T14:39:09-07:00",
-    "last_day": "2026-11-22",
+    "exported_at_utc": "2026-11-24T13:35:19Z",
+    "exported_at_local": "2026-11-24T06:35:19-07:00",
+    "last_day": "2026-11-23",
     "age_days": 0,
     "state": "current"
   },
   "summary": {
-    "days": 1197,
+    "days": 1198,
     "clear_days": 378,
-    "total_mwh": 27.1,
+    "total_mwh": 27.11,
     "best_day": {
       "d": "2024-05-08",
       "kwh": 44.479
     },
-    "self_window_avg": 0.404
+    "self_window_avg": 0.3846
   },
   "monthly": [
     {
@@ -182,7 +182,7 @@
     },
     {
       "m": "2026-11",
-      "kwh": 299.4
+      "kwh": 312.51
     }
   ],
   "residuals": [
@@ -2121,9 +2121,9 @@
     },
     {
       "d": "2026-11-22",
-      "ratio": 0.9986,
-      "production": 13.75,
-      "export": 0.02
+      "ratio": 0.418,
+      "production": 14.66,
+      "export": 8.53
     }
   ],
   "diurnal": {
@@ -2530,10 +2530,10 @@
     },
     {
       "m": "2026-11",
-      "production": 299.4,
-      "self": 118.8,
-      "export": 180.6,
-      "consumption": 262
+      "production": 300.3,
+      "self": 111.2,
+      "export": 189.1,
+      "consumption": 262.4
     }
   ],
   "yearly": [
@@ -2551,21 +2551,13 @@
     },
     {
       "year": "2026",
-      "mwh": 8.04
+      "mwh": 8.05
     }
   ],
   "recent": {
-    "to": "2026-11-22",
+    "to": "2026-11-23",
     "days": 60,
     "series": [
-      {
-        "d": "2026-09-24",
-        "kwh": 15.17,
-        "clear": false,
-        "residual": 0.1052,
-        "draw": null,
-        "export": null
-      },
       {
         "d": "2026-09-25",
         "kwh": 20.89,
@@ -3032,11 +3024,19 @@
       },
       {
         "d": "2026-11-22",
-        "kwh": 13.75,
+        "kwh": 14.66,
         "clear": false,
-        "residual": null,
-        "draw": 6.86,
-        "export": 0.02
+        "residual": 0.0827,
+        "draw": 7.24,
+        "export": 8.53
+      },
+      {
+        "d": "2026-11-23",
+        "kwh": 12.2,
+        "clear": false,
+        "residual": 0.0065,
+        "draw": null,
+        "export": null
       }
     ],
     "events": [
@@ -3390,12 +3390,12 @@
       {
         "d": "2026-11-22",
         "on": 0,
-        "off": 6.86
+        "off": 7.24
       }
     ],
     "totals": {
       "on": 68,
-      "off": 359.8
+      "off": 360.2
     }
   },
   "pricing": {
@@ -3426,10 +3426,10 @@
       "to": "2026-11-22",
       "days": 39,
       "on": 68,
-      "off": 359.8,
-      "tou": 36.9,
-      "flat": 36.66,
-      "delta": 0.24
+      "off": 360.2,
+      "tou": 36.93,
+      "flat": 36.7,
+      "delta": 0.23
     },
     "seasonal": [
       {
@@ -4798,19 +4798,19 @@
       },
       {
         "d": "2026-11-22",
-        "self": 13.73,
-        "imported": 6.86,
-        "used": 20.6,
-        "exported": 0.02,
-        "produced": 13.75
+        "self": 6.13,
+        "imported": 7.24,
+        "used": 13.37,
+        "exported": 8.53,
+        "produced": 14.66
       }
     ],
     "totals": {
-      "used": 6782.8,
-      "self": 3843.5,
-      "imported": 2939.3,
-      "exported": 703.9,
-      "produced": 4547.4
+      "used": 6775.5,
+      "self": 3835.9,
+      "imported": 2939.7,
+      "exported": 712.4,
+      "produced": 4548.3
     }
   },
   "breakeven": [
@@ -4818,10 +4818,10 @@
       "window": "billed winter, 30 d",
       "days": 39,
       "on": 68,
-      "total": 427.8,
-      "share": 0.159,
+      "total": 428.2,
+      "share": 0.1588,
       "threshold": 0.1541,
-      "move_kwh": 2.1,
+      "move_kwh": 2,
       "move_per_day": 0.05,
       "credit_included": false
     },
@@ -5106,11 +5106,11 @@
       "w": "2026-11-16",
       "days": 7,
       "on": 14.9,
-      "off": 68.6,
-      "share": 0.1784,
-      "tou": 7.39,
-      "flat": 7.15,
-      "delta": 0.24,
+      "off": 69,
+      "share": 0.1776,
+      "tou": 7.41,
+      "flat": 7.19,
+      "delta": 0.22,
       "source": "billed"
     }
   ],
@@ -5118,7 +5118,7 @@
     "weeks": 24,
     "above": 17,
     "below": 7,
-    "sum": 15.8
+    "sum": 15.78
   },
   "eveningShift": {
     "window": {
@@ -5377,34 +5377,34 @@
   ],
   "windows": {
     "last": {
-      "from": "2026-10-24",
-      "to": "2026-11-22",
+      "from": "2026-10-25",
+      "to": "2026-11-23",
       "days": 30,
       "clear": 12,
-      "mean_kwh": 13.97,
+      "mean_kwh": 13.93,
       "residual": 0.0131,
-      "self_ratio": 0.404,
-      "export_share": 0.6184,
-      "grid_days": 30
+      "self_ratio": 0.385,
+      "export_share": 0.6191,
+      "grid_days": 29
     },
     "previous": {
-      "from": "2026-09-24",
-      "to": "2026-10-23",
+      "from": "2026-09-25",
+      "to": "2026-10-24",
       "days": 30,
       "clear": 13,
-      "mean_kwh": 18.03,
+      "mean_kwh": 17.99,
       "residual": -0.0085,
-      "self_ratio": 0.3288,
-      "export_share": 0.1934,
-      "grid_days": 9
+      "self_ratio": 0.3333,
+      "export_share": 0.2102,
+      "grid_days": 10
     },
     "last_year": {
-      "from": "2025-10-24",
-      "to": "2025-11-22",
+      "from": "2025-10-25",
+      "to": "2025-11-23",
       "days": 30,
-      "clear": 12,
-      "mean_kwh": 13.98,
-      "residual": 0.0065,
+      "clear": 11,
+      "mean_kwh": 13.7,
+      "residual": 0.0064,
       "self_ratio": null,
       "export_share": null,
       "grid_days": 0

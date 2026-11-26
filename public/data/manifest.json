@@ -1,7 +1,7 @@
 {
   "schema": "kb-energy-export/1",
-  "generated_at_utc": "2026-11-25T13:20:11Z",
-  "generated_at_local": "2026-11-25T06:20:11-07:00",
+  "generated_at_utc": "2026-11-26T13:20:09Z",
+  "generated_at_local": "2026-11-26T06:20:09-07:00",
   "timezone": "America/Denver",
   "time_policy": {
     "storage": "Source databases store UTC instants plus a collector-rendered local string.",
@@ -50,7 +50,7 @@
       "daily_rows": 1200,
       "daily_with_analysis": 1199,
       "analysis_production_mismatches": 0,
-      "analysis_latest_day_excluded": false,
+      "analysis_latest_day_excluded": true,
       "interval_files_are_sparse": "SolarEdge returns only intervals with production, so a day may hold far fewer than 96 fifteen-minute or 24 hourly rows.",
       "first_local": "2023-08-14",
       "last_local": "2026-11-25"
@@ -63,17 +63,17 @@
     "joined_days": 1200
   },
   "consistency": {
-    "local_time_rows_checked": 88150,
+    "local_time_rows_checked": 88165,
     "local_time_mismatches": 0,
     "analysis_production_mismatches": 0,
-    "analysis_latest_day_excluded": false
+    "analysis_latest_day_excluded": true
   },
   "files": [
     {
       "name": "solar-production-15min.csv",
-      "rows": 61510,
-      "bytes": 3998215,
-      "sha256": "bcc2b97a63c151be9db0e535e9d83f9be381c0ed8b54a4d10c28455f07a683ae",
+      "rows": 61521,
+      "bytes": 3998930,
+      "sha256": "a8e8fbfde3b00d48d48e5bc2a126b55ca0855d78247d924fddc92a505b790db0",
       "first_local": "2023-08-14",
       "last_local": "2026-11-25",
       "columns": [
@@ -86,8 +86,8 @@
     {
       "name": "solar-production-daily.csv",
       "rows": 1200,
-      "bytes": 181269,
-      "sha256": "a2b1abd6f8f2deb07c51745b51813a380ecf563ddc4d46908a606a4f18b169d8",
+      "bytes": 181266,
+      "sha256": "74acd831c26fa8c1e7d35374862f3924d02fca5c08c04175435692693d28dd60",
       "first_local": "2023-08-14",
       "last_local": "2026-11-25",
       "columns": [
@@ -113,9 +113,9 @@
     },
     {
       "name": "solar-production-hourly.csv",
-      "rows": 17515,
-      "bytes": 1138540,
-      "sha256": "9adb484300dedfcef44822e84d750df24c4df74e727b621b6a51e738575d7c4b",
+      "rows": 17519,
+      "bytes": 1138800,
+      "sha256": "4997fd031e409f7478ceef31be5a384d8ef3b8bdac32cc3d2e9163935a2261f0",
       "first_local": "2023-08-14",
       "last_local": "2026-11-25",
       "columns": [
@@ -129,7 +129,7 @@
       "name": "solar-production-monthly.csv",
       "rows": 40,
       "bytes": 3046,
-      "sha256": "a0e287bb06755179753c7ca8f08d61435b3390f107b3d7266bb4fbbde060557b",
+      "sha256": "1001796dd99f931439084ef9242d8d16047e2df4b6ffee5f12c9c75cdbb49627",
       "first_local": "2023-08-01",
       "last_local": "2026-11-01",
       "columns": [
@@ -144,7 +144,7 @@
       "name": "solar-production-yearly.csv",
       "rows": 4,
       "bytes": 334,
-      "sha256": "5945a73c189c2e3e5e842882288cce1076ef1091abea82d6044f322b9bb259af",
+      "sha256": "632485a5df7ae21ae2aa9f50f6259060050d96ebf15897abb709fa3c5681febf",
       "first_local": "2023-01-01",
       "last_local": "2026-01-01",
       "columns": [
@@ -230,7 +230,7 @@
       "name": "energy-daily-joined.csv",
       "rows": 1200,
       "bytes": 37385,
-      "sha256": "053898e32be8f9b7d5437af1619a5014dd04e75ba76f91a607d52e3f85dafe9e",
+      "sha256": "19ea2496b6af6b9fae33c05f4fc14ae5092fbd767fee502eb6e0cebb65d9ea7e",
       "first_local": "2023-08-14",
       "last_local": "2026-11-25",
       "columns": [
@@ -248,9 +248,9 @@
     },
     {
       "name": "analysis-events.csv",
-      "rows": 33,
-      "bytes": 4030,
-      "sha256": "dcb2aeffacf7330e3d37e6335026ed320d381193e8a6faafea4b13fd9fc0fad3",
+      "rows": 32,
+      "bytes": 3915,
+      "sha256": "97f2375a1a59ac73c7822fc43d914510d920cf3a092d2f6c5beefcdf51e436b4",
       "first_local": "2023-10-30",
       "last_local": "2026-10-20",
       "columns": [

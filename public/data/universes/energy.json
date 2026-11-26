@@ -119,7 +119,7 @@
         "end_ns": "1795651200000000000",
         "type": "phase",
         "status": "active",
-        "description": "329 days, 8067.6 kWh"
+        "description": "329 days, 8069.5 kWh"
       }
     ],
     "keyframes": [
@@ -149,7 +149,7 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "recovered on 2023-11-07 from -0.577 to 0.007 after 2 negative clear day(s)"
+        "description": "recovered on 2023-11-07 from -0.577 to 0.008 after 2 negative clear day(s)"
       },
       {
         "id": "event-2023-10-30-snow-or-coverage",
@@ -317,7 +317,7 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "recovered on 2024-11-15 from -0.559 to -0.048 after 3 negative clear day(s)"
+        "description": "recovered on 2024-11-15 from -0.558 to -0.046 after 3 negative clear day(s)"
       },
       {
         "id": "event-2024-11-10-snow-or-coverage",
@@ -337,7 +337,7 @@
         "id": "event-2024-11-28-snow-melt",
         "timestamp": "2024-11-28T12:00:00Z",
         "timestamp_ns": "1732795200000000000",
-        "significance": 0.94,
+        "significance": 0.95,
         "tags": [
           "snow_melt",
           "analysis-event"
@@ -345,7 +345,7 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "recovered on 2024-12-01 from -0.437 to 0.007 after 2 negative clear day(s)"
+        "description": "recovered on 2024-12-01 from -0.437 to 0.009 after 2 negative clear day(s)"
       },
       {
         "id": "event-2024-11-28-snow-or-coverage",
@@ -460,20 +460,6 @@
         "description": "Utility window opens: 2025-05-01"
       },
       {
-        "id": "event-2025-10-15-possible-soiling",
-        "timestamp": "2025-10-15T12:00:00Z",
-        "timestamp_ns": "1760529600000000000",
-        "significance": 0.5,
-        "tags": [
-          "possible_soiling",
-          "analysis-event"
-        ],
-        "type": "milestone",
-        "precision": 86400000000000,
-        "certainty": 1,
-        "description": "16 dry clear day(s); slope -0.0012/day, drop -0.037"
-      },
-      {
         "id": "event-2025-12-01-snow-melt",
         "timestamp": "2025-12-01T12:00:00Z",
         "timestamp_ns": "1764590400000000000",
@@ -485,7 +471,7 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "recovered on 2025-12-15 from -0.345 to -0.003 after 2 negative clear day(s)"
+        "description": "recovered on 2025-12-15 from -0.343 to -0.002 after 2 negative clear day(s)"
       },
       {
         "id": "event-2025-12-04-snow-or-coverage",
@@ -499,7 +485,7 @@
         "type": "milestone",
         "precision": 86400000000000,
         "certainty": 1,
-        "description": "1 clear day(s); min residual -0.561; snow/precip/cold"
+        "description": "1 clear day(s); min residual -0.557; snow/precip/cold"
       },
       {
         "id": "event-2026-01-10-snow-melt",
@@ -674,7 +660,7 @@
         "daily_rows": 1200,
         "daily_with_analysis": 1199,
         "analysis_production_mismatches": 0,
-        "analysis_latest_day_excluded": false,
+        "analysis_latest_day_excluded": true,
         "interval_files_are_sparse": "SolarEdge returns only intervals with production, so a day may hold far fewer than 96 fifteen-minute or 24 hourly rows.",
         "first_local": "2023-08-14",
         "last_local": "2026-11-25"

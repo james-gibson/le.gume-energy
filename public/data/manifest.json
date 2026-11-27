@@ -1,7 +1,7 @@
 {
   "schema": "kb-energy-export/1",
-  "generated_at_utc": "2026-11-26T13:20:09Z",
-  "generated_at_local": "2026-11-26T06:20:09-07:00",
+  "generated_at_utc": "2026-11-27T13:20:09Z",
+  "generated_at_local": "2026-11-27T06:20:09-07:00",
   "timezone": "America/Denver",
   "time_policy": {
     "storage": "Source databases store UTC instants plus a collector-rendered local string.",
